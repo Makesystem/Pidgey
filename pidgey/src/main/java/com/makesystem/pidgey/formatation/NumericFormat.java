@@ -13,6 +13,10 @@ import java.math.BigDecimal;
  */
 public class NumericFormat {
  
+    public static String hex(final long value){
+        return Long.toHexString(value).toUpperCase();
+    }
+    
     public static String currency(final double value) {
 
         final BigDecimal bigDecimal = new BigDecimal(String.valueOf(value)).setScale(2, BigDecimal.ROUND_FLOOR);
