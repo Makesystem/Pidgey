@@ -13,6 +13,24 @@ import java.math.BigDecimal;
  */
 public class NumericFormat {
  
+    /**
+     * Full with leading zeros up to the specified length
+     * 
+     * @param value
+     * @param length
+     * @return 
+     */
+    public static String specificLength(final long value, final int length){        
+        final String toString = String.valueOf(value);
+        final StringBuilder builder = new StringBuilder();
+        final int toComplete = length - toString.length();
+        for(int i = 0; i < toComplete; i++){
+            builder.append("0");
+        }
+        builder.append(toString);
+        return builder.toString();
+    }
+    
     public static String hex(final long value){
         return Long.toHexString(value).toUpperCase();
     }
