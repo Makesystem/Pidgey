@@ -7,6 +7,8 @@ package com.makesystem.pidgey.console;
 
 import com.makesystem.pidgey.console.base.AbstractPrintfSupport;
 import com.makesystem.pidgey.formatation.NumericFormat;
+import com.makesystem.pidgey.formatation.TimeFormat;
+import java.util.Date;
 
 /**
  *
@@ -14,8 +16,21 @@ import com.makesystem.pidgey.formatation.NumericFormat;
  */
 public class ConsoleValue extends AbstractPrintfSupport {
 
+    private static final String DATE_PATTERN
+            = TimeFormat.Patterns.YEAR + "/"
+            + TimeFormat.Patterns.MONTH + "/"
+            + TimeFormat.Patterns.DAY;
+    private static final String TIME_PATTERN
+            = TimeFormat.Patterns.HOURS + ":"
+            + TimeFormat.Patterns.MINUTES + ":"
+            + TimeFormat.Patterns.SECONDS + ":"
+            + TimeFormat.Patterns.MILLIS;
+    private static final String DATE_TIME_PATTERN
+            = DATE_PATTERN + " "
+            + TIME_PATTERN;
+
     public static enum Type {
-        TEXT, INTEGER, CURRENCY, NUMBER_OF_BYTES, HEX
+        TEXT, INTEGER, CURRENCY, NUMBER_OF_BYTES, HEX, SECONDS, MILLIS, DATE, TIME, DATE_TIME
     }
 
     private Object value;
@@ -53,7 +68,7 @@ public class ConsoleValue extends AbstractPrintfSupport {
     public <T> ConsoleValue(final T value, final Type type, final int width, final ConsoleColor... colors) {
         super(colors);
         this.value = value;
-        this.type = type == null ? Type.TEXT : type;        
+        this.type = type == null ? Type.TEXT : type;
         this.width = width;
     }
 
@@ -119,6 +134,27 @@ public class ConsoleValue extends AbstractPrintfSupport {
                     break;
                 case NUMBER_OF_BYTES:
                     asString = NumericFormat.bytes(Long.valueOf(value.toString()));
+                    break;
+                case SECONDS:
+                    asString = TimeFormat.seconds(Integer.valueOf(value.toString()));
+                    break;
+                case MILLIS:
+                    asString = TimeFormat.millis(Long.valueOf(value.toString()));
+                    break;
+                case DATE:
+                    asString = value instanceof Date
+                            ? TimeFormat.format((Date) value, DATE_PATTERN)
+                            : TimeFormat.format((Long) value, DATE_PATTERN);
+                    break;
+                case TIME:
+                    asString = value instanceof Date
+                            ? TimeFormat.format((Date) value, TIME_PATTERN)
+                            : TimeFormat.format((Long) value, TIME_PATTERN);
+                    break;
+                case DATE_TIME:
+                    asString = value instanceof Date
+                            ? TimeFormat.format((Date) value, DATE_TIME_PATTERN)
+                            : TimeFormat.format((Long) value, DATE_TIME_PATTERN);
                     break;
                 case TEXT:
                 default:

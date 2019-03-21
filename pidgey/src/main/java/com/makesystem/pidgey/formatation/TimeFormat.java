@@ -8,6 +8,7 @@ package com.makesystem.pidgey.formatation;
 import com.makesystem.pidgey.language.Language;
 import com.makesystem.pidgey.language.Locales;
 import java.util.Date;
+import java.util.function.Function;
 
 /**
  *
@@ -21,7 +22,7 @@ public class TimeFormat {
     public static interface Patterns {
 
         public static final String YEAR = "{year}";
-        public static final String COMPACT_YEAR = "{compact_year}";
+        public static final String YEAR_SHORT = "{year_short}";
         public static final String MONTH = "{month}";
         public static final String MONTH_FULL = "{month_full}";
         public static final String MONTH_SHORT = "{month_short}";
@@ -37,18 +38,14 @@ public class TimeFormat {
 
     }
 
-    public static void main(String[] args) {
-
-        final StringBuilder pattern = new StringBuilder();
-        pattern.append(Patterns.DAY).append("/");
-        pattern.append(Patterns.MONTH_SHORT).append("/");
-        pattern.append(Patterns.YEAR).append(" ");
-        pattern.append(Patterns.HOURS).append(":");
-        pattern.append(Patterns.MINUTES).append(":");
-        pattern.append(Patterns.SECONDS).append(":");
-        pattern.append(Patterns.MILLIS);
-
-        System.out.println(format(new Date(), pattern.toString(), Locales.pt_BR));
+    /**
+     * @see com.makesystem.pidgey.formatation.TimeFormat.Patterns
+     * @param timestamp
+     * @param pattern
+     * @return
+     */
+    public static String format(final long timestamp, String pattern) {
+        return format(new Date(timestamp), pattern, Locales.pt_BR);
     }
 
     /**
@@ -60,6 +57,16 @@ public class TimeFormat {
      */
     public static String format(final long timestamp, String pattern, final String locale) {
         return format(new Date(timestamp), pattern, locale);
+    }
+
+    /**
+     * @see com.makesystem.pidgey.formatation.TimeFormat.Patterns
+     * @param date
+     * @param pattern
+     * @return
+     */
+    public static String format(final Date date, final String pattern) {
+        return format(date, pattern, Locales.pt_BR);
     }
 
     /**
@@ -84,22 +91,31 @@ public class TimeFormat {
         final int year = date.getYear() + 1900;
         final int dayOfWeek = date.getDay();
 
-        pattern = pattern.replace(Patterns.COMPACT_YEAR, String.valueOf(year).substring(2));
-        pattern = pattern.replace(Patterns.YEAR, String.valueOf(year));
-        pattern = pattern.replace(Patterns.MONTH, NumericFormat.specificLength(month, 2));
-        pattern = pattern.replace(Patterns.MONTH_FULL, Language.monthFull(month, locale));
-        pattern = pattern.replace(Patterns.MONTH_SHORT, Language.monthShort(month, locale));
-        pattern = pattern.replace(Patterns.DAY, NumericFormat.specificLength(day, 2));
-        pattern = pattern.replace(Patterns.DAY_OF_WEEK, NumericFormat.specificLength(dayOfWeek, 1));
-        pattern = pattern.replace(Patterns.DAY_OF_WEEK_FULL, Language.weekdayFull(dayOfWeek, locale));
-        pattern = pattern.replace(Patterns.DAY_OF_WEEK_SHORT, Language.weekdayShort(dayOfWeek, locale));
-        pattern = pattern.replace(Patterns.DAY_OF_WEEK_LETTER, Language.weekdaysLetter(dayOfWeek, locale));
-        pattern = pattern.replace(Patterns.HOURS, NumericFormat.specificLength(hours, 2));
-        pattern = pattern.replace(Patterns.MINUTES, NumericFormat.specificLength(minutes, 2));
-        pattern = pattern.replace(Patterns.SECONDS, NumericFormat.specificLength(seconds, 2));
-        pattern = pattern.replace(Patterns.MILLIS, NumericFormat.specificLength(millis, 2));
+        pattern = replacePattern(pattern, Patterns.YEAR_SHORT, year, value -> String.valueOf(value).substring(2));
+        pattern = replacePattern(pattern, Patterns.YEAR, year, value -> String.valueOf(value));
+        pattern = replacePattern(pattern, Patterns.MONTH, month, value -> NumericFormat.specificLength(value, 2));
+        pattern = replacePattern(pattern, Patterns.MONTH_FULL, month, value -> Language.monthFull(value, locale));
+        pattern = replacePattern(pattern, Patterns.MONTH_SHORT, month, value -> Language.monthShort(value, locale));
+        pattern = replacePattern(pattern, Patterns.DAY, day, value -> NumericFormat.specificLength(value, 2));
+        pattern = replacePattern(pattern, Patterns.DAY_OF_WEEK, dayOfWeek, value -> NumericFormat.specificLength(value, 1));
+        pattern = replacePattern(pattern, Patterns.DAY_OF_WEEK_FULL, dayOfWeek, value -> Language.weekdayFull(value, locale));
+        pattern = replacePattern(pattern, Patterns.DAY_OF_WEEK_SHORT, dayOfWeek, value -> Language.weekdayShort(value, locale));
+        pattern = replacePattern(pattern, Patterns.DAY_OF_WEEK_LETTER, dayOfWeek, value -> Language.weekdaysLetter(value, locale));
+        pattern = replacePattern(pattern, Patterns.HOURS, hours, value -> NumericFormat.specificLength(value, 2));
+        pattern = replacePattern(pattern, Patterns.MINUTES, minutes, value -> NumericFormat.specificLength(value, 2));
+        pattern = replacePattern(pattern, Patterns.SECONDS, seconds, value -> NumericFormat.specificLength(value, 2));
+        pattern = replacePattern(pattern, Patterns.MILLIS, millis, value -> NumericFormat.specificLength(value, 2));
 
         return pattern;
+    }
+
+    private static <V> String replacePattern(final String pattern, final String valuePattern, 
+            final V value, final Function<V, String> mapper) {
+        if (pattern.contains(valuePattern)) {
+            return pattern.replace(valuePattern, mapper.apply(value));
+        } else {
+            return pattern;
+        }
     }
 
     /**
@@ -168,6 +184,35 @@ public class TimeFormat {
         builder.append("h ");
         builder.append(minutes);
         builder.append("min");
+
+        return builder.toString();
+    }
+
+    /**
+     *
+     * @param millis
+     * @return HH:mm:ss:mmm
+     */
+    public static String millis(final long millis) {
+
+        if (millis < 0) {
+            return "00:00:00:000";
+        }
+
+        final int millisRest = (int) (millis % 1000);
+        final int seconds = (int) (millis / 1000);
+        final int secondsRest = (seconds % 60);
+        final int minutes = (seconds / 60) % 60;
+        final int hours = (seconds / 60) / 60;
+
+        final StringBuffer builder = new StringBuffer();
+        builder.append(NumericFormat.specificLength(hours, 2));
+        builder.append(":");
+        builder.append(NumericFormat.specificLength(minutes, 2));
+        builder.append(":");
+        builder.append(NumericFormat.specificLength(secondsRest, 2));
+        builder.append(":");
+        builder.append(NumericFormat.specificLength(millisRest, 3));
 
         return builder.toString();
     }
