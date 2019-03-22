@@ -15,7 +15,13 @@ import java.util.stream.Collectors;
 public class ThrowableHelper {
 
     public final static String toString(final Throwable throwable) {
+        
+        if(throwable == null){
+            return "";
+        }
+        
         final StringBuilder builder = new StringBuilder();
+        builder.append("\r");
         builder.append(throwable.getClass().getName())
                 .append(": ")
                 .append(throwable.getMessage());
@@ -23,12 +29,7 @@ public class ThrowableHelper {
         builder.append(Arrays.stream(throwable.getStackTrace())
                 .map(stackTrace -> stackTrace.toString())
                 .collect(Collectors.joining("\n\t")));
-
-        final Throwable cause = throwable.getCause();
-        if (cause != null) {
-            builder.append("\r");
-            builder.append(toString(cause));
-        }
+        builder.append(toString(throwable.getCause()));        
         return builder.toString();
     }
 
