@@ -19,11 +19,11 @@ public class ThreadPool extends AbstractThreadPool {
 
     private final Collection executing = new LinkedList<>();
 
-    protected ThreadPool() {
+    public ThreadPool() {
         super();
     }
 
-    protected ThreadPool(final int numberOfThreads) {
+    public ThreadPool(final int numberOfThreads) {
         super(numberOfThreads);
     }
 
