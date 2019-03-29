@@ -12,12 +12,22 @@ import java.util.Arrays;
  *
  * @author Richeli.vargas
  */
-public final class ConsoleHelper {
+public final class Console {
 
     public static final int DIVIDER_WIDTH = 72;
     public static final String DIVIDER_CHARACTER = "-";
     public static final ConsoleColor DIVIDER_COLOR = ConsoleColor.BLACK_BOLD;
 
+    public static void print(final String text, final ConsoleColor ... colors) {
+        final ConsoleValue consoleValue = new ConsoleValue(text, colors);
+        print(consoleValue);
+    }
+    
+    public static void println(final String text, final ConsoleColor ... colors) {
+        print(text, colors);
+        System.out.println();        
+    }
+    
     public static void print(final HasPrintfSupport... values) {
         Arrays.asList(values).forEach(value -> System.out.printf(value.getPrintfFormat(), value.getPrintfArgs()));
     }

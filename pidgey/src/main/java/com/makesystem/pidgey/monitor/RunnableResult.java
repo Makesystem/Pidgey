@@ -6,7 +6,7 @@
 package com.makesystem.pidgey.monitor;
 
 import com.makesystem.pidgey.console.ConsoleColor;
-import com.makesystem.pidgey.console.ConsoleHelper;
+import com.makesystem.pidgey.console.Console;
 import com.makesystem.pidgey.console.ConsoleRow;
 import com.makesystem.pidgey.console.ConsoleValue;
 
@@ -99,14 +99,14 @@ public class RunnableResult {
         final ConsoleRow titleRow = new ConsoleRow(startAtTitle, endAtTitle, durationTitle, statusTitle);
         titleRow.setColors(ConsoleColor.BLACK_BOLD);
         
-        ConsoleHelper.println(titleRow);        
-        ConsoleHelper.printDivider();
-        ConsoleHelper.println(startAtValue, endAtValue, durationValue, statusValue);        
-        ConsoleHelper.printDivider();
+        Console.println(titleRow);        
+        Console.printDivider();
+        Console.println(startAtValue, endAtValue, durationValue, statusValue);        
+        Console.printDivider();
         if(throwable != null){
-            ConsoleHelper.println(errorTitle);        
+            Console.println(errorTitle);        
             throwable.printStackTrace();
-            ConsoleHelper.printDivider();
+            Console.printDivider();
         }        
     }    
 }
