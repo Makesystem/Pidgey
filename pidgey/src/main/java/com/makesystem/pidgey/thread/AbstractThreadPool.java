@@ -5,16 +5,17 @@
  */
 package com.makesystem.pidgey.thread;
 
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 /**
  *
  * @author Richeli.vargas
+ * @param <E>
  */
-public abstract class AbstractThreadPool {
+public abstract class AbstractThreadPool<E extends ExecutorService> {
 
     // Determine the time to wait for thread is finished
     private static final int TIMEOUT_SHUTDOWN_THREAD = 15;
@@ -23,11 +24,11 @@ public abstract class AbstractThreadPool {
     // Multiplier to automatically calculate the number of threads
     private static final int CORES_MULTIPLIER = 3;
 
+    private final Collection<Runnable> executing = new LinkedList<>();
     private int numberOfThreads;
-    private ExecutorService pool;
+    private E pool;
 
-    protected abstract ExecutorService newInstance(final int nThreads);
-    public abstract Future<?> execute(final Runnable runnable);
+    protected abstract E newInstance(final int nThreads);
     
     protected AbstractThreadPool() {
         this(0);
@@ -51,18 +52,18 @@ public abstract class AbstractThreadPool {
     }
 
     public void shutdown() {
-        Executors.newCachedThreadPool().execute(() -> {
+        new Thread(() -> {
             final ExecutorService poolToShutdown = pool;
             pool = null;
             boolean isShutdown = shutdown(poolToShutdown);
-        });
+        }).start();
     }
 
-    protected Future<?> submit(final Runnable runnable){
+    protected E service(){
         initialize();
-        return pool.submit(runnable);
+        return pool;
     }
-    
+        
     protected void initialize() {
         if (pool == null) {
             final int nThreads = this.numberOfThreads < 1 ? NUMBER_OF_CORES * CORES_MULTIPLIER : this.numberOfThreads;
@@ -96,4 +97,19 @@ public abstract class AbstractThreadPool {
         return false;
     }
 
+    protected void registerRunnable(final Runnable runnable){
+        executing.add(runnable);
+    }
+    
+    protected void unregisterRunnable(final Runnable runnable){
+        executing.remove(runnable);
+    }
+    
+    protected int countRunnables(){
+        return executing.size();
+    }
+    
+    protected boolean hasRunnables(){
+        return !executing.isEmpty();
+    }
 }

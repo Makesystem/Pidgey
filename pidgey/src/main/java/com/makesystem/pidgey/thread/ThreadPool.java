@@ -5,8 +5,6 @@
  */
 package com.makesystem.pidgey.thread;
 
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -16,8 +14,6 @@ import java.util.concurrent.Future;
  * @author Richeli.vargas
  */
 public class ThreadPool extends AbstractThreadPool {
-
-    private final Collection executing = new LinkedList<>();
 
     public ThreadPool() {
         super();
@@ -32,17 +28,17 @@ public class ThreadPool extends AbstractThreadPool {
         return Executors.newFixedThreadPool(nThreads);
     }
 
-    @Override
+    @SuppressWarnings("CallToPrintStackTrace")
     public Future<?> execute(final Runnable runnable) {
-        return submit(() -> {
-            executing.add(runnable);
+        registerRunnable(runnable);
+        return service().submit(() -> {
             try {
                 runnable.run();
-            } catch (Throwable throwable) {
+            } catch (final Throwable throwable) {
                 throwable.printStackTrace();
             }
-            executing.remove(runnable);
-            if (executing.isEmpty()) {
+            unregisterRunnable(runnable);
+            if (!hasRunnables()) {
                 shutdown();
             }
         });
