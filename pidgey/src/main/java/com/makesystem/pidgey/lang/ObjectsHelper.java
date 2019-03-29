@@ -125,4 +125,43 @@ public class ObjectsHelper {
             return false;
         }
     }
+    
+    /**
+     *
+     * @param <V>
+     * @param type must be a pirimite type or String or enum
+     * @param value
+     * @return 
+     */
+    @SuppressWarnings("UnnecessaryBoxing")
+    public final static <V> V valueOf(final Class type, final String value) {
+        
+        if(value == null || value.isEmpty()){
+            return null;
+        }
+                
+        if (Character.class.isAssignableFrom(type)) {
+            return (V) Character.valueOf(value.charAt(0));
+        } else if (Number.class.isAssignableFrom(type)) {
+            return (V) Long.valueOf(value);
+        } else if (Short.class.isAssignableFrom(type)) {
+            return (V) Short.valueOf(value);
+        } else if (Integer.class.isAssignableFrom(type)) {
+            return (V) Integer.valueOf(value);
+        } else if (Long.class.isAssignableFrom(type)) {
+            return (V) Long.valueOf(value);
+        } else if (Double.class.isAssignableFrom(type)) {
+            return (V) Double.valueOf(value);
+        } else if (Float.class.isAssignableFrom(type)) {
+            return (V) Float.valueOf(value);
+        } else if (String.class.isAssignableFrom(type)) {
+            return (V) String.valueOf(value);
+        } else if (Boolean.class.isAssignableFrom(type)) {
+            return (V) Boolean.valueOf(value);
+        } else if (type.isEnum()) {
+            return (V) Enum.valueOf(type, value);
+        } else {
+            throw new IllegalArgumentException(type + " is not supported. Value must be primitive or String or enum.");
+        }
+    }
 }
