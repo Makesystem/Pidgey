@@ -19,6 +19,14 @@ public class ThreadPool extends AbstractThreadPool {
 
     private final Collection executing = new LinkedList<>();
 
+    protected ThreadPool() {
+        super();
+    }
+
+    protected ThreadPool(final int numberOfThreads) {
+        super(numberOfThreads);
+    }
+
     @Override
     protected ExecutorService newInstance(final int nThreads) {
         return Executors.newFixedThreadPool(nThreads);
