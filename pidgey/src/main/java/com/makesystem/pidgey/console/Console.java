@@ -23,9 +23,9 @@ public final class Console {
         print(consoleValue);
     }
     
-    public static void println(final String text, final ConsoleColor ... colors) {
-        print(text, colors);
-        System.out.println();        
+    public static void println(final String text, final ConsoleColor ... colors) {        
+        System.out.println();
+        print(text, colors);        
     }
     
     public static void print(final HasPrintfSupport... values) {
@@ -36,9 +36,9 @@ public final class Console {
         Arrays.asList(values).forEach(value -> System.out.printf(value.getPrintfFormat(), value.getPrintfArgs()).println());
     }
 
-    public static void println(final HasPrintfSupport... values) {
-        print(values);
+    public static void println(final HasPrintfSupport... values) {        
         System.out.println();
+        print(values);
     }
 
     public static void printDivider() {
