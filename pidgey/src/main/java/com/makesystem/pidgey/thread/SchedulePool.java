@@ -31,14 +31,14 @@ public class SchedulePool extends AbstractThreadPool<ScheduledExecutorService> {
 
     @SuppressWarnings("CallToPrintStackTrace")
     public ScheduledFuture schedule(final Runnable runnable, final long delay, final TimeUnit timeUnit) {
-        return service().schedule(() -> abstractRunning(runnable, true), delay, timeUnit);
+        return service().schedule(run(runnable, true), delay, timeUnit);
     }
 
     public ScheduledFuture scheduleAtFixedRate(final Runnable runnable, final int inicialDelay, final long period, final TimeUnit timeUnit) {
-        return service().scheduleAtFixedRate(() -> abstractRunning(runnable, false), inicialDelay, period, timeUnit);
+        return service().scheduleAtFixedRate(run(runnable, false), inicialDelay, period, timeUnit);
     }
 
     public ScheduledFuture scheduleWithFixedDelay(final Runnable runnable, final int inicialDelay, final long period, final TimeUnit timeUnit) {
-        return service().scheduleWithFixedDelay(() -> abstractRunning(runnable, false), inicialDelay, period, timeUnit);
+        return service().scheduleWithFixedDelay(run(runnable, false), inicialDelay, period, timeUnit);
     }
 }

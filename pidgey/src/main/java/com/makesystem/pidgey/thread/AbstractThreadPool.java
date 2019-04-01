@@ -136,10 +136,10 @@ public abstract class AbstractThreadPool<E extends ExecutorService> {
         return !executing.isEmpty();
     }
 
-    protected Runnable abstractRunning(final Runnable runnable, final boolean unregisterAtEnd) {
+    protected Runnable run(final Runnable runnable, final boolean unregisterAtEnd) {
         registerRunnable(runnable);
         return () -> {
-            run(runnable);
+            AbstractThreadPool.this.run(runnable);
             if (unregisterAtEnd) {
                 unregisterRunnable(runnable);
                 if (!hasRunnables() && !isAlwaysActive()) {
@@ -150,7 +150,7 @@ public abstract class AbstractThreadPool<E extends ExecutorService> {
     }
 
     @SuppressWarnings("CallToPrintStackTrace")
-    protected void run(final Runnable runnable) {
+    private void run(final Runnable runnable) {
         try {
             runnable.run();
         } catch (final Throwable throwable) {

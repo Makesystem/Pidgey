@@ -13,7 +13,7 @@ import java.util.concurrent.Future;
  *
  * @author Richeli.vargas
  */
-public class ThreadPool extends AbstractThreadPool {
+public class ThreadPool extends AbstractThreadPool<ExecutorService> {
 
     public ThreadPool() {
         super();
@@ -29,7 +29,6 @@ public class ThreadPool extends AbstractThreadPool {
     }
 
     public Future<?> execute(final Runnable runnable) {
-        return service().submit(() -> abstractRunning(runnable, true));
-    }
-    
+        return service().submit(run(runnable, true));
+    }    
 }
