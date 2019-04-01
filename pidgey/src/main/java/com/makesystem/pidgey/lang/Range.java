@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.makesystem.pidgey.language;
+package com.makesystem.pidgey.lang;
 
 import java.io.Serializable;
 
