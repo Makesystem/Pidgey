@@ -27,9 +27,10 @@ public abstract class AbstractThreadPool<E extends ExecutorService> {
     private final Collection<Runnable> executing = new LinkedList<>();
     private int numberOfThreads;
     private E pool;
-
-    protected abstract E newInstance(final int nThreads);
+    private boolean alwaysActive = false;
     
+    protected abstract E newInstance(final int nThreads);
+
     protected AbstractThreadPool() {
         this(0);
     }
@@ -51,6 +52,28 @@ public abstract class AbstractThreadPool<E extends ExecutorService> {
         this.numberOfThreads = numberOfThreads;
     }
 
+    public E getPool() {
+        return pool;
+    }
+
+    public void setPool(E pool) {
+        this.pool = pool;
+    }
+
+    public boolean isAlwaysActive() {
+        return alwaysActive;
+    }
+
+    /**
+     * If <code>true</code>, the thread pool will never be terminated.
+     * The default value is <code>false</code>
+     * 
+     * @param alwaysActive 
+     */
+    public void setAlwaysActive(boolean alwaysActive) {
+        this.alwaysActive = alwaysActive;
+    }
+    
     public void shutdown() {
         new Thread(() -> {
             final ExecutorService poolToShutdown = pool;
@@ -59,11 +82,11 @@ public abstract class AbstractThreadPool<E extends ExecutorService> {
         }).start();
     }
 
-    protected E service(){
+    protected E service() {
         initialize();
         return pool;
     }
-        
+
     protected void initialize() {
         if (pool == null) {
             final int nThreads = this.numberOfThreads < 1 ? NUMBER_OF_CORES * CORES_MULTIPLIER : this.numberOfThreads;
@@ -97,19 +120,41 @@ public abstract class AbstractThreadPool<E extends ExecutorService> {
         return false;
     }
 
-    protected void registerRunnable(final Runnable runnable){
+    protected void registerRunnable(final Runnable runnable) {
         executing.add(runnable);
     }
-    
-    protected void unregisterRunnable(final Runnable runnable){
+
+    protected void unregisterRunnable(final Runnable runnable) {
         executing.remove(runnable);
     }
-    
-    protected int countRunnables(){
+
+    protected int countRunnables() {
         return executing.size();
     }
-    
-    protected boolean hasRunnables(){
+
+    protected boolean hasRunnables() {
         return !executing.isEmpty();
+    }
+
+    protected Runnable abstractRunning(final Runnable runnable, final boolean unregisterAtEnd) {
+        registerRunnable(runnable);
+        return () -> {
+            run(runnable);
+            if (unregisterAtEnd) {
+                unregisterRunnable(runnable);
+                if (!hasRunnables() && !isAlwaysActive()) {
+                    shutdown();
+                }
+            }
+        };
+    }
+
+    @SuppressWarnings("CallToPrintStackTrace")
+    protected void run(final Runnable runnable) {
+        try {
+            runnable.run();
+        } catch (final Throwable throwable) {
+            throwable.printStackTrace();
+        }
     }
 }

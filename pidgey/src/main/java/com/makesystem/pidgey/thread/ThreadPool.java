@@ -28,19 +28,8 @@ public class ThreadPool extends AbstractThreadPool {
         return Executors.newFixedThreadPool(nThreads);
     }
 
-    @SuppressWarnings("CallToPrintStackTrace")
     public Future<?> execute(final Runnable runnable) {
-        registerRunnable(runnable);
-        return service().submit(() -> {
-            try {
-                runnable.run();
-            } catch (final Throwable throwable) {
-                throwable.printStackTrace();
-            }
-            unregisterRunnable(runnable);
-            if (!hasRunnables()) {
-                shutdown();
-            }
-        });
+        return service().submit(() -> abstractRunning(runnable, true));
     }
+    
 }
