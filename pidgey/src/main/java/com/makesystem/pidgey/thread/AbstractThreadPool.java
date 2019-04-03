@@ -40,7 +40,7 @@ public abstract class AbstractThreadPool<E extends ExecutorService> {
     }
 
     public int getNumberOfThreads() {
-        return numberOfThreads;
+        return this.numberOfThreads < 1 ? NUMBER_OF_CORES * CORES_MULTIPLIER : this.numberOfThreads;
     }
 
     /**
@@ -89,8 +89,7 @@ public abstract class AbstractThreadPool<E extends ExecutorService> {
 
     protected void initialize() {
         if (pool == null) {
-            final int nThreads = this.numberOfThreads < 1 ? NUMBER_OF_CORES * CORES_MULTIPLIER : this.numberOfThreads;
-            pool = newInstance(nThreads);
+            pool = newInstance(getNumberOfThreads());
         }
     }
 
