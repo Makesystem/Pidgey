@@ -26,25 +26,37 @@ import java.util.stream.StreamSupport;
  * @author Richeli.vargas
  */
 public class ObjectsHelper {
-    
-    public final static <E> Collection toCollection(final Iterable<E> iterable){
+
+    public final static <E> Collection toCollection(final Iterable<E> iterable) {
         return StreamSupport
-                    .stream(iterable.spliterator(), false)
-                    .collect(Collectors.toList());
+                .stream(iterable.spliterator(), false)
+                .collect(Collectors.toList());
     }
-    
-    public final static  <T> Collection<List<T>> partition(final Collection<T> list, final int size) {
+
+    public final static <T> Collection<List<T>> partition(final Collection<T> list, final int size) {
         final AtomicInteger counter = new AtomicInteger(0);
         return list.stream()
                 .collect(Collectors.groupingBy(it -> counter.getAndIncrement() / size))
                 .values();
     }
-    
-    public final static <T> T[] concat(final T[] first, final T[] last, final IntFunction<T[]> generator){
+
+    public final static <T> T[] concat(final T[] first, final T[] last, final IntFunction<T[]> generator) {
         final Collection<T> collection = new LinkedList<>();
         collection.addAll(Arrays.asList(first));
         collection.addAll(Arrays.asList(last));
         return collection.stream().toArray(generator);
+    }
+
+    public final static Class<?> getCollectionType(final Collection<?> collection) {
+        return collection.isEmpty() ? null : collection.iterator().next().getClass();
+    }
+    
+    public final static Class<?> getMapKeyType(final Map<?, ?> collection) {
+        return collection.isEmpty() ? null : collection.keySet().iterator().getClass();
+    }
+    
+    public final static Class<?> getMapValueType(final Map<?, ?> collection) {
+        return collection.isEmpty() ? null : collection.values().iterator().getClass();
     }
 
     public final static boolean isNullOrEmpty(final Object object) {
@@ -58,11 +70,11 @@ public class ObjectsHelper {
     public final static boolean isEmpty(final Object object) {
         return object.toString().trim().isEmpty() || (object instanceof Object[] ? ((Object[]) object).length == 0 : false);
     }
-    
+
     public final static boolean isNotEmpty(final Object object) {
         return !isEmpty(object);
     }
-    
+
     public final static boolean isNull(final Object object) {
         return object == null;
     }
@@ -126,20 +138,46 @@ public class ObjectsHelper {
         }
     }
     
+    public final static boolean isBasicJavaClass(final Class type) {
+        if (Character.class.isAssignableFrom(type)) {
+            return true;
+        } else if (Number.class.isAssignableFrom(type)) {
+            return true;
+        } else if (Short.class.isAssignableFrom(type)) {
+            return true;
+        } else if (Integer.class.isAssignableFrom(type)) {
+            return true;
+        } else if (Long.class.isAssignableFrom(type)) {
+            return true;
+        } else if (Double.class.isAssignableFrom(type)) {
+            return true;
+        } else if (Float.class.isAssignableFrom(type)) {
+            return true;
+        } else if (String.class.isAssignableFrom(type)) {
+            return true;
+        } else if (Boolean.class.isAssignableFrom(type)) {
+            return true;
+        } else if (type.isEnum()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      *
      * @param <V>
      * @param type must be a pirimite type or String or enum
      * @param value
-     * @return 
+     * @return
      */
     @SuppressWarnings("UnnecessaryBoxing")
     public final static <V> V valueOf(final Class type, final String value) {
-        
-        if(value == null || value.isEmpty()){
+
+        if (value == null || value.isEmpty()) {
             return null;
         }
-                
+
         if (Character.class.isAssignableFrom(type)) {
             return (V) Character.valueOf(value.charAt(0));
         } else if (Number.class.isAssignableFrom(type)) {
