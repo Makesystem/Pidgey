@@ -24,8 +24,8 @@ public final class Console {
     }
     
     public static void println(final String text, final ConsoleColor ... colors) {        
-        System.out.println();
         print(text, colors);        
+        System.out.println();
     }
     
     public static void print(final HasPrintfSupport... values) {
@@ -37,8 +37,8 @@ public final class Console {
     }
 
     public static void println(final HasPrintfSupport... values) {        
-        System.out.println();
         print(values);
+        System.out.println();
     }
 
     public static void printDivider() {

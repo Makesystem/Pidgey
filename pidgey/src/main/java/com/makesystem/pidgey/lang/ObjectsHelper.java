@@ -48,15 +48,15 @@ public class ObjectsHelper {
     }
 
     public final static Class<?> getCollectionType(final Collection<?> collection) {
-        return collection.isEmpty() ? null : collection.iterator().next().getClass();
+        return collection.isEmpty() ? null : collection.stream().filter(value -> value != null).findAny().map(value -> value.getClass()).orElse(null);
     }
-    
-    public final static Class<?> getMapKeyType(final Map<?, ?> collection) {
-        return collection.isEmpty() ? null : collection.keySet().iterator().getClass();
+
+    public final static Class<?> getMapKeyType(final Map<?, ?> map) {
+        return map.isEmpty() ? null : map.keySet().stream().filter(key -> key != null).findAny().map(key -> key.getClass()).orElse(null);
     }
-    
-    public final static Class<?> getMapValueType(final Map<?, ?> collection) {
-        return collection.isEmpty() ? null : collection.values().iterator().getClass();
+
+    public final static Class<?> getMapValueType(final Map<?, ?> map) {
+        return map.isEmpty() ? null : map.values().stream().filter(value -> value != null).findAny().map(value -> value.getClass()).orElse(null);
     }
 
     public final static boolean isNullOrEmpty(final Object object) {
@@ -137,7 +137,7 @@ public class ObjectsHelper {
             return false;
         }
     }
-    
+
     public final static boolean isBasicJavaClass(final Class type) {
         if (Character.class.isAssignableFrom(type)) {
             return true;
