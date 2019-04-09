@@ -22,6 +22,22 @@ public class RunnableResult {
     private RunnableStatus status;
     private Throwable throwable;
 
+    public RunnableResult() {
+    }
+
+    public RunnableResult(
+            final long startAt, 
+            final long endAt, 
+            final long duration, 
+            final RunnableStatus status, 
+            final Throwable throwable) {
+        this.startAt = startAt;
+        this.endAt = endAt;
+        this.duration = duration;
+        this.status = status;
+        this.throwable = throwable;
+    }
+
     public long getStartAt() {
         return startAt;
     }
@@ -60,7 +76,6 @@ public class RunnableResult {
         this.throwable = throwable;
     }
 
-    
     @SuppressWarnings("CallToPrintStackTrace")
     public void print() {
 
@@ -84,29 +99,29 @@ public class RunnableResult {
         final int endAtColumnWidth = 5;
         final int durationColumnWidth = 3;
         final int statusColumnWidth = 3;
-        
+
         final ConsoleValue startAtValue = new ConsoleValue(startAt, ConsoleValue.Type.DATE_TIME, startAtColumnWidth);
         final ConsoleValue endAtValue = new ConsoleValue(endAt, ConsoleValue.Type.DATE_TIME, endAtColumnWidth);
         final ConsoleValue durationValue = new ConsoleValue(duration, ConsoleValue.Type.MILLIS, durationColumnWidth);
         final ConsoleValue statusValue = new ConsoleValue(status, statusColumnWidth, statusColor);
-             
+
         final ConsoleValue startAtTitle = new ConsoleValue("Start at", startAtColumnWidth);
         final ConsoleValue endAtTitle = new ConsoleValue("End at", endAtColumnWidth);
         final ConsoleValue durationTitle = new ConsoleValue("Duration", durationColumnWidth);
         final ConsoleValue statusTitle = new ConsoleValue("Status", statusColumnWidth);
         final ConsoleValue errorTitle = new ConsoleValue("Error: ", ConsoleColor.BLACK_BOLD);
-        
+
         final ConsoleRow titleRow = new ConsoleRow(startAtTitle, endAtTitle, durationTitle, statusTitle);
         titleRow.setColors(ConsoleColor.BLACK_BOLD);
-        
-        Console.println(titleRow);        
+
+        Console.println(titleRow);
         Console.printDivider();
-        Console.println(startAtValue, endAtValue, durationValue, statusValue);        
+        Console.println(startAtValue, endAtValue, durationValue, statusValue);
         Console.printDivider();
-        if(throwable != null){
-            Console.println(errorTitle);        
+        if (throwable != null) {
+            Console.println(errorTitle);
             throwable.printStackTrace();
             Console.printDivider();
-        }        
-    }    
+        }
+    }
 }

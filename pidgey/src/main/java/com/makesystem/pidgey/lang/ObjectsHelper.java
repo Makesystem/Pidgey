@@ -83,15 +83,43 @@ public class ObjectsHelper {
         return !isNull(object);
     }
 
-    public final static boolean isDifferent(final Object obj1, final Object obj2) {
-        return !isEquals(obj1, obj2);
+    public final static <O> boolean isDifferent(final O object_1, final O object_2) {
+        return !isEquals(object_1, object_2);
     }
 
-    public final static boolean isEquals(final Object obj1, final Object obj2) {
-        return (obj1 == null && obj2 == null)
-                || ((obj1 != null && obj2 != null)
-                && (obj1 instanceof String && obj2 instanceof String
-                        ? obj1.toString().equalsIgnoreCase(obj2.toString()) : obj1.equals(obj2)));
+    @SuppressWarnings("null")
+    public final static <O> boolean isEquals(final O object_1, final O object_2) {
+
+        if (object_1 == null && object_2 == null) {
+            return true;
+        }
+
+        if ((object_1 != null && object_2 == null) || (object_1 == null && object_2 != null)) {
+            return false;
+        }
+
+        final Class<?> class1 = object_1.getClass();
+        final Class<?> class2 = object_2.getClass();
+
+        if (class1.isArray() && class2.isArray()) {
+            return isEquals(
+                    Arrays.asList((O[]) object_1), 
+                    Arrays.asList((O[]) object_2));
+        } else if (Collection.class.isAssignableFrom(class1)
+                && Collection.class.isAssignableFrom(class2)) {
+            final Collection collection1 = (Collection) object_1;
+            final Collection collection2 = (Collection) object_2;
+
+            return collection1.size() == collection2.size()
+                    && collection1.containsAll(collection2)
+                    && collection2.containsAll(collection1);
+
+        } else if (String.class.isAssignableFrom(class1)
+                && String.class.isAssignableFrom(class2)) {
+            return object_1.toString().equalsIgnoreCase(object_2.toString());
+        } else {
+            return object_1.equals(object_2);
+        }
     }
 
     public final static boolean isCollection(final Class objectClass) {

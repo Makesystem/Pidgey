@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.makesystem.pidgey.lang.ObjectsHelper;
-import com.makesystem.pidgey.monitor.MonitorHelper;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -49,7 +48,7 @@ public class JsonConverter {
      * @param object
      * @return 
      */
-    public static final <O> JavaType getType(final O object) {
+    protected static final <O> JavaType getType(final O object) {
 
         if (object == null) {
             return null;
@@ -117,13 +116,14 @@ public class JsonConverter {
     /**
      * 
      * @param <T>
+     * @param <R>
      * @param json
-     * @param typeReference
+     * @param jsonReference
      * @return
      * @throws java.io.IOException 
      */
-    public static final <T> T read(final String json, final TypeReference<T> typeReference) throws IOException  {
-        return mapper.reader().readValue(factory.createParser(json), typeReference);
+    public static final <T, R extends TypeReference<T>> T read(final String json, final R jsonReference) throws IOException  {
+        return mapper.reader().readValue(factory.createParser(json), jsonReference);
     }
     
     /**
@@ -146,7 +146,7 @@ public class JsonConverter {
      * @return
      * @throws IOException 
      */
-    public static final <T> T read(final String json, final JavaType type) throws IOException  {
+    protected static final <T> T read(final String json, final JavaType type) throws IOException  {
         return mapper.reader().readValue(factory.createParser(json), type);
     }
     
