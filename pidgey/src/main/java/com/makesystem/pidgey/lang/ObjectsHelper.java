@@ -103,7 +103,7 @@ public class ObjectsHelper {
 
         if (class1.isArray() && class2.isArray()) {
             return isEquals(
-                    Arrays.asList((O[]) object_1), 
+                    Arrays.asList((O[]) object_1),
                     Arrays.asList((O[]) object_2));
         } else if (Collection.class.isAssignableFrom(class1)
                 && Collection.class.isAssignableFrom(class2)) {
@@ -208,8 +208,6 @@ public class ObjectsHelper {
 
         if (Character.class.isAssignableFrom(type)) {
             return (V) Character.valueOf(value.charAt(0));
-        } else if (Number.class.isAssignableFrom(type)) {
-            return (V) Long.valueOf(value);
         } else if (Short.class.isAssignableFrom(type)) {
             return (V) Short.valueOf(value);
         } else if (Integer.class.isAssignableFrom(type)) {
@@ -220,6 +218,8 @@ public class ObjectsHelper {
             return (V) Double.valueOf(value);
         } else if (Float.class.isAssignableFrom(type)) {
             return (V) Float.valueOf(value);
+        } else if (Number.class.isAssignableFrom(type)) {
+            return (V) Double.valueOf(value);
         } else if (String.class.isAssignableFrom(type)) {
             return (V) String.valueOf(value);
         } else if (Boolean.class.isAssignableFrom(type)) {
