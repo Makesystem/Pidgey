@@ -45,6 +45,7 @@
                     <include>**/*.java</include>
                     <include>**/*.sql</include>
                     <include>**/*.csv</include>
+                    <include>**/*.xml</include>
                 </includes>
             </resource>
             
@@ -54,6 +55,7 @@
                     <include>**/*.java</include>
                     <include>**/*.sql</include>
                     <include>**/*.csv</include>
+                    <include>**/*.xml</include>
                 </includes>
             </resource>
             
