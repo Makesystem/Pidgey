@@ -34,7 +34,7 @@ public class ConsoleValue extends AbstractPrintfSupport {
     }
 
     private Object value;
-    private int width;
+    private int length;
     private Type type = Type.TEXT;
 
     public <T> ConsoleValue(final T value) {
@@ -53,23 +53,23 @@ public class ConsoleValue extends AbstractPrintfSupport {
         this(value, type, -1, colors);
     }
 
-    public <T> ConsoleValue(final T value, final int width) {
-        this(value, Type.TEXT, width, new ConsoleColor[]{});
+    public <T> ConsoleValue(final T value, final int length) {
+        this(value, Type.TEXT, length, new ConsoleColor[]{});
     }
 
-    public <T> ConsoleValue(final T value, final Type type, final int width) {
-        this(value, type, width, new ConsoleColor[]{});
+    public <T> ConsoleValue(final T value, final Type type, final int length) {
+        this(value, type, length, new ConsoleColor[]{});
     }
 
-    public <T> ConsoleValue(final T value, final int width, final ConsoleColor... colors) {
-        this(value, Type.TEXT, width, colors);
+    public <T> ConsoleValue(final T value, final int length, final ConsoleColor... colors) {
+        this(value, Type.TEXT, length, colors);
     }
 
-    public <T> ConsoleValue(final T value, final Type type, final int width, final ConsoleColor... colors) {
+    public <T> ConsoleValue(final T value, final Type type, final int length, final ConsoleColor... colors) {
         super(colors);
         this.value = value;
         this.type = type == null ? Type.TEXT : type;
-        this.width = width;
+        this.length = length;
     }
 
     public <T> T getValue() {
@@ -80,12 +80,12 @@ public class ConsoleValue extends AbstractPrintfSupport {
         this.value = value;
     }
 
-    public int getWidth() {
-        return width;
+    public int getLength() {
+        return length;
     }
 
-    public void setWidth(final int width) {
-        this.width = width;
+    public void setLength(final int length) {
+        this.length = length;
     }
 
     public Type getType() {
@@ -97,16 +97,16 @@ public class ConsoleValue extends AbstractPrintfSupport {
     }
 
     /**
-     * If width < 1 the %s is equal %s, or else will be %-'(width * 5)'s @return
-     * the %s for this value appling width
+     * If length < 1 the %s is equal %s, or else will be %-'(length * 5)'s @return
+     * the %s for this value appling length
      *
      * @return
      */
     @Override
     protected String prinfFormat() {
-        return width < 1
+        return length < 1
                 ? "%s"
-                : "%-" + (width * 5) + "s";
+                : "%-" + (length * Console.tabLength()) + "s";
 
     }
 

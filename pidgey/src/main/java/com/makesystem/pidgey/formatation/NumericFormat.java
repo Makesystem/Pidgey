@@ -35,6 +35,18 @@ public class NumericFormat {
         return Long.toHexString(value).toUpperCase();
     }
     
+    public static String hex(final int value){
+        return Integer.toHexString(value).toUpperCase();
+    }
+    
+    public static String hex(final double value){
+        return Double.toHexString(value).toUpperCase();
+    }
+    
+    public static String hex(final float value){
+        return Float.toHexString(value).toUpperCase();
+    }
+    
     public static String currency(final double value) {
 
         final BigDecimal bigDecimal = new BigDecimal(String.valueOf(value)).setScale(2, BigDecimal.ROUND_FLOOR);
