@@ -6,7 +6,6 @@
 package com.makesystem.pidgey.console;
 
 import com.makesystem.pidgey.console.base.HasPrintfSupport;
-import java.util.Arrays;
 
 /**
  *
@@ -17,14 +16,6 @@ public final class Console {
     public static final int DIVIDER_WIDTH = 72;
     public static final String DIVIDER_CHARACTER = "-";
     public static final ConsoleColor DIVIDER_COLOR = ConsoleColor.BLACK_BOLD;
-
-    public static int tabLength() {
-        try {
-            return Integer.valueOf(System.getProperty("tab_length", "5"));
-        } catch (NumberFormatException ignore) {
-            return 5;
-        }
-    }
 
     public static void print(final String text, final ConsoleColor... colors) {
         final ConsoleValue consoleValue = new ConsoleValue(text, colors);
@@ -37,11 +28,11 @@ public final class Console {
     }
 
     public static void print(final HasPrintfSupport... values) {
-        Arrays.asList(values).forEach(value -> System.out.printf(value.getPrintfFormat(), value.getPrintfArgs()));
+        System.out.print(ConsoleHelper.toPrintf(values));
     }
 
     public static void printlnEach(final HasPrintfSupport... values) {
-        Arrays.asList(values).forEach(value -> System.out.printf(value.getPrintfFormat(), value.getPrintfArgs()).println());
+        System.out.println(ConsoleHelper.toPrintln(values));
     }
 
     public static void println(final HasPrintfSupport... values) {
@@ -70,7 +61,6 @@ public final class Console {
     }
 
     public static void printDivider(final String dividerChar, final int width, final ConsoleColor... colors) {
-        final ConsoleValue divider = new ConsoleValue(ConsoleHelper.divider(dividerChar, width), colors);
-        printlnEach(divider);
+        printlnEach(ConsoleHelper.getRowDivider(dividerChar, width, colors));
     }
 }

@@ -5,10 +5,9 @@
  */
 package com.makesystem.pidgey.formatation;
 
-import com.makesystem.pidgey.console.Console;
+import com.makesystem.pidgey.formatation.printf.ConversionFormatter;
+import com.makesystem.pidgey.formatation.printf.Printf;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.stream.Collectors;
 
 /**
@@ -45,6 +44,10 @@ public class StringFormat {
 
     };
     
+    public static String only(final String string, final String ... and) {
+        return string.replaceAll("[^" + Arrays.stream(and).collect(Collectors.joining()) +  "]", "");
+    }
+    
     public static String only(final String string, final Only type, final String ... and) {
         return string.replaceAll("[^" + type.partner + Arrays.stream(and).collect(Collectors.joining()) +  "]", "");
     }
@@ -61,65 +64,27 @@ public class StringFormat {
         return only(string, Only.LETTERS);
     }
 
-    public static String format(final String format, final Object... values) {
-
-        final Collection<String> params = new LinkedList<>();
-
-        String temp = format;
-        int indexOf = temp.indexOf("%-");
-        while (indexOf > -1) {
-            temp = temp.substring(indexOf, temp.length());
-            final int indexOfS = temp.indexOf("s");
-            params.add(temp.substring(0, indexOfS + 1));
-            temp = temp.substring(indexOfS + 1);
-            indexOf = temp.indexOf("%-");
-        }
-
-        if (params.size() != values.length) {
-            throw new IllegalArgumentException(
-                    "Number of %-s is "
-                    + (params.size() < values.length ? "less" : "bigger")
-                    + " than number of values");
-        }
-
-        final String[] parts = params.stream().toArray(String[]::new);
-        final int size = Math.min(parts.length, values.length);
-        String result = format;
-
-        for (int index = 0; index < size; index++) {
-            final Object value = values[index];
-            final String part = parts[index].substring(0, parts[index].indexOf("s") + 1);
-            final String numbers = onlyNumbers(part);
-            final int length = numbers.length() == 0 ? 0 : Integer.valueOf(numbers);
-            final String formattedValue = toString(value, length * Console.tabLength());
-            result = result.replaceFirst(part, formattedValue);
-        }
-
-        return result;
+    public static String printf(final String format, final Object... values) {
+        return printf(format, ConversionFormatter.DEFAULT_PADDING_CHAR, values);
     }
-
-    private static String toString(final Object value, final int length) {
-
-        final String valueAsString = value == null ? "" : value.toString();
-
-        if (length == 0) {
-            return valueAsString;
-        } else {
-
-            final StringBuilder builder = new StringBuilder(valueAsString);
-            while (builder.length() < length) {
-                builder.append(" ");
-            }
-
-            if (builder.length() > length) {
-                if (length > 4) {
-                    return builder.substring(0, length - 3) + "...";
-                } else {
-                    return builder.substring(0, length);
-                }
-            } else {
-                return builder.toString();
-            }
+    
+    public static String printf(final String format, final char paddingChar, final Object... values) {
+        final Printf printf = new Printf();
+        printf.setPaddingChar(paddingChar);
+        return printf.toString(format, values);
+    }
+    
+    public static String completeLeft(String source, final char character, final int length){
+        while (source.length() < length) {
+            source = String.valueOf(character) + source;
         }
+        return source;
+    }
+    
+    public static String completeRight(String source, final char character, final int length){
+        while (source.length() < length) {
+            source = source + String.valueOf(character);
+        }
+        return source;
     }
 }

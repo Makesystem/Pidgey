@@ -30,7 +30,16 @@ public class ConsoleValue extends AbstractPrintfSupport {
             + TIME_PATTERN;
 
     public static enum Type {
-        TEXT, INTEGER, CURRENCY, NUMBER_OF_BYTES, HEX, SECONDS, MILLIS, DATE, TIME, DATE_TIME
+        TEXT, 
+        INTEGER, 
+        CURRENCY, 
+        NUMBER_OF_BYTES, 
+        HEX, 
+        SECONDS, 
+        MILLIS, 
+        DATE, 
+        TIME, 
+        DATE_TIME
     }
 
     private Object value;
@@ -106,7 +115,7 @@ public class ConsoleValue extends AbstractPrintfSupport {
     protected String prinfFormat() {
         return length < 1
                 ? "%s"
-                : "%-" + (length * Console.tabLength()) + "s";
+                : "%-" + length + "s";
 
     }
 
