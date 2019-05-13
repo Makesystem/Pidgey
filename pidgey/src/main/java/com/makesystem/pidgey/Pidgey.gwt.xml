@@ -5,4 +5,7 @@
     <!-- Inherit the core Web Toolkit stuff. -->
     <inherits name='com.google.gwt.user.User' />
     <source path=''></source>
+    
+    <inherits name="com.github.nmorel.gwtjackson.GwtJackson" />
+    
 </module>
