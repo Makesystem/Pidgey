@@ -27,7 +27,7 @@ import java.util.Set;
  *
  * @author Richeli.vargas
  */
-public class JsonConverter {
+public class ObjectMapperJRE {
 
     private final static ObjectMapper mapper;
     private final static JsonFactory factory;

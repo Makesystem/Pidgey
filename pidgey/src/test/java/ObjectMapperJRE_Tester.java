@@ -1,6 +1,6 @@
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.makesystem.pidgey.json.JsonConverter;
+import com.makesystem.pidgey.json.ObjectMapperJRE;
 import com.makesystem.pidgey.tester.AbstractTester;
 import java.io.Serializable;
 import java.util.Collection;
@@ -18,12 +18,12 @@ import java.util.Objects;
  *
  * @author Richeli.vargas
  */
-public class JsonConverter_Tester extends AbstractTester {
+public class ObjectMapperJRE_Tester extends AbstractTester {
 
     private static final Integer SIZE = 1000;
 
     public static void main(String[] args) {
-        new JsonConverter_Tester().run();
+        new ObjectMapperJRE_Tester().run();
     }
     
     private Integer[] primitiveArray;
@@ -93,62 +93,62 @@ public class JsonConverter_Tester extends AbstractTester {
     protected void test_write() {
 
         Assert(() -> {
-            jsonPrimitiveObject = JsonConverter.write(primitiveCollection.iterator().next());
+            jsonPrimitiveObject = ObjectMapperJRE.write(primitiveCollection.iterator().next());
             return true;
         }, true);
 
         Assert(() -> {
-            jsonSimpleObject = JsonConverter.write(simpleObjectCollection.iterator().next());
+            jsonSimpleObject = ObjectMapperJRE.write(simpleObjectCollection.iterator().next());
             return true;
         }, true);
 
         Assert(() -> {
-            jsonComplexObject = JsonConverter.write(complexObjectCollection.iterator().next());
+            jsonComplexObject = ObjectMapperJRE.write(complexObjectCollection.iterator().next());
             return true;
         }, true);
 
         Assert(() -> {
-            jsonPrimitiveObjectArray = JsonConverter.write(primitiveArray);
+            jsonPrimitiveObjectArray = ObjectMapperJRE.write(primitiveArray);
             return true;
         }, true);
 
         Assert(() -> {
-            jsonSimpleObjectArray = JsonConverter.write(simpleObjectArray);
+            jsonSimpleObjectArray = ObjectMapperJRE.write(simpleObjectArray);
             return true;
         }, true);
 
         Assert(() -> {
-            jsonComplexObjectArray = JsonConverter.write(complexObjectArray);
+            jsonComplexObjectArray = ObjectMapperJRE.write(complexObjectArray);
             return true;
         }, true);
         
         Assert(() -> {
-            jsonPrimitiveObjectCollection = JsonConverter.write(primitiveCollection);
+            jsonPrimitiveObjectCollection = ObjectMapperJRE.write(primitiveCollection);
             return true;
         }, true);
 
         Assert(() -> {
-            jsonSimpleObjectCollection = JsonConverter.write(simpleObjectCollection);
+            jsonSimpleObjectCollection = ObjectMapperJRE.write(simpleObjectCollection);
             return true;
         }, true);
 
         Assert(() -> {
-            jsonComplexObjectCollection = JsonConverter.write(complexObjectCollection);
+            jsonComplexObjectCollection = ObjectMapperJRE.write(complexObjectCollection);
             return true;
         }, true);
 
         Assert(() -> {
-            jsonPrimitiveObjectMap = JsonConverter.write(primitiveMap);
+            jsonPrimitiveObjectMap = ObjectMapperJRE.write(primitiveMap);
             return true;
         }, true);
 
         Assert(() -> {
-            jsonSimpleObjectMap = JsonConverter.write(simpleObjectMap);
+            jsonSimpleObjectMap = ObjectMapperJRE.write(simpleObjectMap);
             return true;
         }, true);
 
         Assert(() -> {
-            jsonComplexObjectMap = JsonConverter.write(complexObjectMap);
+            jsonComplexObjectMap = ObjectMapperJRE.write(complexObjectMap);
             return true;
         }, true);
 
@@ -156,64 +156,64 @@ public class JsonConverter_Tester extends AbstractTester {
 
     protected void test_read_withTypeReference() {
 
-        Assert(() -> JsonConverter.read(jsonPrimitiveObject, new TypeReference<Integer>() {
+        Assert(() -> ObjectMapperJRE.read(jsonPrimitiveObject, new TypeReference<Integer>() {
         }), primitiveCollection.iterator().next());
-        Assert(() -> JsonConverter.read(jsonSimpleObject, new TypeReference<ObjectOne>() {
+        Assert(() -> ObjectMapperJRE.read(jsonSimpleObject, new TypeReference<ObjectOne>() {
         }), simpleObjectCollection.iterator().next());
-        Assert(() -> JsonConverter.read(jsonComplexObject, new TypeReference<ObjectTwo>() {
+        Assert(() -> ObjectMapperJRE.read(jsonComplexObject, new TypeReference<ObjectTwo>() {
         }), complexObjectCollection.iterator().next());
 
-        Assert(() -> JsonConverter.read(jsonPrimitiveObjectArray, new TypeReference<Integer[]>() {
+        Assert(() -> ObjectMapperJRE.read(jsonPrimitiveObjectArray, new TypeReference<Integer[]>() {
         }), primitiveArray);
-        Assert(() -> JsonConverter.read(jsonSimpleObjectArray, new TypeReference<ObjectOne[]>() {
+        Assert(() -> ObjectMapperJRE.read(jsonSimpleObjectArray, new TypeReference<ObjectOne[]>() {
         }), simpleObjectArray);
-        Assert(() -> JsonConverter.read(jsonComplexObjectArray, new TypeReference<ObjectTwo[]>() {
+        Assert(() -> ObjectMapperJRE.read(jsonComplexObjectArray, new TypeReference<ObjectTwo[]>() {
         }), complexObjectArray);
         
-        Assert(() -> JsonConverter.read(jsonPrimitiveObjectCollection, new TypeReference<LinkedList<Integer>>() {
+        Assert(() -> ObjectMapperJRE.read(jsonPrimitiveObjectCollection, new TypeReference<LinkedList<Integer>>() {
         }), primitiveCollection);
-        Assert(() -> JsonConverter.read(jsonSimpleObjectCollection, new TypeReference<LinkedList<ObjectOne>>() {
+        Assert(() -> ObjectMapperJRE.read(jsonSimpleObjectCollection, new TypeReference<LinkedList<ObjectOne>>() {
         }), simpleObjectCollection);
-        Assert(() -> JsonConverter.read(jsonComplexObjectCollection, new TypeReference<LinkedList<ObjectTwo>>() {
+        Assert(() -> ObjectMapperJRE.read(jsonComplexObjectCollection, new TypeReference<LinkedList<ObjectTwo>>() {
         }), complexObjectCollection);
 
-        Assert(() -> JsonConverter.read(jsonPrimitiveObjectMap, new TypeReference<Map<Integer, Integer>>() {
+        Assert(() -> ObjectMapperJRE.read(jsonPrimitiveObjectMap, new TypeReference<Map<Integer, Integer>>() {
         }), primitiveMap);
-        Assert(() -> JsonConverter.read(jsonSimpleObjectMap, new TypeReference<Map<Integer, ObjectOne>>() {
+        Assert(() -> ObjectMapperJRE.read(jsonSimpleObjectMap, new TypeReference<Map<Integer, ObjectOne>>() {
         }), simpleObjectMap);
-        Assert(() -> JsonConverter.read(jsonComplexObjectMap, new TypeReference<Map<Integer, ObjectTwo>>() {
+        Assert(() -> ObjectMapperJRE.read(jsonComplexObjectMap, new TypeReference<Map<Integer, ObjectTwo>>() {
         }), complexObjectMap);
 
     }
     
     protected void test_read_withClass() {
-        Assert(() -> JsonConverter.read(jsonPrimitiveObject, Integer.class), primitiveCollection.iterator().next());
-        Assert(() -> JsonConverter.read(jsonSimpleObject, ObjectOne.class), simpleObjectCollection.iterator().next());
-        Assert(() -> JsonConverter.read(jsonComplexObject, ObjectTwo.class), complexObjectCollection.iterator().next());
+        Assert(() -> ObjectMapperJRE.read(jsonPrimitiveObject, Integer.class), primitiveCollection.iterator().next());
+        Assert(() -> ObjectMapperJRE.read(jsonSimpleObject, ObjectOne.class), simpleObjectCollection.iterator().next());
+        Assert(() -> ObjectMapperJRE.read(jsonComplexObject, ObjectTwo.class), complexObjectCollection.iterator().next());
     }
     
     protected void test_readArray() {
-        Assert(() -> JsonConverter.readArray(jsonPrimitiveObjectArray, Integer.class), primitiveArray);
-        Assert(() -> JsonConverter.readArray(jsonSimpleObjectArray, ObjectOne.class), simpleObjectArray);
-        Assert(() -> JsonConverter.readArray(jsonComplexObjectArray, ObjectTwo.class), complexObjectArray);
+        Assert(() -> ObjectMapperJRE.readArray(jsonPrimitiveObjectArray, Integer.class), primitiveArray);
+        Assert(() -> ObjectMapperJRE.readArray(jsonSimpleObjectArray, ObjectOne.class), simpleObjectArray);
+        Assert(() -> ObjectMapperJRE.readArray(jsonComplexObjectArray, ObjectTwo.class), complexObjectArray);
     }
     
     protected void test_readList() {
-        Assert(() -> JsonConverter.readList(jsonPrimitiveObjectCollection, Integer.class), primitiveCollection);
-        Assert(() -> JsonConverter.readList(jsonSimpleObjectCollection, ObjectOne.class), simpleObjectCollection);
-        Assert(() -> JsonConverter.readList(jsonComplexObjectCollection, ObjectTwo.class), complexObjectCollection);
+        Assert(() -> ObjectMapperJRE.readList(jsonPrimitiveObjectCollection, Integer.class), primitiveCollection);
+        Assert(() -> ObjectMapperJRE.readList(jsonSimpleObjectCollection, ObjectOne.class), simpleObjectCollection);
+        Assert(() -> ObjectMapperJRE.readList(jsonComplexObjectCollection, ObjectTwo.class), complexObjectCollection);
     }
     
     protected void test_readSet() {
-        Assert(() -> JsonConverter.readSet(jsonPrimitiveObjectCollection, Integer.class), primitiveCollection);
-        Assert(() -> JsonConverter.readSet(jsonSimpleObjectCollection, ObjectOne.class), simpleObjectCollection);
-        Assert(() -> JsonConverter.readSet(jsonComplexObjectCollection, ObjectTwo.class), complexObjectCollection);
+        Assert(() -> ObjectMapperJRE.readSet(jsonPrimitiveObjectCollection, Integer.class), primitiveCollection);
+        Assert(() -> ObjectMapperJRE.readSet(jsonSimpleObjectCollection, ObjectOne.class), simpleObjectCollection);
+        Assert(() -> ObjectMapperJRE.readSet(jsonComplexObjectCollection, ObjectTwo.class), complexObjectCollection);
     }
     
     protected void test_readMap() {
-        Assert(() -> JsonConverter.readMap(jsonPrimitiveObjectMap, Integer.class, Integer.class), primitiveMap);
-        Assert(() -> JsonConverter.readMap(jsonSimpleObjectMap, Integer.class, ObjectOne.class), simpleObjectMap);
-        Assert(() -> JsonConverter.readMap(jsonComplexObjectMap, Integer.class, ObjectTwo.class), complexObjectMap);
+        Assert(() -> ObjectMapperJRE.readMap(jsonPrimitiveObjectMap, Integer.class, Integer.class), primitiveMap);
+        Assert(() -> ObjectMapperJRE.readMap(jsonSimpleObjectMap, Integer.class, ObjectOne.class), simpleObjectMap);
+        Assert(() -> ObjectMapperJRE.readMap(jsonComplexObjectMap, Integer.class, ObjectTwo.class), complexObjectMap);
     }
     
     // /////////////////////////////////////////////////////////////////////////
