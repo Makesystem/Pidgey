@@ -30,7 +30,6 @@ import com.github.nmorel.gwtjackson.client.ObjectMapper;
  * @author Richeli.vargas
  * @param <T>
  */
-public interface ObjectMapperGWT<T> extends IsObjectMapper<T>, ObjectMapper<T> {
-
+public interface ObjectMapperGWT<T> extends ObjectMapper<T> {
 
 }
