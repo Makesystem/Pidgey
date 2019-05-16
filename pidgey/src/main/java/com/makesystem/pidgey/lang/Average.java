@@ -5,7 +5,7 @@
  */
 package com.makesystem.pidgey.lang;
 
-import com.makesystem.pidgey.lang.MathHelper;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -16,16 +16,23 @@ import java.util.Objects;
  */
 public class Average<I> implements Serializable {
 
-    private final I identifier;
+    private I identifier;
     private long total = 0;
     private int count = 0;
 
+    public Average(){
+    }
+     
     public Average(I identifier) {
         this.identifier = identifier;
     }
 
     public I getIdentifier() {
         return identifier;
+    }
+
+    public void setIdentifier(I identifier) {
+        this.identifier = identifier;
     }
 
     public long getTotal() {
@@ -54,6 +61,7 @@ public class Average<I> implements Serializable {
         count--;
     }
 
+    @JsonIgnore
     public double getAverage() {
         return MathHelper.divide(total, count);
     }
