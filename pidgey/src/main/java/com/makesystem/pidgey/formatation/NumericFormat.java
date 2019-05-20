@@ -12,41 +12,43 @@ import java.math.BigDecimal;
  * @author Richeli.vargas
  */
 public class NumericFormat {
- 
+
+    public static final char[] HEX_CHARS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+
     /**
-     * Full with leading zeros up to the specified length
      * 
-     * @param value
-     * @param length
+     * @param decimal
      * @return 
      */
-    public static String specificLength(final long value, final int length){        
+    public static String toHex(long decimal) {
+        int rem;
+        String hex = "";        
+        while (decimal > 0) {
+            rem = (int) (decimal % 16);
+            hex = HEX_CHARS[rem] + hex;
+            decimal = decimal / 16;
+        }
+        return hex;
+    }
+
+    /**
+     * Full with leading zeros up to the specified length
+     *
+     * @param value
+     * @param length
+     * @return
+     */
+    public static String specificLength(final long value, final int length) {
         final String toString = String.valueOf(value);
         final StringBuilder builder = new StringBuilder();
         final int toComplete = length - toString.length();
-        for(int i = 0; i < toComplete; i++){
+        for (int i = 0; i < toComplete; i++) {
             builder.append("0");
         }
         builder.append(toString);
         return builder.toString();
     }
-    
-    public static String hex(final long value){
-        return Long.toHexString(value).toUpperCase();
-    }
-    
-    public static String hex(final int value){
-        return Integer.toHexString(value).toUpperCase();
-    }
-    
-    public static String hex(final double value){
-        return Double.toHexString(value).toUpperCase();
-    }
-    
-    public static String hex(final float value){
-        return Float.toHexString(value).toUpperCase();
-    }
-    
+
     public static String currency(final double value) {
 
         final BigDecimal bigDecimal = new BigDecimal(String.valueOf(value)).setScale(2, BigDecimal.ROUND_FLOOR);
@@ -101,5 +103,5 @@ public class NumericFormat {
             return size + " Bytes";
         }
     }
-    
+
 }

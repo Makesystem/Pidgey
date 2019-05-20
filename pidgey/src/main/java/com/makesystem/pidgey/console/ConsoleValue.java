@@ -136,7 +136,7 @@ public class ConsoleValue extends AbstractPrintfSupport {
                     asString = NumericFormat.currency(Double.valueOf(value.toString()));
                     break;
                 case HEX:
-                    asString = NumericFormat.hex(Long.valueOf(value.toString()));
+                    asString = NumericFormat.toHex(Long.valueOf(value.toString()));
                     break;
                 case INTEGER:
                     asString = NumericFormat.integer(Double.valueOf(value.toString()));
