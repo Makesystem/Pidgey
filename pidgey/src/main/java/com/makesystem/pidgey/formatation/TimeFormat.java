@@ -16,6 +16,11 @@ import java.util.function.Function;
  */
 public class TimeFormat {
 
+    public static final long ONE_SECOND_IN_MILLIS = 1000;
+    public static final long ONE_MINUTE_IN_MILLIS = ONE_SECOND_IN_MILLIS * 60;
+    public static final long ONE_HOUR_IN_MILLIS = ONE_MINUTE_IN_MILLIS * 60;
+    public static final long ONE_DAY_IN_MILLIS = ONE_HOUR_IN_MILLIS * 24;
+
     /**
      * Supported patterns
      */
@@ -109,7 +114,7 @@ public class TimeFormat {
         return pattern;
     }
 
-    private static <V> String replacePattern(final String pattern, final String valuePattern, 
+    private static <V> String replacePattern(final String pattern, final String valuePattern,
             final V value, final Function<V, String> mapper) {
         if (pattern.contains(valuePattern)) {
             return pattern.replace(valuePattern, mapper.apply(value));
@@ -217,4 +222,40 @@ public class TimeFormat {
         return builder.toString();
     }
 
+    public static String toSimpleLivestamp(final long millis) {
+
+        if (millis <= 0) {
+            return "0 ms";
+        }
+
+        if (millis < ONE_SECOND_IN_MILLIS) {
+            return millis + "ms";
+        }
+
+        final long ms = millis % 1000;
+        final long seconds = millis / 1000;
+
+        if (millis < ONE_MINUTE_IN_MILLIS) {
+            return seconds + "s " + (ms > 0 ? ms + "ms" : "");
+        }
+
+        final long minutes = seconds / 60;
+
+        if (millis < ONE_HOUR_IN_MILLIS) {
+            final long s = (seconds % 60);
+            return minutes + "m " + (s > 0 ? s + "ms" : "");
+        }
+
+        final long hours = (seconds / 60) / 60;
+
+        if (millis < ONE_DAY_IN_MILLIS) {
+            final long m = (minutes % 60);
+            return hours + "h " + (m > 0 ? m + "m" : "");
+        }
+
+        final long days = hours / 24;
+        final long h = (hours % 24);
+
+        return days + "d " + (h > 0 ? h + "h" : "");
+    }
 }
