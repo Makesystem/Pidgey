@@ -18,34 +18,38 @@ import java.net.URL;
 public class InnetAddressHelperJRE {
 
     public static void getLocalIp(final GetIpHandler handler) {
-        try {
-            final InetAddress inetAddress = InetAddress.getLocalHost();
-            handler.onSuccess(inetAddress.getHostAddress());
-        } catch (@SuppressWarnings("UseSpecificCatch") final Throwable error) {
-            handler.onFailure(error);
-        }
+        new Thread(() -> {
+            try {
+                final InetAddress inetAddress = InetAddress.getLocalHost();
+                handler.onSuccess(inetAddress.getHostAddress());
+            } catch (@SuppressWarnings("UseSpecificCatch") final Throwable error) {
+                handler.onFailure(error);
+            }
+        }, "Getting local ip...").start();
     }
 
     public static void getPublicIp(final GetIpHandler handler) {
-        try {
-            final URL whatismyip = new URL("http://checkip.amazonaws.com");
-            BufferedReader in = null;
+        new Thread(() -> {
             try {
-                in = new BufferedReader(new InputStreamReader(
-                        whatismyip.openStream()));
-                final String ip = in.readLine();
-                handler.onSuccess(ip);
-            } finally {
-                if (in != null) {
-                    try {
-                        in.close();
-                    } catch (IOException error) {
-                        handler.onFailure(error);
+                final URL whatismyip = new URL("http://checkip.amazonaws.com");
+                BufferedReader in = null;
+                try {
+                    in = new BufferedReader(new InputStreamReader(
+                            whatismyip.openStream()));
+                    final String ip = in.readLine();
+                    handler.onSuccess(ip);
+                } finally {
+                    if (in != null) {
+                        try {
+                            in.close();
+                        } catch (IOException error) {
+                            handler.onFailure(error);
+                        }
                     }
                 }
+            } catch (@SuppressWarnings("UseSpecificCatch") final Throwable error) {
+                handler.onFailure(error);
             }
-        } catch (@SuppressWarnings("UseSpecificCatch") final Throwable error) {
-            handler.onFailure(error);
-        }
+        }, "Getting public ip...").start();
     }
 }
