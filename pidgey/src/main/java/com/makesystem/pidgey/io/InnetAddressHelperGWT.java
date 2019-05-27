@@ -20,21 +20,36 @@ public class InnetAddressHelperGWT {
     }
             
     private static native void _getLocalIp(final GetIpHandler handler) /*-{	
-        window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection; //compatibility for firefox and chrome
-	var pc = new RTCPeerConnection({
-            iceServers : []
-        }), noop = function() {};
-        
-        pc.createDataChannel(""); //create a bogus data channel
-        pc.createOffer(pc.setLocalDescription.bind(pc), noop); // create offer and set local description
-        pc.onicecandidate = function(ice) { //listen for candidate events        
-            if (!ice || !ice.candidate || !ice.candidate.candidate)
-                return;
-			
-            var local_ip = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(ice.candidate.candidate)[1];
-            handler.@com.makesystem.pidgey.io.GetIpHandler::onSuccess(Ljava/lang/String;)(local_ip);		
-            pc.onicecandidate = noop;
+        window.RTCPeerConnection = window.RTCPeerConnection
+            || window.mozRTCPeerConnection
+            || window.webkitRTCPeerConnection; //compatibility for firefox and chrome
+            var pc = new RTCPeerConnection({
+                iceServers : [] 
+            }), noop = function() {};
             
+            pc.createDataChannel(""); //create a bogus data channel
+            pc.createOffer(pc.setLocalDescription.bind(pc), noop); // create offer and set local description
+            pc.onicecandidate = function(ice) { //listen for candidate events
+            
+            if (!ice || !ice.candidate || !ice.candidate.candidate){
+                handler.@com.makesystem.pidgey.io.GetIpHandler::onSuccess(Ljava/lang/String;)("0.0.0.0");
+            } else {		
+                var candidate = ice.candidate.candidate;
+                if(!candidate) {
+                    handler.@com.makesystem.pidgey.io.GetIpHandler::onSuccess(Ljava/lang/String;)("0.0.0.0");
+                    return;
+                }		
+		
+                var matched =  /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(candidate);		
+                if(!matched) {
+                    handler.@com.makesystem.pidgey.io.GetIpHandler::onSuccess(Ljava/lang/String;)("0.0.0.0");
+                    return;
+                }
+            
+                var local_ip = matched[1];
+                handler.@com.makesystem.pidgey.io.GetIpHandler::onSuccess(Ljava/lang/String;)(local_ip);		
+                pc.onicecandidate = noop;
+            }
 	};
     }-*/;
 
