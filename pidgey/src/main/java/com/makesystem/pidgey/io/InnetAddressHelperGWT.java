@@ -41,13 +41,16 @@ public class InnetAddressHelperGWT {
                 }		
 		
                 var matched =  /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(candidate);		
+                
                 if(!matched) {
                     handler.@com.makesystem.pidgey.io.GetIpHandler::onSuccess(Ljava/lang/String;)("0.0.0.0");
-                    return;
+                } else if (matched.length < 2) {
+                    handler.@com.makesystem.pidgey.io.GetIpHandler::onSuccess(Ljava/lang/String;)("0.0.0.0");		
+                } else {
+                    var local_ip = matched[1];
+                    handler.@com.makesystem.pidgey.io.GetIpHandler::onSuccess(Ljava/lang/String;)(local_ip);		
                 }
             
-                var local_ip = matched[1];
-                handler.@com.makesystem.pidgey.io.GetIpHandler::onSuccess(Ljava/lang/String;)(local_ip);		
                 pc.onicecandidate = noop;
             }
 	};
