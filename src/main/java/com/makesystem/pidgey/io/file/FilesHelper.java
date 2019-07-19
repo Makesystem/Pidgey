@@ -21,7 +21,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Scanner;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -85,15 +84,15 @@ public class FilesHelper {
             final Charset charset,
             final LineReplacement lineReplacement) throws IOException {
 
-        final String original = file + ".original";
+        final String original = file + ".tmp";
         final File originalFile = new File(original);
         final File newFile = new File(file);
         newFile.renameTo(originalFile);
 
-        try {        
+        try {
             final Path originalFilePath = originalFile.toPath();
-            final Path newFilePath = newFile.toPath();            
-            replaceLines(originalFilePath, newFilePath, charset, lineReplacement);        
+            final Path newFilePath = newFile.toPath();
+            replaceLines(originalFilePath, newFilePath, charset, lineReplacement);
         } catch (IOException throwable) {
             originalFile.renameTo(newFile);
             throw throwable;
@@ -116,8 +115,11 @@ public class FilesHelper {
             writer = Files.newBufferedWriter(fileTarget, toNative(charset));
             int number = 0;
             while (sc.hasNextLine()) {
-                writer.write(lineReplacement.replace(number, sc.nextLine()));
-                writer.newLine();
+                final String line = lineReplacement.replace(number++, sc.nextLine());
+                if (line != null && !line.isEmpty()) {
+                    writer.write(line);
+                    writer.newLine();
+                }
             }
             if (sc.ioException() != null) {
                 throw sc.ioException();
