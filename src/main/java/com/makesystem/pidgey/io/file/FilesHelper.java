@@ -8,6 +8,7 @@ package com.makesystem.pidgey.io.file;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
@@ -19,8 +20,10 @@ import java.nio.charset.CharsetDecoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -138,13 +141,89 @@ public class FilesHelper {
         }
     }
 
+    public final static void delete(final String path) throws IOException {
+        delete(new File(path));
+    }
+
+    public final static void delete(final File file) {
+        if (!file.isFile()) {
+            Arrays.stream(file.listFiles()).forEach(child -> delete(child));
+        }
+        file.delete();
+    }
+
+    /**
+     * 
+     * @param path
+     * @throws IOException 
+     */
+    public final static void clearDirectory(final String path) throws IOException {
+        clearDirectory(path, null);
+    }
+
+    public final static void clearDirectory(final String path, final Predicate<File> predicate) throws IOException {
+        final File directory = new File(path);
+        if (directory.isDirectory()) {
+            final Stream<File> stream = Arrays.stream(directory.listFiles())
+                    .filter(file -> file.isFile());
+
+            if (predicate == null) {
+                stream.forEach(file -> file.delete());
+            } else {
+                stream.filter(predicate).forEach(file -> file.delete());
+            }
+        }
+    }
+
+    public final static void clearFile(final String file) throws IOException {
+        final Path path = Paths.get(file);
+        createIfNotExists(path);
+        try (final BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING)) {
+        }
+    }
+
+    public final static void append(final String file, final String data) throws IOException {
+        final Path path = Paths.get(file);
+        createIfNotExists(path);
+        try (final BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
+            writer.write(data);
+        }
+    }
+
+    public final static void append(final String file, final byte[] data) throws IOException {
+        final Path path = Paths.get(file);
+        createIfNotExists(path);
+        Files.write(path, data, StandardOpenOption.APPEND);
+    }
+
+    public final static void newLine(final String file) throws IOException {
+        final Path path = Paths.get(file);
+        createIfNotExists(path);
+        try (final BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
+            writer.newLine();
+        }
+    }
+
+    public final static void write(final String file, final String data) throws IOException {
+        final Path path = Paths.get(file);
+        createIfNotExists(path);
+        try (final BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING)) {
+            writer.write(data);
+        }
+    }
+
+    public final static void write(final String filePath, final byte[] data) throws IOException {
+        final Path path = Paths.get(filePath);
+        createIfNotExists(path);
+        Files.write(path, data, StandardOpenOption.TRUNCATE_EXISTING);
+    }
+
     public final static String read(final String file) throws IOException {
         return read(file, DEFAULT_CHARSET);
     }
 
     public final static String read(final String file, final Charset charset) throws IOException {
         try {
-            //return readFileOnDesktopOLD(file);
             return readOnDesktop(file, charset == null ? DEFAULT_CHARSET : charset);
         } catch (@SuppressWarnings("UseSpecificCatch") Throwable ignore) {
             return readOnWebService(file, charset == null ? DEFAULT_CHARSET : charset);
@@ -208,6 +287,13 @@ public class FilesHelper {
 
     final static java.nio.charset.Charset toNative(final Charset charset) {
         return java.nio.charset.Charset.forName(charset.getName());
+    }
+
+    final static void createIfNotExists(final Path path) throws IOException {
+        final File file = path.toFile();
+        if (!file.exists()) {
+            file.createNewFile();
+        }
     }
 
     public static interface LineReplacement {

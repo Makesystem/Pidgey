@@ -5,9 +5,13 @@
  */
 package com.makesystem.pidgey.xml;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -26,7 +30,7 @@ import org.w3c.dom.NodeList;
  */
 public class XmlHelperJRE {
 
-    public static final Document getDocument(final String filePath) throws Throwable {
+    public static final Document read(final String filePath) throws Throwable {
         final File file = new File(filePath);
         final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         final DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -35,22 +39,29 @@ public class XmlHelperJRE {
         return document;
     }
 
+    public static final void write(final String filePath, final Document domain) throws Throwable {
+        final Path path = Paths.get(filePath);
+        try (final BufferedWriter writer = Files.newBufferedWriter(path)) {
+            writer.write(toIdentedString(domain));
+        }
+    }
+
     /**
-     * 
+     *
      * @param parent Can ba a Document or an Element
      * @param tag Specific tag
-     * @return 
+     * @return
      */
     public static final Node getNodeByTag(final Node parent, final String tag) {
         return getNodeByTag(parent, tag, null);
     }
 
     /**
-     * 
+     *
      * @param parent Can ba a Document or an Element
      * @param tag Specific tag
      * @param name With specific name
-     * @return 
+     * @return
      */
     public static final Node getNodeByTag(final Node parent, final String tag, final String name) {
         final NodeList childs;
