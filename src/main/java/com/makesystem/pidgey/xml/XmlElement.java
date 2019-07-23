@@ -124,8 +124,9 @@ public class XmlElement implements Serializable, Comparable<XmlElement> {
         attributes.removeIf(attr -> attr.getName().equals(attribute.getName()));
     }
 
-    public XmlAttribute getAttribute(final String attribute) {
-        return attributes.stream().filter(attr -> attr.getName().equals(attribute)).findAny().orElse(null);
+    public String getAttribute(final String attribute) {        
+        final XmlAttribute xmlAttribute = attributes.stream().filter(attr -> attr.getName().equals(attribute)).findAny().orElse(null);        
+        return xmlAttribute == null ? null : xmlAttribute.getValue();
     }
 
     public Collection<XmlAttribute> getAttributes() {
@@ -267,11 +268,11 @@ public class XmlElement implements Serializable, Comparable<XmlElement> {
             return compareTag;
         }
 
-        final XmlAttribute thisName = getAttribute("name");
-        final XmlAttribute elementName = element.getAttribute("name");
+        final String thisName = getAttribute("name");
+        final String elementName = element.getAttribute("name");
 
-        final boolean thisHasName = thisName != null && thisName.getValue() != null;
-        final boolean elementHasName = elementName != null && elementName.getValue() != null;
+        final boolean thisHasName = thisName != null;
+        final boolean elementHasName = elementName != null;
 
         if (!thisHasName && !elementHasName) {
             return 0;
@@ -280,7 +281,7 @@ public class XmlElement implements Serializable, Comparable<XmlElement> {
         } else if (!thisHasName && elementHasName) {
             return 1;
         } else {
-            return thisName.getValue().compareTo(elementName.getValue());
+            return thisName.compareTo(elementName);
         }
     }
 
