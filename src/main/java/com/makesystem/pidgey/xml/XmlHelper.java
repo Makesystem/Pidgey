@@ -10,6 +10,11 @@ import com.makesystem.pidgey.io.file.FilesHelper;
 import java.io.File;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -20,7 +25,9 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  *
@@ -68,13 +75,40 @@ public class XmlHelper {
         FilesHelper.write(file, document.toString());
     }
 
+    public static final Map<String, String> getAttributes(final Node node) {
+        final Map<String, String> attributes_tmp = new LinkedHashMap<>();
+        final NamedNodeMap nodeAttributes = node.getAttributes();
+        if (nodeAttributes == null) {
+            return attributes_tmp;
+        }
+        final int length = nodeAttributes.getLength();
+        for (int index = 0; index < length; index++) {
+            final Node attribute = nodeAttributes.item(index);
+            attributes_tmp.put(attribute.getNodeName(), attribute.getNodeValue());
+        }
+        return attributes_tmp;
+    }
+
+    public static final Collection<Element> getChildren(final Node node) {
+        final Collection<Element> childrenTmp = new LinkedHashSet<>();
+        final NodeList childrenNode = node.getChildNodes();
+        final int length = childrenNode.getLength();
+        for (int index = 0; index < length; index++) {
+            final Node item = childrenNode.item(index);
+            if (item instanceof Element) {
+                childrenTmp.add((Element) item);
+            }
+        }
+        return childrenTmp;
+    }
+
     public static final String toIdentedString(final Node node) throws Exception {
         return toIdentedString(node, Charset.UTF_8.getName(), false, "1.0");
     }
 
-    public static final String toIdentedString(final Node node, 
-            final String encoding, 
-            final boolean standalone, 
+    public static final String toIdentedString(final Node node,
+            final String encoding,
+            final boolean standalone,
             final String version) throws Exception {
 
         final Transformer transformer = TransformerFactory.newInstance().newTransformer();

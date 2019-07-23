@@ -292,7 +292,7 @@ public class XmlElement implements Serializable, Comparable<XmlElement> {
         final Collection<XmlAttribute> attributes_tmp = new LinkedHashSet<>();
         final NamedNodeMap nodeAttributes = node.getAttributes();
         if (nodeAttributes == null) {
-            return new LinkedList<>();
+            return attributes_tmp;
         }
         final int length = nodeAttributes.getLength();
         for (int index = 0; index < length; index++) {

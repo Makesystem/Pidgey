@@ -5,7 +5,12 @@ import com.makesystem.pidgey.xml.XmlDocument;
 import com.makesystem.pidgey.xml.XmlElement;
 import com.makesystem.pidgey.xml.XmlHelper;
 import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -39,6 +44,24 @@ public class Xml_Tester extends AbstractTester {
 
         try {
             final Document document = XmlHelper.read("D:/domain.xml");
+
+            final Set<String> tags = new LinkedHashSet<>();
+            final Set<String> attributes = new LinkedHashSet<>();
+            final NodeList all = document.getElementsByTagName("*");
+            final int length = all.getLength();
+            for (int index = 0; index < length; index++) {
+                final Node item = all.item(index);
+
+                final String tag = item.getNodeName();
+                tags.add("public static final String " + tag.toUpperCase().replace("-", "_") + " = \"" + tag + "\";");
+
+                XmlHelper.getAttributes(item).keySet()
+                        .forEach(attr -> attributes.add("public static final String " + attr.toUpperCase().replace("-", "_") + " = \"" + attr + "\";"));
+
+            }
+            //tags.stream().sorted().forEach(tag -> System.out.println(tag));
+            attributes.stream().sorted().forEach(tag -> System.out.println(tag));
+
             final XmlDocument xmlDocument = new XmlDocument(document);
 
             final XmlElement server = xmlDocument
