@@ -28,6 +28,10 @@ public enum Charset {
     public String getName() {
         return name;
     }
+    
+    public final java.nio.charset.Charset toNative() {
+        return java.nio.charset.Charset.forName(name);
+    }
 
     public static Charset fromName(final String name) {
 

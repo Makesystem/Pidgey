@@ -8,7 +8,6 @@ package com.makesystem.pidgey.io.file;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
@@ -42,7 +41,7 @@ public class FilesHelper {
     public final static Charset getCharset(final Path file) throws IOException {
         for (final Charset charset : Charset.values()) {
             try {
-                Files.lines(file, toNative(charset)).limit(1).count();
+                Files.lines(file, charset.toNative()).limit(1).count();
                 return charset;
             } catch (UncheckedIOException ignore) {
                 // Ignore for a moment
@@ -54,7 +53,7 @@ public class FilesHelper {
     public final static Charset getCharset(final byte[] buffer) throws IOException {
         for (final Charset charset : Charset.values()) {
 
-            final CharsetDecoder decoder = toNative(charset).newDecoder();
+            final CharsetDecoder decoder = charset.toNative().newDecoder();
             decoder.reset();
 
             final byte[] array = Arrays.copyOfRange(buffer, 0, Math.min(buffer.length, 512));
@@ -115,7 +114,7 @@ public class FilesHelper {
         try {
             inputStream = new FileInputStream(fileSource.toFile());
             sc = new Scanner(inputStream, charset.getName());
-            writer = Files.newBufferedWriter(fileTarget, toNative(charset));
+            writer = Files.newBufferedWriter(fileTarget, charset.toNative());
             int number = 0;
             while (sc.hasNextLine()) {
                 final String line = lineReplacement.replace(number++, sc.nextLine());
@@ -146,25 +145,42 @@ public class FilesHelper {
     }
 
     public final static void delete(final File file) {
+
+        if (!file.exists()) {
+            return;
+        }
+
+        // Delete internal files and directories, 
+        // because folder must be empty to delete
         if (!file.isFile()) {
             Arrays.stream(file.listFiles()).forEach(child -> delete(child));
         }
+
         file.delete();
     }
 
     /**
-     * 
-     * @param path
-     * @throws IOException 
+     * Removes all files from the directory. Subfolders are not affected.
+     *
+     * @param directory
+     * @throws IOException
      */
-    public final static void clearDirectory(final String path) throws IOException {
-        clearDirectory(path, null);
+    public final static void deleteFiles(final String directory) throws IOException {
+        deleteFiles(directory, null);
     }
 
-    public final static void clearDirectory(final String path, final Predicate<File> predicate) throws IOException {
-        final File directory = new File(path);
-        if (directory.isDirectory()) {
-            final Stream<File> stream = Arrays.stream(directory.listFiles())
+    /**
+     * Removes all files from the directory. Subfolders are not affected.
+     *
+     * @param directory
+     * @param predicate
+     * @throws IOException
+     */
+    public final static void deleteFiles(final String directory, final Predicate<File> predicate) throws IOException {
+        final File dir = new File(directory);
+        if (dir.exists() && dir.isDirectory()) {
+
+            final Stream<File> stream = Arrays.stream(dir.listFiles())
                     .filter(file -> file.isFile());
 
             if (predicate == null) {
@@ -172,12 +188,18 @@ public class FilesHelper {
             } else {
                 stream.filter(predicate).forEach(file -> file.delete());
             }
+
         }
     }
 
-    public final static void clearFile(final String file) throws IOException {
+    public final static void clear(final String file) throws IOException {
+
         final Path path = Paths.get(file);
-        createIfNotExists(path);
+
+        if (!path.toFile().exists()) {
+            return;
+        }
+
         try (final BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING)) {
         }
     }
@@ -283,10 +305,6 @@ public class FilesHelper {
     final static byte[] readBytesOnWebService(final String file) throws URISyntaxException, IOException {
         final Path path = Paths.get(FilesHelper.class.getResource(file).toURI());
         return Files.readAllBytes(path);
-    }
-
-    final static java.nio.charset.Charset toNative(final Charset charset) {
-        return java.nio.charset.Charset.forName(charset.getName());
     }
 
     final static void createIfNotExists(final Path path) throws IOException {
