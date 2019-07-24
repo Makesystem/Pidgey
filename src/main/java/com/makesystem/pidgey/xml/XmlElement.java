@@ -173,7 +173,7 @@ public class XmlElement implements Serializable, Comparable<XmlElement> {
     }
 
     public void removeChild(final String tag, final XmlAttribute... attributes) {
-        appendChild(tag, null, null, attributes);
+        removeChild(tag, null, null, attributes);
     }
 
     public void removeChild(final String tag,
