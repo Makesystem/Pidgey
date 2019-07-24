@@ -13,7 +13,6 @@ import java.io.Writer;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -72,7 +71,7 @@ public class XmlHelper {
     }
 
     public static final void write(final String file, final XmlDocument document) throws Exception {
-        FilesHelper.write(file, document.toString());
+        FilesHelper.write(file, document.getIdentedString());
     }
 
     public static final Map<String, String> getAttributes(final Node node) {

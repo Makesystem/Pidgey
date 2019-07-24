@@ -20,9 +20,9 @@ public class XmlDocument extends XmlElement {
 
     public XmlDocument(final Document document) {
         super(document.getNodeName().startsWith("#") ? document.getFirstChild() : document);
-        this.encoding = document.getXmlEncoding();
-        this.standalone = document.getXmlStandalone();
-        this.version = document.getXmlVersion();
+        this.encoding = encoding(document.getXmlEncoding());
+        this.standalone = standalone(document.getXmlStandalone());
+        this.version = version(document.getXmlVersion());
     }
 
     public XmlDocument(final String tag, final XmlAttribute... attributes) {
@@ -31,9 +31,21 @@ public class XmlDocument extends XmlElement {
 
     public XmlDocument(final String tag, final String encoding, final Boolean standalone, final String version, final XmlAttribute... attributes) {
         super(tag, attributes);
-        this.encoding = encoding == null ? Charset.UTF_8.getName() : encoding;
-        this.standalone = standalone == null ? false : standalone;
-        this.version = version == null ? "1.0" : version;
+        this.encoding = encoding(encoding);
+        this.standalone = standalone(standalone);
+        this.version = version(version);
+    }
+
+    protected final String encoding(final String encoding) {
+        return encoding == null || encoding.isEmpty() ? Charset.UTF_8.getName() : encoding;
+    }
+
+    protected final boolean standalone(final Boolean standalone) {
+        return standalone == null ? false : standalone;
+    }
+
+    protected final String version(final String version) {
+        return version == null || version.isEmpty() ? "1.0" : version;
     }
 
     public static final XmlDocument read(final String file) throws Throwable {
@@ -52,12 +64,7 @@ public class XmlDocument extends XmlElement {
         return encoding;
     }
 
-    @Override
-    public String toString() {
-        try {
-            return XmlHelper.toIdentedString(toElement(), encoding, standalone, version);
-        } catch (@SuppressWarnings("UseSpecificCatch") Throwable ignore) {
-            return super.toString();
-        }
+    public String getIdentedString() throws Exception {
+        return XmlHelper.toIdentedString(toElement(), encoding, standalone, version);
     }
 }
