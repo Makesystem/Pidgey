@@ -29,11 +29,11 @@ public class XmlDocument extends XmlElement {
         this(tag, Charset.UTF_8.getName(), false, "1.0", attributes);
     }
 
-    public XmlDocument(final String tag, final String encoding, final boolean standalone, final String version, final XmlAttribute... attributes) {
+    public XmlDocument(final String tag, final String encoding, final Boolean standalone, final String version, final XmlAttribute... attributes) {
         super(tag, attributes);
-        this.encoding = encoding;
-        this.standalone = standalone;
-        this.version = version;
+        this.encoding = encoding == null ? Charset.UTF_8.getName() : encoding;
+        this.standalone = standalone == null ? false : standalone;
+        this.version = version == null ? "1.0" : version;
     }
 
     public static final XmlDocument read(final String file) throws Throwable {
@@ -46,6 +46,10 @@ public class XmlDocument extends XmlElement {
 
     public String getVersion() {
         return version;
+    }
+
+    public String getEncoding() {
+        return encoding;
     }
 
     @Override
