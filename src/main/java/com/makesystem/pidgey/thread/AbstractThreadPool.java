@@ -10,8 +10,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -43,7 +41,7 @@ public abstract class AbstractThreadPool<E extends ExecutorService> {
     }
 
     public int getNumberOfThreads() {
-        return this.numberOfThreads < 1 ? NUMBER_OF_CORES * CORES_MULTIPLIER : this.numberOfThreads;
+        return Math.max(1, this.numberOfThreads < 1 ? NUMBER_OF_CORES * CORES_MULTIPLIER : this.numberOfThreads);
     }
 
     /**
@@ -79,19 +77,10 @@ public abstract class AbstractThreadPool<E extends ExecutorService> {
 
     public void shutdown() {
         new Thread(() -> {
-            sleep(10);
             final ExecutorService poolToShutdown = pool;
             pool = null;
             boolean isShutdown = shutdown(poolToShutdown);
         }).start();
-    }
-
-    protected final void sleep(final long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
     }
 
     protected E service() {

@@ -14,7 +14,7 @@ public class ThreadsHelper {
     public static void sleep(long timeInMillis) {
         try {
             Thread.sleep(timeInMillis);
-        } catch (final InterruptedException throwable) {
+        } catch (final InterruptedException ignore) {
             Thread.currentThread().interrupt();
         }
     }
