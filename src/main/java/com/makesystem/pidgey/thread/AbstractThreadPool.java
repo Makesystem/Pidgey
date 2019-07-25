@@ -79,6 +79,7 @@ public abstract class AbstractThreadPool<E extends ExecutorService> {
         new Thread(() -> {
             final ExecutorService poolToShutdown = pool;
             pool = null;
+            ThreadsHelper.sleep(100);
             boolean isShutdown = shutdown(poolToShutdown);
         }).start();
     }
