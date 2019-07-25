@@ -6,9 +6,12 @@
 package com.makesystem.pidgey.thread;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -24,11 +27,11 @@ public abstract class AbstractThreadPool<E extends ExecutorService> {
     // Multiplier to automatically calculate the number of threads
     private static final int CORES_MULTIPLIER = 3;
 
-    private final Collection<Runnable> executing = new LinkedList<>();
+    private final Collection<Runnable> executing = Collections.synchronizedCollection(new LinkedList<>());
     private int numberOfThreads;
     private E pool;
     private boolean alwaysActive = false;
-    
+
     protected abstract E newInstance(final int nThreads);
 
     protected AbstractThreadPool() {
@@ -65,21 +68,30 @@ public abstract class AbstractThreadPool<E extends ExecutorService> {
     }
 
     /**
-     * If <code>true</code>, the thread pool will never be terminated.
-     * The default value is <code>false</code>
-     * 
-     * @param alwaysActive 
+     * If <code>true</code>, the thread pool will never be terminated. The
+     * default value is <code>false</code>
+     *
+     * @param alwaysActive
      */
     public void setAlwaysActive(boolean alwaysActive) {
         this.alwaysActive = alwaysActive;
     }
-    
+
     public void shutdown() {
         new Thread(() -> {
+            sleep(10);
             final ExecutorService poolToShutdown = pool;
             pool = null;
             boolean isShutdown = shutdown(poolToShutdown);
         }).start();
+    }
+
+    protected final void sleep(final long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     protected E service() {
