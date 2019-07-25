@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  *
@@ -20,14 +21,16 @@ public abstract class AbstractThreadPool<E extends ExecutorService> {
 
     // Determine the time to wait for thread is finished
     private static final int TIMEOUT_SHUTDOWN_THREAD = 15;
+    // Time unit to wait for thread is finished
+    private static final TimeUnit TIME_UNIT_SHUTDOWN_THREAD = TimeUnit.SECONDS;
     // Number of processor cores
     private static final int NUMBER_OF_CORES = Runtime.getRuntime().availableProcessors();
     // Multiplier to automatically calculate the number of threads
     private static final int CORES_MULTIPLIER = 3;
 
+    private final AtomicReference<E> atomicReference = new AtomicReference<>();
     private final Collection<Runnable> executing = Collections.synchronizedCollection(new LinkedList<>());
     private int numberOfThreads;
-    private E pool;
     private boolean alwaysActive = false;
 
     protected abstract E newInstance(final int nThreads);
@@ -41,7 +44,9 @@ public abstract class AbstractThreadPool<E extends ExecutorService> {
     }
 
     public int getNumberOfThreads() {
-        return Math.max(1, this.numberOfThreads < 1 ? NUMBER_OF_CORES * CORES_MULTIPLIER : this.numberOfThreads);
+        return Math.max(1, this.numberOfThreads < 1
+                ? NUMBER_OF_CORES * CORES_MULTIPLIER
+                : this.numberOfThreads);
     }
 
     /**
@@ -54,11 +59,11 @@ public abstract class AbstractThreadPool<E extends ExecutorService> {
     }
 
     public E getPool() {
-        return pool;
+        return atomicReference.get();
     }
 
-    public void setPool(E pool) {
-        this.pool = pool;
+    public void setPool(final E pool) {
+        this.atomicReference.set(pool);
     }
 
     public boolean isAlwaysActive() {
@@ -75,28 +80,39 @@ public abstract class AbstractThreadPool<E extends ExecutorService> {
         this.alwaysActive = alwaysActive;
     }
 
-    public void shutdown() {
-        new Thread(() -> {
-            final ExecutorService poolToShutdown = pool;
-            pool = null;
-            ThreadsHelper.sleep(100);
-            boolean isShutdown = shutdown(poolToShutdown);
-        }).start();
-    }
-
     protected E service() {
-        initialize();
-        return pool;
+        final E service = atomicReference.get();
+        if (service == null) {
+            initialize();
+        } else if (service.isShutdown()) {
+            reinitialize();
+        }
+        return atomicReference.get();
     }
 
-    protected void initialize() {
-        if (pool == null) {
-            pool = newInstance(getNumberOfThreads());
+    protected void reinitialize() {
+        shutdown(atomicReference.getAndSet(null));
+        initialize();
+    }
+
+    protected synchronized void initialize() {
+        if (atomicReference.get() == null) {
+            atomicReference.set(newInstance(getNumberOfThreads()));
         }
     }
 
+    public synchronized void shutdown() {
+        final ExecutorService poolToShutdown = atomicReference.getAndSet(null);
+        new Thread(() -> {
+            // Sleep is to ensure that no execution will be performed on the pool that will be terminated.
+            //ThreadsHelper.sleep(TIMEOUT_SHUTDOWN_THREAD, TIME_UNIT_SHUTDOWN_THREAD);
+            // Terminates the pool
+            shutdown(poolToShutdown, TIMEOUT_SHUTDOWN_THREAD, TIME_UNIT_SHUTDOWN_THREAD);
+        }, "Shutdowning thread pool...").start();
+    }
+
     protected boolean shutdown(final ExecutorService pool) {
-        return shutdown(pool, TIMEOUT_SHUTDOWN_THREAD, TimeUnit.SECONDS);
+        return shutdown(pool, TIMEOUT_SHUTDOWN_THREAD, TIME_UNIT_SHUTDOWN_THREAD);
     }
 
     protected boolean shutdown(final ExecutorService pool, final int timeToWaitShutdown, final TimeUnit timeUnit) {
@@ -104,18 +120,12 @@ public abstract class AbstractThreadPool<E extends ExecutorService> {
             pool.shutdown(); // Disable new tasks from being submitted
             try {
                 // Wait a while for existing tasks to terminate
-                if (!pool.awaitTermination(timeToWaitShutdown, timeUnit)) {
-                    // if don´t stopeed within time, then call the method below
-                    pool.shutdownNow(); // Cancel currently executing tasks
-                    return pool.awaitTermination(timeToWaitShutdown, timeUnit);
-                }
-                return true;
+                return pool.awaitTermination(timeToWaitShutdown, timeUnit);
             } catch (final InterruptedException ie) {
-                // (Re-)Cancel if current thread also interrupted
-                pool.shutdownNow();
                 // Preserve interrupt status
                 Thread.currentThread().interrupt();
-                return false;
+            } finally {
+                pool.shutdownNow();
             }
         }
         return false;
@@ -137,25 +147,29 @@ public abstract class AbstractThreadPool<E extends ExecutorService> {
         return !executing.isEmpty();
     }
 
+    @SuppressWarnings("CallToPrintStackTrace")
     protected Runnable run(final Runnable runnable, final boolean unregisterAtEnd) {
         registerRunnable(runnable);
+        //if (unregisterAtEnd) {
+        //    initMonitor();
+        //}        
         return () -> {
-            AbstractThreadPool.this.run(runnable);
-            if (unregisterAtEnd) {
-                unregisterRunnable(runnable);
-                if (!hasRunnables() && !isAlwaysActive()) {
-                    shutdown();
+            try {
+                runnable.run();
+            } catch (final Throwable throwable) {
+                throwable.printStackTrace();
+            } finally {
+                if (unregisterAtEnd) {
+                    unregisterRunnable(runnable);
+                    callShutdown();
                 }
             }
         };
     }
 
-    @SuppressWarnings("CallToPrintStackTrace")
-    private void run(final Runnable runnable) {
-        try {
-            runnable.run();
-        } catch (final Throwable throwable) {
-            throwable.printStackTrace();
+    protected synchronized void callShutdown() {
+        if (!hasRunnables() && !isAlwaysActive()) {
+            shutdown();
         }
     }
 }

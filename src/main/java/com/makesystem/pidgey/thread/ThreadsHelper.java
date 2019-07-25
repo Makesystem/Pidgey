@@ -5,17 +5,24 @@
  */
 package com.makesystem.pidgey.thread;
 
+import com.makesystem.pidgey.lang.MathHelper;
+import java.util.concurrent.TimeUnit;
+
 /**
  *
  * @author Richeli.vargas
  */
 public class ThreadsHelper {
 
-    public static void sleep(long timeInMillis) {
+    public static void sleep(final long millis) {
         try {
-            Thread.sleep(timeInMillis);
+            Thread.sleep(millis);
         } catch (final InterruptedException ignore) {
             Thread.currentThread().interrupt();
         }
+    }
+
+    public static void sleep(final long value, final TimeUnit unit) {
+        sleep(MathHelper.toMillis(value, unit));
     }
 }

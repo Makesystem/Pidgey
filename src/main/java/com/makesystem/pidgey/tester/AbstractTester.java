@@ -5,7 +5,6 @@
  */
 package com.makesystem.pidgey.tester;
 
-import com.makesystem.pidgey.console.Console;
 import com.makesystem.pidgey.console.ConsoleColor;
 import com.makesystem.pidgey.lang.ObjectsHelper;
 import com.makesystem.pidgey.monitor.MonitorHelper;

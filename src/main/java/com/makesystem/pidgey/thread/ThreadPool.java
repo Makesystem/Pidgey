@@ -29,6 +29,13 @@ public class ThreadPool extends AbstractThreadPool<ExecutorService> {
     }
 
     public Future<?> execute(final Runnable runnable) {
-        return service().submit(run(runnable, true));
-    }    
+        final Runnable _runnable = run(runnable, true);
+
+        ExecutorService service;
+        do {
+            service = service();
+        } while (service == null);
+
+        return service.submit(_runnable);
+    }
 }
