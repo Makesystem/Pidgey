@@ -27,7 +27,7 @@ public final class Console {
         System.out.println();
     }
 
-    public static void print(final HasPrintfSupport... values) {
+    public synchronized static void print(final HasPrintfSupport... values) {
         System.out.print(ConsoleHelper.toPrintf(values));
     }
 

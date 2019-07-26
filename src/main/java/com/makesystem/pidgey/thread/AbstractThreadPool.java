@@ -29,7 +29,7 @@ public abstract class AbstractThreadPool<E extends ExecutorService> {
     private static final int CORES_MULTIPLIER = 3;
 
     private final AtomicReference<E> atomicReference = new AtomicReference<>();
-    private final Collection<Runnable> executing = Collections.synchronizedCollection(new LinkedList<>());
+    private final Collection<Runnable> runnables = Collections.synchronizedCollection(new LinkedList<>());
     private int numberOfThreads;
     private boolean alwaysActive = false;
 
@@ -58,14 +58,6 @@ public abstract class AbstractThreadPool<E extends ExecutorService> {
         this.numberOfThreads = numberOfThreads;
     }
 
-    public E getPool() {
-        return atomicReference.get();
-    }
-
-    public void setPool(final E pool) {
-        this.atomicReference.set(pool);
-    }
-
     public boolean isAlwaysActive() {
         return alwaysActive;
     }
@@ -80,35 +72,23 @@ public abstract class AbstractThreadPool<E extends ExecutorService> {
         this.alwaysActive = alwaysActive;
     }
 
-    protected E service() {
-        final E service = atomicReference.get();
-        if (service == null) {
-            initialize();
-        } else if (service.isShutdown()) {
-            reinitialize();
+    protected synchronized void callShutdown() {
+        if (!hasActiveRunnables() && !isAlwaysActive()) {
+            shutdown();
         }
-        return atomicReference.get();
     }
 
-    protected void reinitialize() {
-        shutdown(atomicReference.getAndSet(null));
-        initialize();
-    }
-
-    protected synchronized void initialize() {
-        if (atomicReference.get() == null) {
-            atomicReference.set(newInstance(getNumberOfThreads()));
-        }
+    protected E getExecutor() {
+        return atomicReference.updateAndGet(poll
+                -> poll == null || poll.isShutdown()
+                ? newInstance(getNumberOfThreads())
+                : poll);
     }
 
     public synchronized void shutdown() {
         final ExecutorService poolToShutdown = atomicReference.getAndSet(null);
-        new Thread(() -> {
-            // Sleep is to ensure that no execution will be performed on the pool that will be terminated.
-            //ThreadsHelper.sleep(TIMEOUT_SHUTDOWN_THREAD, TIME_UNIT_SHUTDOWN_THREAD);
-            // Terminates the pool
-            shutdown(poolToShutdown, TIMEOUT_SHUTDOWN_THREAD, TIME_UNIT_SHUTDOWN_THREAD);
-        }, "Shutdowning thread pool...").start();
+        new Thread(() -> shutdown(poolToShutdown, TIMEOUT_SHUTDOWN_THREAD, TIME_UNIT_SHUTDOWN_THREAD),
+                "Shutdowning thread pool...").start();
     }
 
     protected boolean shutdown(final ExecutorService pool) {
@@ -116,60 +96,55 @@ public abstract class AbstractThreadPool<E extends ExecutorService> {
     }
 
     protected boolean shutdown(final ExecutorService pool, final int timeToWaitShutdown, final TimeUnit timeUnit) {
-        if (pool != null) {
-            pool.shutdown(); // Disable new tasks from being submitted
-            try {
-                // Wait a while for existing tasks to terminate
-                return pool.awaitTermination(timeToWaitShutdown, timeUnit);
-            } catch (final InterruptedException ie) {
-                // Preserve interrupt status
-                Thread.currentThread().interrupt();
-            } finally {
-                pool.shutdownNow();
-            }
+
+        if (pool == null) {
+            return false;
         }
-        return false;
+
+        pool.shutdown(); // Disable new tasks from being submitted
+
+        try {
+            // Wait a while for existing tasks to terminate
+            return pool.awaitTermination(timeToWaitShutdown, timeUnit);
+        } catch (final InterruptedException ie) {
+            // Preserve interrupt status
+            Thread.currentThread().interrupt();
+            return false;
+        } finally {
+            pool.shutdownNow();
+        }
     }
 
     protected void registerRunnable(final Runnable runnable) {
-        executing.add(runnable);
+        runnables.add(runnable);
     }
 
     protected void unregisterRunnable(final Runnable runnable) {
-        executing.remove(runnable);
+        runnables.remove(runnable);
+        callShutdown();
     }
 
-    protected int countRunnables() {
-        return executing.size();
+    public int getActiveRunnables() {
+        return runnables.size();
     }
 
-    protected boolean hasRunnables() {
-        return !executing.isEmpty();
+    public boolean hasActiveRunnables() {
+        return !runnables.isEmpty();
     }
 
     @SuppressWarnings("CallToPrintStackTrace")
     protected Runnable run(final Runnable runnable, final boolean unregisterAtEnd) {
         registerRunnable(runnable);
-        //if (unregisterAtEnd) {
-        //    initMonitor();
-        //}        
         return () -> {
             try {
                 runnable.run();
-            } catch (final Throwable throwable) {
-                throwable.printStackTrace();
+            } catch (final Throwable ignore) {
+                ignore.printStackTrace();
             } finally {
                 if (unregisterAtEnd) {
                     unregisterRunnable(runnable);
-                    callShutdown();
                 }
             }
         };
-    }
-
-    protected synchronized void callShutdown() {
-        if (!hasRunnables() && !isAlwaysActive()) {
-            shutdown();
-        }
     }
 }

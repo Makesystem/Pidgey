@@ -5,15 +5,15 @@
  */
 package com.makesystem.pidgey.thread;
 
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  *
  * @author Richeli.vargas
  */
-public class ThreadPool extends AbstractThreadPool<ExecutorService> {
+public class ThreadPool extends AbstractThreadPool<ThreadPoolExecutor> {
 
     public ThreadPool() {
         super();
@@ -24,18 +24,13 @@ public class ThreadPool extends AbstractThreadPool<ExecutorService> {
     }
 
     @Override
-    protected ExecutorService newInstance(final int nThreads) {
-        return Executors.newFixedThreadPool(nThreads);
+    protected ThreadPoolExecutor newInstance(final int nThreads) {
+        return (ThreadPoolExecutor) Executors.newFixedThreadPool(nThreads);
     }
 
     public Future<?> execute(final Runnable runnable) {
         final Runnable _runnable = run(runnable, true);
-
-        ExecutorService service;
-        do {
-            service = service();
-        } while (service == null);
-
-        return service.submit(_runnable);
+        final ThreadPoolExecutor executor = getExecutor();
+        return new FuturePool(this, runnable, executor.submit(_runnable));
     }
 }

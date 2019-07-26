@@ -26,21 +26,29 @@ public class TimeFormat {
      */
     public static interface Patterns {
 
-        public static final String YEAR = "{year}";
-        public static final String YEAR_SHORT = "{year_short}";
-        public static final String MONTH = "{month}";
-        public static final String MONTH_FULL = "{month_full}";
-        public static final String MONTH_SHORT = "{month_short}";
-        public static final String DAY = "{day}";
-        public static final String DAY_OF_WEEK = "{day_of_week}";
-        public static final String DAY_OF_WEEK_FULL = "{day_of_week_full}";
-        public static final String DAY_OF_WEEK_SHORT = "{day_of_week_short}";
-        public static final String DAY_OF_WEEK_LETTER = "{day_of_week_letter}";
-        public static final String HOURS = "{hous}";
-        public static final String MINUTES = "{minutes}";
-        public static final String SECONDS = "{minutes}";
-        public static final String MILLIS = "{millis}";
+        public static final String YEAR                 = "{year}";
+        public static final String YEAR_SHORT           = "{year_short}";
+        public static final String MONTH                = "{month}";
+        public static final String MONTH_FULL           = "{month_full}";
+        public static final String MONTH_SHORT          = "{month_short}";
+        public static final String DAY                  = "{day}";
+        public static final String DAY_OF_WEEK          = "{day_of_week}";
+        public static final String DAY_OF_WEEK_FULL     = "{day_of_week_full}";
+        public static final String DAY_OF_WEEK_SHORT    = "{day_of_week_short}";
+        public static final String DAY_OF_WEEK_LETTER   = "{day_of_week_letter}";
+        public static final String HOURS                = "{hous}";
+        public static final String MINUTES              = "{minutes}";
+        public static final String SECONDS              = "{seconds}";
+        public static final String MILLIS               = "{millis}";
 
+        public static interface Built {
+
+            public static final String DATE             = DAY + "/" + MONTH + "/" + YEAR;
+            public static final String DATE_FULL_TIME   = DAY + "/" + MONTH + "/" + YEAR + " " + HOURS + ":" + MINUTES + ":" + SECONDS + ":" + MILLIS;
+            public static final String DATE_TIME        = DAY + "/" + MONTH + "/" + YEAR + " " + HOURS + ":" + MINUTES + ":" + SECONDS;
+            public static final String DATE_SHORT_TIME  = DAY + "/" + MONTH + "/" + YEAR + " " + HOURS + ":" + MINUTES;
+
+        }
     }
 
     /**

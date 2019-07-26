@@ -29,16 +29,24 @@ public class SchedulePool extends AbstractThreadPool<ScheduledExecutorService> {
         return Executors.newScheduledThreadPool(nThreads);
     }
 
-    @SuppressWarnings("CallToPrintStackTrace")
     public ScheduledFuture schedule(final Runnable runnable, final long delay, final TimeUnit timeUnit) {
-        return service().schedule(run(runnable, true), delay, timeUnit);
+        final Runnable _runnable = run(runnable, true);
+        final ScheduledExecutorService executor = getExecutor();
+        final ScheduleFuturePool<?> future = new ScheduleFuturePool<>(this, runnable, executor.schedule(_runnable, delay, timeUnit));
+        return future;
     }
 
     public ScheduledFuture scheduleAtFixedRate(final Runnable runnable, final int inicialDelay, final long period, final TimeUnit timeUnit) {
-        return service().scheduleAtFixedRate(run(runnable, false), inicialDelay, period, timeUnit);
+        final Runnable _runnable = run(runnable, false);
+        final ScheduledExecutorService executor = getExecutor();
+        final ScheduleFuturePool<?> future = new ScheduleFuturePool<>(this, runnable, executor.scheduleAtFixedRate(_runnable, inicialDelay, period, timeUnit));
+        return future;
     }
 
     public ScheduledFuture scheduleWithFixedDelay(final Runnable runnable, final int inicialDelay, final long period, final TimeUnit timeUnit) {
-        return service().scheduleWithFixedDelay(run(runnable, false), inicialDelay, period, timeUnit);
+        final Runnable _runnable = run(runnable, false);
+        final ScheduledExecutorService executor = getExecutor();
+        final ScheduleFuturePool<?> future = new ScheduleFuturePool<>(this, runnable, executor.scheduleWithFixedDelay(_runnable, inicialDelay, period, timeUnit));
+        return future;
     }
 }
