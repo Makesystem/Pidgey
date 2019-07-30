@@ -8,6 +8,8 @@ package com.makesystem.pidgey.lang;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  *
@@ -17,8 +19,8 @@ import java.util.Objects;
 public class Average<I> implements Serializable {
 
     private I identifier;
-    private long total = 0;
-    private int count = 0;
+    private final AtomicLong total = new AtomicLong(0);
+    private final AtomicInteger count = new AtomicInteger(0);
 
     public Average(){
     }
@@ -36,34 +38,34 @@ public class Average<I> implements Serializable {
     }
 
     public long getTotal() {
-        return total;
+        return total.get();
     }
 
-    public void setTotal(long total) {
-        this.total = total;
+    public void setTotal(final long total) {
+        this.total.set(total);
     }
     
     public int getCount() {
-        return count;
+        return count.get();
     }
 
-    public void setCount(int count) {
-        this.count = count;
+    public void setCount(final int count) {
+        this.count.set(count);
     }
     
     public void increase(final long value) {
-        total += value;
-        count++;
+        total.updateAndGet(var -> var + value);
+        count.incrementAndGet();
     }
 
     public void decrement(final long value) {
-        total -= value;
-        count--;
+        total.updateAndGet(var -> var - value);
+        count.decrementAndGet();
     }
 
     @JsonIgnore
     public double getAverage() {
-        return MathHelper.divide(total, count);
+        return MathHelper.divide(total.get(), count.get());
     }
 
     @Override
