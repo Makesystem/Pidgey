@@ -6,6 +6,7 @@ import com.makesystem.pidgey.formatation.TimeFormat;
 import com.makesystem.pidgey.tester.AbstractTester;
 import com.makesystem.pidgey.thread.SchedulePool;
 import com.makesystem.pidgey.thread.ThreadPool;
+import com.makesystem.pidgey.thread.ThreadsHelper;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -31,18 +32,28 @@ public class Thread_Tester extends AbstractTester {
 
     @Override
     protected void execution() {
-        //testThreadPool();
-        testSchedulePool();
+        testThreadPool();
+        //testSchedulePool();
     }
 
     void testThreadPool() {
         final ThreadPool pool = new ThreadPool();
-        for (int i = 0; i < 1000000; i++) {
-            new Thread(() -> pool.execute(() -> {
-            })).start();
-            pool.execute(() -> {
-            });
-        }
+        new Thread(() -> {
+            for (int i = 0; i < 1000000; i++) {
+                new Thread(() -> pool.execute(toSimulate())).start();
+                pool.execute(toSimulate());
+            }
+        }).start();
+        System.out.println("Aguardando");
+        pool.waitFinish();
+        System.out.println("Terminou");
+    }
+
+    Runnable toSimulate() {
+        return () -> {
+            // Simula a execução de algo que leva 10ms
+            ThreadsHelper.sleep(2);
+        };
     }
 
     ScheduledFuture scheduleAtFixedRate;
@@ -60,7 +71,7 @@ public class Thread_Tester extends AbstractTester {
             if (countScheduleAtFixedRate.getAndIncrement() == 10) {
                 scheduleAtFixedRate.cancel(true);
             }
-        }, 5, 2 , TimeUnit.SECONDS);
+        }, 5, 2, TimeUnit.SECONDS);
 
         final AtomicInteger countScheduleWithFixedDelay = new AtomicInteger(0);
         scheduleWithFixedDelay = schedulePool.scheduleWithFixedDelay(() -> {

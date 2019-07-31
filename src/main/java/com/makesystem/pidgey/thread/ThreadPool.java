@@ -33,4 +33,10 @@ public class ThreadPool extends AbstractThreadPool<ThreadPoolExecutor> {
         final ThreadPoolExecutor executor = getExecutor();
         return new FuturePool(this, runnable, executor.submit(_runnable));
     }
+
+    public void waitFinish() {
+        do {
+            ThreadsHelper.sleep(100);
+        } while (hasActiveRunnables());
+    }
 }
