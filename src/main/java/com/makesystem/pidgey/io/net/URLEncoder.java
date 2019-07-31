@@ -66,12 +66,29 @@ public class URLEncoder {
      */
     private URLEncoder() {
     }
+    
+    /**
+     * Translates a string into {@code application/x-www-form-urlencoded} format
+     * using a specific encoding scheme.This method uses the supplied encoding
+     * scheme to obtain the bytes for unsafe characters.<p>
+     * <em><strong>Note:</strong> The
+     * <a href= "http://www.w3.org/TR/html40/appendix/notes.html#non-ascii-chars">
+     * World Wide Web Consortium Recommendation</a> states that UTF-8 should be
+     * used. Not doing so may introduce incompatibilities.</em>
+     *
+     * @param string {@code String} to be translated.
+     * @param charset
+     * @return
+     * @throws UnsupportedEncodingException 
+     */
+    public static String encode(final String string, final com.makesystem.pidgey.io.file.Charset charset) throws UnsupportedEncodingException {
+        return encode(string, charset.getName());
+    }
 
     /**
      * Translates a string into {@code application/x-www-form-urlencoded} format
-     * using a specific encoding scheme. This method uses the supplied encoding
-     * scheme to obtain the bytes for unsafe characters.
-     * <p>
+     * using a specific encoding scheme.This method uses the supplied encoding
+     * scheme to obtain the bytes for unsafe characters.<p>
      * <em><strong>Note:</strong> The
      * <a href= "http://www.w3.org/TR/html40/appendix/notes.html#non-ascii-chars">
      * World Wide Web Consortium Recommendation</a> states that UTF-8 should be
@@ -81,6 +98,7 @@ public class URLEncoder {
      * @param enc The name of a supported
      * <a href="../lang/package-summary.html#charenc">character encoding</a>.
      * @return the translated {@code String}.
+     * @throws java.io.UnsupportedEncodingException
      *
      */
     public static String encode(final String string, final String enc) throws UnsupportedEncodingException {

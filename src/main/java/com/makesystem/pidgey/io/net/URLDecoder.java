@@ -1,5 +1,6 @@
 package com.makesystem.pidgey.io.net;
 
+import com.makesystem.pidgey.io.file.Charset;
 import java.io.UnsupportedEncodingException;
 
 /**
@@ -45,6 +46,29 @@ import java.io.UnsupportedEncodingException;
  * @since 1.2
  */
 public class URLDecoder {
+
+    private URLDecoder() {
+    }
+
+    /**
+     * Decodes a {@code application/x-www-form-urlencoded} string using a
+     * specific encoding scheme. The supplied encoding is used to determine what
+     * characters are represented by any consecutive sequences of the form
+     * "<i>{@code %xy}</i>".
+     * <p>
+     * <em><strong>Note:</strong> The
+     * <a href= "http://www.w3.org/TR/html40/appendix/notes.html#non-ascii-chars">
+     * World Wide Web Consortium Recommendation</a> states that UTF-8 should be
+     * used. Not doing so may introduce incompatibilities.</em>
+     *
+     * @param string the {@code String} to decode
+     * @param enc
+     * @return
+     * @throws UnsupportedEncodingException
+     */
+    public static String decode(final String string, final Charset enc) throws UnsupportedEncodingException {
+        return decode(string, enc.getName());
+    }
 
     /**
      * Decodes a {@code application/x-www-form-urlencoded} string using a
