@@ -22,9 +22,9 @@ public class Average<I> implements Serializable {
     private final AtomicLong total = new AtomicLong(0);
     private final AtomicInteger count = new AtomicInteger(0);
 
-    public Average(){
+    public Average() {
     }
-     
+
     public Average(I identifier) {
         this.identifier = identifier;
     }
@@ -44,7 +44,7 @@ public class Average<I> implements Serializable {
     public void setTotal(final long total) {
         this.total.set(total);
     }
-    
+
     public int getCount() {
         return count.get();
     }
@@ -52,14 +52,14 @@ public class Average<I> implements Serializable {
     public void setCount(final int count) {
         this.count.set(count);
     }
-    
+
     public void increase(final long value) {
-        total.updateAndGet(var -> var + value);
+        total.addAndGet(value);
         count.incrementAndGet();
     }
 
     public void decrement(final long value) {
-        total.updateAndGet(var -> var - value);
+        total.addAndGet(value * -1);
         count.decrementAndGet();
     }
 
@@ -95,6 +95,6 @@ public class Average<I> implements Serializable {
 
     @Override
     public String toString() {
-        return "Average{" + "identifier=" + identifier + ", total=" + total + ", count=" + count +  ", average=" + getAverage() + '}';
-    }    
+        return "Average{" + "identifier=" + identifier + ", total=" + total + ", count=" + count + ", average=" + getAverage() + '}';
+    }
 }
