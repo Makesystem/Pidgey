@@ -28,7 +28,7 @@ import java.util.Set;
  * @author Richeli.vargas
  */
 public class ObjectMapperJRE {
-
+    
     private final static ObjectMapper mapper;
     private final static JsonFactory factory;
     private final static TypeFactory typeFactory;
@@ -43,10 +43,10 @@ public class ObjectMapperJRE {
     }
 
     /**
-     * 
+     *
      * @param <O>
      * @param object
-     * @return 
+     * @return
      */
     protected static final <O> JavaType getType(final O object) {
 
@@ -72,7 +72,7 @@ public class ObjectMapperJRE {
                 if (collectionType == null) {
                     type = null;
                 } else {
-                    type = typeFactory.constructCollectionType(LinkedList.class, collectionType);
+                    type = typeFactory.constructCollectionType(objectType, collectionType);
                 }
             }
         } else if (Map.class.isAssignableFrom(objectType)) {
@@ -98,103 +98,104 @@ public class ObjectMapperJRE {
     }
 
     /**
-     * 
+     *
      * @param <O>
      * @param object
      * @return
-     * @throws JsonProcessingException 
+     * @throws JsonProcessingException
      */
     public static final <O> String write(final O object) throws JsonProcessingException {
-        final JavaType type = getType(object);
-        if (type == null) {
-            return mapper.writer().writeValueAsString(object);
-        } else {
-            return mapper.writerFor(type).writeValueAsString(object);
-        }
+        //final JavaType type = getType(object);
+        //if (type == null) {
+        return mapper.writer().writeValueAsString(object);
+        //} else {
+        //    Notworking with map.getValues() <-- The Jackson doesn't know this type of collection  
+        //    return mapper.writerFor(type).writeValueAsString(object);
+        //}
     }
 
     /**
-     * 
+     *
      * @param <T>
      * @param <R>
      * @param json
      * @param jsonReference
      * @return
-     * @throws java.io.IOException 
+     * @throws java.io.IOException
      */
-    public static final <T, R extends TypeReference<T>> T read(final String json, final R jsonReference) throws IOException  {
+    public static final <T, R extends TypeReference<T>> T read(final String json, final R jsonReference) throws IOException {
         return mapper.reader().readValue(factory.createParser(json), jsonReference);
     }
-    
+
     /**
-     * 
-     * @param <T>
-     * @param json
-     * @param type
-     * @return 
-     * @throws java.io.IOException 
-     */
-    public static final <T> T read(final String json, final Class<T> type) throws IOException {
-        return mapper.reader().readValue(factory.createParser(json), type);
-    }
-    
-    /**
-     * 
+     *
      * @param <T>
      * @param json
      * @param type
      * @return
-     * @throws IOException 
+     * @throws java.io.IOException
      */
-    protected static final <T> T read(final String json, final JavaType type) throws IOException  {
+    public static final <T> T read(final String json, final Class<T> type) throws IOException {
         return mapper.reader().readValue(factory.createParser(json), type);
     }
-    
+
     /**
-     * 
+     *
      * @param <T>
      * @param json
      * @param type
-     * @return 
-     * @throws java.io.IOException 
+     * @return
+     * @throws IOException
      */
-    public static final <T> T[] readArray(final String json, final Class<T> type) throws IOException  {
+    protected static final <T> T read(final String json, final JavaType type) throws IOException {
+        return mapper.reader().readValue(factory.createParser(json), type);
+    }
+
+    /**
+     *
+     * @param <T>
+     * @param json
+     * @param type
+     * @return
+     * @throws java.io.IOException
+     */
+    public static final <T> T[] readArray(final String json, final Class<T> type) throws IOException {
         return read(json, typeFactory.constructArrayType(type));
     }
-    
+
     /**
-     * 
+     *
      * @param <T>
      * @param json
      * @param type
-     * @return 
-     * @throws java.io.IOException 
+     * @return
+     * @throws java.io.IOException
      */
-    public static final <T> List<T> readList(final String json, final Class<T> type) throws IOException{
+    public static final <T> List<T> readList(final String json, final Class<T> type) throws IOException {
         return read(json, typeFactory.constructCollectionType(LinkedList.class, type));
     }
-    
+
     /**
-     * 
+     *
      * @param <T>
      * @param json
      * @param type
-     * @return 
-     * @throws java.io.IOException 
+     * @return
+     * @throws java.io.IOException
      */
-    public static final <T> Set<T> readSet(final String json, final Class<T> type) throws IOException{
+    public static final <T> Set<T> readSet(final String json, final Class<T> type) throws IOException {
         return read(json, typeFactory.constructCollectionType(LinkedHashSet.class, type));
     }
-    
+
     /**
-     * 
+     *
      * @param <K>
      * @param <V>
      * @param json
      * @param keyType
      * @param valueType
-     * @return 
-     * @throws java.io.IOException 
+     * @return
+     * @throws java.io.IOException
      */
     public static final <K, V> Map<K, V> readMap(final String json, final Class<K> keyType, final Class<V> valueType) throws IOException {
         return read(json, typeFactory.constructMapType(LinkedHashMap.class, keyType, valueType));
