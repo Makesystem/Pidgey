@@ -95,10 +95,10 @@ public class RunnableResult {
                 break;
         }
 
-        final int startAtColumnWidth = 5;
-        final int endAtColumnWidth = 5;
-        final int durationColumnWidth = 3;
-        final int statusColumnWidth = 3;
+        final int startAtColumnWidth = 25;
+        final int endAtColumnWidth = 25;
+        final int durationColumnWidth = 15;
+        final int statusColumnWidth = 15;
 
         final ConsoleValue startAtValue = new ConsoleValue(startAt, ConsoleValue.Type.DATE_TIME, startAtColumnWidth);
         final ConsoleValue endAtValue = new ConsoleValue(endAt, ConsoleValue.Type.DATE_TIME, endAtColumnWidth);
