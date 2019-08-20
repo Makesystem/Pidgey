@@ -240,46 +240,18 @@ public class FilesHelper {
         Files.write(path, data, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
-    public final static String read(final String file) throws IOException {
+    public final static String read(final String file) throws IOException, URISyntaxException {
         return read(file, DEFAULT_CHARSET);
     }
 
-    public final static String read(final String file, final Charset charset) throws IOException {
-        try {
-            return readOnDesktop(file, charset == null ? DEFAULT_CHARSET : charset);
-        } catch (@SuppressWarnings("UseSpecificCatch") Throwable ignore) {
-            return readOnWebService(file, charset == null ? DEFAULT_CHARSET : charset);
+    public final static String read(final String file, final Charset charset) throws IOException, URISyntaxException {
+        if (charset == null) {
+            return new String(readBytes(file));
+        } else {
+            return new String(readBytes(file), charset.toNative());
         }
     }
-
-    final static String readOnDesktop(final String file, final Charset charset) throws URISyntaxException, IOException {
-
-        final Path path = Paths.get(FilesHelper.class.getClassLoader()
-                .getResource(file).toURI());
-
-        final String data;
-        try (Stream<String> lines = Files.lines(path, java.nio.charset.Charset.forName(charset.getName()))) {
-            data = lines.collect(Collectors.joining("\n"));
-        }
-
-        return data;
-    }
-
-    final static String readOnWebService(final String file, final Charset charset) {
-
-        if (file == null) {
-            return null;
-        }
-
-        String content = "";
-        final Scanner sc = new Scanner(FilesHelper.class.getResourceAsStream((file.startsWith("/") ? "" : "/") + file), charset.getName());
-        while (sc.hasNextLine()) {
-            final String line = sc.nextLine();
-            content += line + "\n";
-        }
-        return content;
-    }
-
+	
     public final static byte[] readBytes(final String file) throws URISyntaxException, IOException {
         try {
             return readBytesOnWebService(file);
