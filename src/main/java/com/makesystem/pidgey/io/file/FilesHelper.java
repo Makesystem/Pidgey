@@ -23,7 +23,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -240,19 +239,19 @@ public class FilesHelper {
         Files.write(path, data, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
-    public final static String read(final String file) throws IOException, URISyntaxException {
+    public final static String read(final String file) throws IOException {
         return read(file, DEFAULT_CHARSET);
     }
 
-    public final static String read(final String file, final Charset charset) throws IOException, URISyntaxException {
+    public final static String read(final String file, final Charset charset) throws IOException {
         if (charset == null) {
             return new String(readBytes(file));
         } else {
             return new String(readBytes(file), charset.toNative());
         }
     }
-	
-    public final static byte[] readBytes(final String file) throws URISyntaxException, IOException {
+
+    public final static byte[] readBytes(final String file) throws IOException {
         try {
             return readBytesOnWebService(file);
         } catch (@SuppressWarnings("UseSpecificCatch") Throwable ignore) {
@@ -264,19 +263,27 @@ public class FilesHelper {
         }
     }
 
-    final static byte[] readBytesInnerProject(final String file) throws URISyntaxException, IOException {
+    final static byte[] readBytesInnerProject(final String file) throws IOException {
         return Files.readAllBytes(new File(file).toPath());
     }
 
-    final static byte[] readBytesOnDesktop(final String file) throws URISyntaxException, IOException {
-        final URL url = FilesHelper.class.getClassLoader().getResource(file);
-        final Path path = Paths.get(url.toURI());
-        return Files.readAllBytes(path);
+    final static byte[] readBytesOnDesktop(final String file) throws IOException {
+        try {
+            final URL url = FilesHelper.class.getClassLoader().getResource(file);
+            final Path path = Paths.get(url.toURI());
+            return Files.readAllBytes(path);
+        } catch (URISyntaxException ex) {
+            throw new IOException(ex);
+        }
     }
 
-    final static byte[] readBytesOnWebService(final String file) throws URISyntaxException, IOException {
-        final Path path = Paths.get(FilesHelper.class.getResource(file).toURI());
-        return Files.readAllBytes(path);
+    final static byte[] readBytesOnWebService(final String file) throws IOException {
+        try {
+            final Path path = Paths.get(FilesHelper.class.getResource(file).toURI());
+            return Files.readAllBytes(path);
+        } catch (URISyntaxException ex) {
+            throw new IOException(ex);
+        }
     }
 
     final static void createIfNotExists(final Path path) throws IOException {
