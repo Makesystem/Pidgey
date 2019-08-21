@@ -205,7 +205,7 @@ public class FilesHelper {
 
     public final static void append(final String file, final String data) throws IOException {
         final Path path = Paths.get(file);
-        createIfNotExists(path);
+        mkfile(path);
         try (final BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
             writer.write(data);
         }
@@ -213,13 +213,13 @@ public class FilesHelper {
 
     public final static void append(final String file, final byte[] data) throws IOException {
         final Path path = Paths.get(file);
-        createIfNotExists(path);
+        mkfile(path);
         Files.write(path, data, StandardOpenOption.APPEND);
     }
 
     public final static void newLine(final String file) throws IOException {
         final Path path = Paths.get(file);
-        createIfNotExists(path);
+        mkfile(path);
         try (final BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
             writer.newLine();
         }
@@ -227,7 +227,7 @@ public class FilesHelper {
 
     public final static void write(final String file, final String data) throws IOException {
         final Path path = Paths.get(file);
-        createIfNotExists(path);
+        mkfile(path);
         try (final BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING)) {
             writer.write(data);
         }
@@ -235,7 +235,7 @@ public class FilesHelper {
 
     public final static void write(final String filePath, final byte[] data) throws IOException {
         final Path path = Paths.get(filePath);
-        createIfNotExists(path);
+        mkfile(path);
         Files.write(path, data, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
@@ -285,12 +285,29 @@ public class FilesHelper {
             throw new IOException(ex);
         }
     }
-
-    final static void createIfNotExists(final Path path) throws IOException {
-        final File file = path.toFile();
-        if (!file.exists()) {
-            file.createNewFile();
-        }
+    
+    public final static boolean mkfile(final Path path) throws IOException {
+        return mkfile(path.toFile());        
+    }
+    
+    public final static boolean mkfile(final String path) throws IOException {
+        return mkfile(new File(path));
+    }
+    
+    public final static boolean mkfile(final File file) throws IOException {
+        return file.exists() ? false : file.createNewFile();
+    }
+    
+    public static boolean mkdir(final Path path) {
+        return mkdir(path.toFile());
+    }
+    
+    public static boolean mkdir(final String path) {
+        return mkdir(new File(path));
+    }
+    
+    public static boolean mkdir(final File file) {
+        return file.exists() ? false : file.mkdirs();
     }
 
     public static interface LineReplacement {
