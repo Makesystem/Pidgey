@@ -59,4 +59,15 @@ public class ConcurrentMap<K, V> extends ConcurrentHashMap<K, V> {
         }
     }
 
+    public V putDefaultIfAbsent(final K key) {
+        final V presValue = get(key);
+
+        if (presValue == null) {
+            final V value = defaultGenerator == null ? null : defaultGenerator.get();
+            put(key, value);
+            return value;
+        } else {
+            return presValue;
+        }
+    }
 }
