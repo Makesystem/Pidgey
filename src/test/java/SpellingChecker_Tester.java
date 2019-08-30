@@ -1,9 +1,9 @@
 
 import com.makesystem.pidgey.monitor.MonitorHelper;
 import com.makesystem.pidgey.tester.AbstractTester;
+import com.makesystem.pidgey.util.LinkedMap;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import pt.tumba.spell.DefaultWordFinder;
@@ -20,7 +20,7 @@ import pt.tumba.spell.SpellChecker;
  */
 public class SpellingChecker_Tester extends AbstractTester {
 
-    private final Map<String, String> expected = new LinkedHashMap<>();
+    private final Map<String, String> expected = new LinkedMap<>();
 
     public static void main(String[] args) {
         new SpellingChecker_Tester().run();

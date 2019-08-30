@@ -2,9 +2,9 @@
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.makesystem.pidgey.json.ObjectMapperJRE;
 import com.makesystem.pidgey.tester.AbstractTester;
+import com.makesystem.pidgey.util.LinkedMap;
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Objects;
@@ -34,9 +34,9 @@ public class ObjectMapperJRE_Tester extends AbstractTester {
     private final Collection<ObjectOne> simpleObjectCollection = new LinkedList<>();
     private final Collection<ObjectTwo> complexObjectCollection = new LinkedList<>();
 
-    private final Map<Integer, Integer> primitiveMap = new LinkedHashMap<>();
-    private final Map<Integer, ObjectOne> simpleObjectMap = new LinkedHashMap<>();
-    private final Map<Integer, ObjectTwo> complexObjectMap = new LinkedHashMap<>();
+    private final Map<Integer, Integer> primitiveMap = new LinkedMap<>();
+    private final Map<Integer, ObjectOne> simpleObjectMap = new LinkedMap<>();
+    private final Map<Integer, ObjectTwo> complexObjectMap = new LinkedMap<>();
 
     private String jsonPrimitiveObject;
     private String jsonSimpleObject;

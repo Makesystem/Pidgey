@@ -7,11 +7,11 @@ package com.makesystem.pidgey.xml;
 
 import com.makesystem.pidgey.io.file.Charset;
 import com.makesystem.pidgey.io.file.FilesHelper;
+import com.makesystem.pidgey.util.LinkedMap;
 import java.io.File;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
@@ -75,7 +75,7 @@ public class XmlHelper {
     }
 
     public static final Map<String, String> getAttributes(final Node node) {
-        final Map<String, String> attributes_tmp = new LinkedHashMap<>();
+        final Map<String, String> attributes_tmp = new LinkedMap<>();
         final NamedNodeMap nodeAttributes = node.getAttributes();
         if (nodeAttributes == null) {
             return attributes_tmp;
