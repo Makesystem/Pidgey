@@ -6,30 +6,47 @@
 package com.makesystem.pidgey.system;
 
 import com.makesystem.pidgey.io.file.FilesHelper;
+import com.makesystem.pidgey.lang.StringHelper;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.stream.Collectors;
 
 /**
  *
  * @author riche
  */
 public class Shell {
-
+    
     private final Runtime runtime = Runtime.getRuntime();
 
-    final Process $(final String command) throws IOException {
+    final Process $(final String... commands) throws IOException {
 
-        if (command == null) {
-            throw new IllegalArgumentException("Command can not be null");
+        if (commands == null || commands.length == 0) {
+            throw new IllegalArgumentException("Command can not be null or empty");
         }
+
+        final Collection<String> allCommands = new LinkedList<>();
 
         if (SystemHelper.IS_OS_WINDOWS) {
-            return runtime.exec(String.format("cmd.exe /c %s", command));
+            allCommands.add("cmd.exe");
+            allCommands.add("/c");
         } else {
-            return runtime.exec(String.format("sh -c %s", command));
+            allCommands.add("/bin/sh");
+            allCommands.add("-c");
         }
+
+        allCommands.addAll(
+                Arrays.stream(commands)
+                        .map(command -> String.format("%s", command.trim()))
+                        .filter(command -> !StringHelper.isBlank(command))
+                        .collect(Collectors.toList()));
+
+        return runtime.exec(allCommands.stream().toArray(String[]::new));
     }
 
-    public Result exec(final String command) throws IOException {
+    public Result exec(final String... command) throws IOException {
         return new Result($(command));
     }
 
