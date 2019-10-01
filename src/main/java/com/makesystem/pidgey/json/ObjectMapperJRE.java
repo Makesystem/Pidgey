@@ -13,7 +13,8 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.makesystem.pidgey.lang.ObjectsHelper;
+import com.makesystem.pidgey.lang.CollectionHelper;
+import com.makesystem.pidgey.lang.ObjectHelper;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -29,17 +30,17 @@ import java.util.Set;
  */
 public class ObjectMapperJRE {
     
-    private final static ObjectMapper mapper;
-    private final static JsonFactory factory;
-    private final static TypeFactory typeFactory;
+    private final static ObjectMapper MAPPER;
+    private final static JsonFactory FACTORY;
+    private final static TypeFactory TYPE_FACTORY;
 
     static {
-        mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        MAPPER = new ObjectMapper();
+        MAPPER.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        factory = mapper.getFactory();
-        typeFactory = mapper.getTypeFactory();
+        FACTORY = MAPPER.getFactory();
+        TYPE_FACTORY = MAPPER.getTypeFactory();
     }
 
     /**
@@ -61,18 +62,18 @@ public class ObjectMapperJRE {
             if (array.length == 0) {
                 type = null;
             } else {
-                type = typeFactory.constructArrayType(array[0].getClass());
+                type = TYPE_FACTORY.constructArrayType(array[0].getClass());
             }
         } else if (Collection.class.isAssignableFrom(objectType)) {
             final Collection collection = (Collection) object;
             if (collection.isEmpty()) {
                 type = null;
             } else {
-                final Class<?> collectionType = ObjectsHelper.getCollectionType(collection);
+                final Class<?> collectionType = CollectionHelper.getCollectionType(collection);
                 if (collectionType == null) {
                     type = null;
                 } else {
-                    type = typeFactory.constructCollectionType(objectType, collectionType);
+                    type = TYPE_FACTORY.constructCollectionType(objectType, collectionType);
                 }
             }
         } else if (Map.class.isAssignableFrom(objectType)) {
@@ -80,18 +81,18 @@ public class ObjectMapperJRE {
             if (map.isEmpty()) {
                 type = null;
             } else {
-                final Class<?> mapKeyType = ObjectsHelper.getMapKeyType(map);
-                final Class<?> mapValueType = ObjectsHelper.getMapValueType(map);
+                final Class<?> mapKeyType = CollectionHelper.getMapKeyType(map);
+                final Class<?> mapValueType = CollectionHelper.getMapValueType(map);
                 if (mapKeyType == null) {
                     type = null;
-                } else if (!ObjectsHelper.isBasicJavaClass(mapKeyType)) {
+                } else if (!ObjectHelper.isBasicJavaClass(mapKeyType)) {
                     throw new IllegalArgumentException("Map Key can not be " + mapKeyType.getName() + ". It must be a primitive type, or a String or an enum.");
                 } else {
-                    type = typeFactory.constructMapType(LinkedHashMap.class, mapKeyType, mapValueType);
+                    type = TYPE_FACTORY.constructMapType(LinkedHashMap.class, mapKeyType, mapValueType);
                 }
             }
         } else {
-            type = typeFactory.constructType(objectType);
+            type = TYPE_FACTORY.constructType(objectType);
         }
 
         return type;
@@ -107,7 +108,7 @@ public class ObjectMapperJRE {
     public static final <O> String write(final O object) throws JsonProcessingException {
         //final JavaType type = getType(object);
         //if (type == null) {
-        return mapper.writer().writeValueAsString(object);
+        return MAPPER.writer().writeValueAsString(object);
         //} else {
         //    Notworking with map.getValues() <-- The Jackson doesn't know this type of collection  
         //    return mapper.writerFor(type).writeValueAsString(object);
@@ -124,7 +125,7 @@ public class ObjectMapperJRE {
      * @throws java.io.IOException
      */
     public static final <T, R extends TypeReference<T>> T read(final String json, final R jsonReference) throws IOException {
-        return mapper.reader().readValue(factory.createParser(json), jsonReference);
+        return MAPPER.reader().readValue(FACTORY.createParser(json), jsonReference);
     }
 
     /**
@@ -136,7 +137,7 @@ public class ObjectMapperJRE {
      * @throws java.io.IOException
      */
     public static final <T> T read(final String json, final Class<T> type) throws IOException {
-        return mapper.reader().readValue(factory.createParser(json), type);
+        return MAPPER.reader().readValue(FACTORY.createParser(json), type);
     }
 
     /**
@@ -148,7 +149,7 @@ public class ObjectMapperJRE {
      * @throws IOException
      */
     protected static final <T> T read(final String json, final JavaType type) throws IOException {
-        return mapper.reader().readValue(factory.createParser(json), type);
+        return MAPPER.reader().readValue(FACTORY.createParser(json), type);
     }
 
     /**
@@ -160,7 +161,7 @@ public class ObjectMapperJRE {
      * @throws java.io.IOException
      */
     public static final <T> T[] readArray(final String json, final Class<T> type) throws IOException {
-        return read(json, typeFactory.constructArrayType(type));
+        return read(json, TYPE_FACTORY.constructArrayType(type));
     }
 
     /**
@@ -172,7 +173,7 @@ public class ObjectMapperJRE {
      * @throws java.io.IOException
      */
     public static final <T> List<T> readList(final String json, final Class<T> type) throws IOException {
-        return read(json, typeFactory.constructCollectionType(LinkedList.class, type));
+        return read(json, TYPE_FACTORY.constructCollectionType(LinkedList.class, type));
     }
 
     /**
@@ -184,7 +185,7 @@ public class ObjectMapperJRE {
      * @throws java.io.IOException
      */
     public static final <T> Set<T> readSet(final String json, final Class<T> type) throws IOException {
-        return read(json, typeFactory.constructCollectionType(LinkedHashSet.class, type));
+        return read(json, TYPE_FACTORY.constructCollectionType(LinkedHashSet.class, type));
     }
 
     /**
@@ -198,6 +199,6 @@ public class ObjectMapperJRE {
      * @throws java.io.IOException
      */
     public static final <K, V> Map<K, V> readMap(final String json, final Class<K> keyType, final Class<V> valueType) throws IOException {
-        return read(json, typeFactory.constructMapType(LinkedHashMap.class, keyType, valueType));
+        return read(json, TYPE_FACTORY.constructMapType(LinkedHashMap.class, keyType, valueType));
     }
 }

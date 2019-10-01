@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
  */
 public class StringHelper {
 
+    private static final int NOT_FOUND = -1;
+
     /**
      * A String for a space character.
      *
@@ -238,10 +240,10 @@ public class StringHelper {
     }
 
     /**
-     * 
+     *
      * @param value
      * @param maxLength
-     * @return 
+     * @return
      */
     public static final String maxLength(final String value, final int maxLength) {
         return value == null ? null
@@ -302,5 +304,274 @@ public class StringHelper {
         }
 
         return result.toString();
+    }
+
+    // Empty checks
+    //-----------------------------------------------------------------------
+    /**
+     * <p>
+     * Checks if a CharSequence is empty ("") or null.</p>
+     *
+     * <pre>
+     * StringUtils.isEmpty(null)      = true
+     * StringUtils.isEmpty("")        = true
+     * StringUtils.isEmpty(" ")       = false
+     * StringUtils.isEmpty("bob")     = false
+     * StringUtils.isEmpty("  bob  ") = false
+     * </pre>
+     *
+     * <p>
+     * NOTE: This method changed in Lang version 2.0. It no longer trims the
+     * CharSequence. That functionality is available in isBlank().</p>
+     *
+     * @param cs the CharSequence to check, may be null
+     * @return {@code true} if the CharSequence is empty or null
+     * isEmpty(CharSequence)
+     */
+    public static boolean isEmpty(final CharSequence cs) {
+        return cs == null || cs.length() == 0;
+    }
+
+    /**
+     * <p>
+     * Checks if a CharSequence is empty (""), null or whitespace only.</p>
+     *
+     * <p>
+     * Whitespace is defined by {@link Character#isWhitespace(char)}.</p>
+     *
+     * <pre>
+     * StringUtils.isBlank(null)      = true
+     * StringUtils.isBlank("")        = true
+     * StringUtils.isBlank(" ")       = true
+     * StringUtils.isBlank("bob")     = false
+     * StringUtils.isBlank("  bob  ") = false
+     * </pre>
+     *
+     * @param cs the CharSequence to check, may be null
+     * @return {@code true} if the CharSequence is null, empty or whitespace
+     * only
+     * @since 2.0
+     * @since 3.0 Changed signature from isBlank(String) to
+     * isBlank(CharSequence)
+     */
+    public static boolean isBlank(final CharSequence cs) {
+        int strLen = length(cs);
+        if (strLen == 0) {
+            return true;
+        }
+        for (int i = 0; i < strLen; i++) {
+            if (!Character.isWhitespace(cs.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     *
+     * Gets a CharSequence length or {@code 0} if the CharSequence is
+     * {@code null}.
+     *
+     * @param cs a CharSequence or {@code null}
+     * @return CharSequence length or {@code 0} if the CharSequence is
+     * {@code null}.
+     * @since 2.4
+     * @since 3.0 Changed signature from length(String) to length(CharSequence)
+     */
+    public static int length(final CharSequence cs) {
+        return cs == null ? 0 : cs.length();
+    }
+
+    /**
+     * <p>
+     * Checks if the CharSequence contains only Unicode digits. A decimal point
+     * is not a Unicode digit and returns false.</p>
+     *
+     * <p>
+     * {@code null} will return {@code false}. An empty CharSequence
+     * (length()=0) will return {@code false}.</p>
+     *
+     * <p>
+     * Note that the method does not allow for a leading sign, either positive
+     * or negative. Also, if a String passes the numeric test, it may still
+     * generate a NumberFormatException when parsed by Integer.parseInt or
+     * Long.parseLong, e.g. if the value is outside the range for int or long
+     * respectively.</p>
+     *
+     * <pre>
+     * StringUtils.isNumeric(null)   = false
+     * StringUtils.isNumeric("")     = false
+     * StringUtils.isNumeric("  ")   = false
+     * StringUtils.isNumeric("123")  = true
+     * StringUtils.isNumeric("\u0967\u0968\u0969")  = true
+     * StringUtils.isNumeric("12 3") = false
+     * StringUtils.isNumeric("ab2c") = false
+     * StringUtils.isNumeric("12-3") = false
+     * StringUtils.isNumeric("12.3") = false
+     * StringUtils.isNumeric("-123") = false
+     * StringUtils.isNumeric("+123") = false
+     * </pre>
+     *
+     * @param cs the CharSequence to check, may be null
+     * @return {@code true} if only contains digits, and is non-null
+     * @since 3.0 Changed signature from isNumeric(String) to
+     * isNumeric(CharSequence)
+     * @since 3.0 Changed "" to return false and not true
+     */
+    public static boolean isNumeric(final CharSequence cs) {
+        if (isEmpty(cs)) {
+            return false;
+        }
+        final int sz = cs.length();
+        for (int i = 0; i < sz; i++) {
+            if (!Character.isDigit(cs.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * <p>
+     * Checks if CharSequence contains a search CharSequence, handling
+     * {@code null}. This method uses {@link String#indexOf(String)} if
+     * possible.</p>
+     *
+     * <p>
+     * A {@code null} CharSequence will return {@code false}.</p>
+     *
+     * <pre>
+     * StringUtils.contains(null, *)     = false
+     * StringUtils.contains(*, null)     = false
+     * StringUtils.contains("", "")      = true
+     * StringUtils.contains("abc", "")   = true
+     * StringUtils.contains("abc", "a")  = true
+     * StringUtils.contains("abc", "z")  = false
+     * </pre>
+     *
+     * @param seq the CharSequence to check, may be null
+     * @param searchSeq the CharSequence to find, may be null
+     * @return true if the CharSequence contains the search CharSequence, false
+     * if not or {@code null} string input
+     * @since 2.0
+     * @since 3.0 Changed signature from contains(String, String) to
+     * contains(CharSequence, CharSequence)
+     */
+    public static boolean contains(final CharSequence seq, final CharSequence searchSeq) {
+        if (seq == null || searchSeq == null) {
+            return false;
+        }
+        return indexOf(seq, searchSeq, 0) >= 0;
+    }
+
+    /**
+     * <p>
+     * Checks if CharSequence contains a search character, handling
+     * {@code null}. This method uses {@link String#indexOf(int)} if
+     * possible.</p>
+     *
+     * <p>
+     * A {@code null} or empty ("") CharSequence will return {@code false}.</p>
+     *
+     * <pre>
+     * StringUtils.contains(null, *)    = false
+     * StringUtils.contains("", *)      = false
+     * StringUtils.contains("abc", 'a') = true
+     * StringUtils.contains("abc", 'z') = false
+     * </pre>
+     *
+     * @param seq the CharSequence to check, may be null
+     * @param searchChar the character to find
+     * @return true if the CharSequence contains the search character, false if
+     * not or {@code null} string input
+     * @since 2.0
+     * @since 3.0 Changed signature from contains(String, int) to
+     * contains(CharSequence, int)
+     */
+    public static boolean contains(final CharSequence seq, final int searchChar) {
+        if (isEmpty(seq)) {
+            return false;
+        }
+        return indexOf(seq, searchChar, 0) >= 0;
+    }
+
+    /**
+     * Used by the indexOf(CharSequence methods) as a green implementation of
+     * indexOf.
+     *
+     * @param cs the {@code CharSequence} to be processed
+     * @param searchChar the {@code CharSequence} to be searched for
+     * @param start the start index
+     * @return the index where the search sequence was found
+     */
+    public static int indexOf(final CharSequence cs, final CharSequence searchChar, final int start) {
+        return cs.toString().indexOf(searchChar.toString(), start);
+    }
+
+    /**
+     * Returns the index within <code>cs</code> of the first occurrence of the
+     * specified character, starting the search at the specified index.
+     * <p>
+     * If a character with value <code>searchChar</code> occurs in the character
+     * sequence represented by the <code>cs</code> object at an index no smaller
+     * than <code>start</code>, then the index of the first such occurrence is
+     * returned. For values of <code>searchChar</code> in the range from 0 to
+     * 0xFFFF (inclusive), this is the smallest value <i>k</i> such that:
+     * <blockquote><pre>
+     * (this.charAt(<i>k</i>) == searchChar) &amp;&amp; (<i>k</i> &gt;= start)
+     * </pre></blockquote>
+     * is true. For other values of <code>searchChar</code>, it is the smallest
+     * value <i>k</i> such that:
+     * <blockquote><pre>
+     * (this.codePointAt(<i>k</i>) == searchChar) &amp;&amp; (<i>k</i> &gt;= start)
+     * </pre></blockquote>
+     * is true. In either case, if no such character occurs inm <code>cs</code>
+     * at or after position <code>start</code>, then <code>-1</code> is
+     * returned.
+     *
+     * <p>
+     * There is no restriction on the value of <code>start</code>. If it is
+     * negative, it has the same effect as if it were zero: the entire
+     * <code>CharSequence</code> may be searched. If it is greater than the
+     * length of <code>cs</code>, it has the same effect as if it were equal to
+     * the length of <code>cs</code>: <code>-1</code> is returned.
+     *
+     * <p>
+     * All indices are specified in <code>char</code> values (Unicode code
+     * units).
+     *
+     * @param cs the {@code CharSequence} to be processed, not null
+     * @param searchChar the char to be searched for
+     * @param start the start index, negative starts at the string start
+     * @return the index where the search char was found, -1 if not found
+     * @since 3.6 updated to behave more like <code>String</code>
+     */
+    final static int indexOf(final CharSequence cs, final int searchChar, int start) {
+        if (cs instanceof String) {
+            return ((String) cs).indexOf(searchChar, start);
+        }
+        final int sz = cs.length();
+        if (start < 0) {
+            start = 0;
+        }
+        if (searchChar < Character.MIN_SUPPLEMENTARY_CODE_POINT) {
+            for (int i = start; i < sz; i++) {
+                if (cs.charAt(i) == searchChar) {
+                    return i;
+                }
+            }
+        }
+        //supplementary characters (LANG1300)
+        if (searchChar <= Character.MAX_CODE_POINT) {
+            final char[] chars = Character.toChars(searchChar);
+            for (int i = start; i < sz - 1; i++) {
+                final char high = cs.charAt(i);
+                final char low = cs.charAt(i + 1);
+                if (high == chars[0] && low == chars[1]) {
+                    return i;
+                }
+            }
+        }
+        return NOT_FOUND;
     }
 }

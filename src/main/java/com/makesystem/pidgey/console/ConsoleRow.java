@@ -6,7 +6,7 @@
 package com.makesystem.pidgey.console;
 
 import com.makesystem.pidgey.console.base.AbstractPrintfSupport;
-import com.makesystem.pidgey.lang.ObjectsHelper;
+import com.makesystem.pidgey.lang.CollectionHelper;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -52,7 +52,7 @@ public class ConsoleRow extends AbstractPrintfSupport {
 
             if (colors.length > 0) {
                 final ConsoleColor[] original = value.getColors();
-                final ConsoleColor[] concat = ObjectsHelper.concat(colors, original, ConsoleColor[]::new);
+                final ConsoleColor[] concat = CollectionHelper.concat(colors, original, ConsoleColor[]::new);
                 value.setColors(concat);
                 printfFormat = value.getPrintfFormat();
                 value.setColors(original);
@@ -70,7 +70,7 @@ public class ConsoleRow extends AbstractPrintfSupport {
         Arrays.stream(values).forEach(value -> {
             if (colors.length > 0) {
                 final ConsoleColor[] original = value.getColors();
-                final ConsoleColor[] concat = ObjectsHelper.concat(colors, original, ConsoleColor[]::new);
+                final ConsoleColor[] concat = CollectionHelper.concat(colors, original, ConsoleColor[]::new);
                 value.setColors(concat);
                 vars.addAll(Arrays.asList(value.getPrintfArgs()));
                 value.setColors(original);

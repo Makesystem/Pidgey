@@ -5,7 +5,7 @@
  */
 package com.makesystem.pidgey.xml;
 
-import com.makesystem.pidgey.lang.ObjectsHelper;
+import com.makesystem.pidgey.lang.ObjectHelper;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
@@ -219,19 +219,19 @@ public class XmlElement implements Serializable, Comparable<XmlElement> {
             return false;
         }
         final XmlElement other = (XmlElement) obj;
-        if (!ObjectsHelper.isEquals(this.tag, other.tag)) {
+        if (!ObjectHelper.isEquals(this.tag, other.tag)) {
             return false;
         }
-        if (!ObjectsHelper.isEquals(this.value, other.value)) {
+        if (!ObjectHelper.isEquals(this.value, other.value)) {
             return false;
         }
-        if (!ObjectsHelper.isEquals(this.textContent, other.textContent)) {
+        if (!ObjectHelper.isEquals(this.textContent, other.textContent)) {
             return false;
         }
-        if (!ObjectsHelper.isEquals(this.parent, other.parent)) {
+        if (!ObjectHelper.isEquals(this.parent, other.parent)) {
             return false;
         }
-        if (!ObjectsHelper.isEquals(this.attributes, other.attributes)) {
+        if (!ObjectHelper.isEquals(this.attributes, other.attributes)) {
             return false;
         }
         return true;
@@ -285,7 +285,7 @@ public class XmlElement implements Serializable, Comparable<XmlElement> {
     }
 
     protected boolean is(final String tag, final XmlAttribute... attributes) {
-        return ObjectsHelper.isEquals(this.tag, tag) && this.attributes.containsAll(Arrays.asList(attributes));
+        return ObjectHelper.isEquals(this.tag, tag) && this.attributes.containsAll(Arrays.asList(attributes));
     }
 
     protected final Collection<XmlAttribute> getAttributes(final Node node) {

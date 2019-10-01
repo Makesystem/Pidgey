@@ -6,7 +6,6 @@
 package com.makesystem.pidgey.console.base;
 
 import com.makesystem.pidgey.console.ConsoleColor;
-import com.makesystem.pidgey.console.base.HasPrintfSupport;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;

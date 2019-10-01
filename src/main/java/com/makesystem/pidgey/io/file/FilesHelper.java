@@ -5,10 +5,14 @@
  */
 package com.makesystem.pidgey.io.file;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -16,6 +20,7 @@ import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CharsetDecoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -285,27 +290,39 @@ public class FilesHelper {
             throw new IOException(ex);
         }
     }
-    
-    public final static boolean mkfile(final Path path) throws IOException {
-        return mkfile(path.toFile());        
+
+    public final static String read(final InputStream inputStream) throws IOException {
+        final StringBuilder data = new StringBuilder();
+        try (Reader reader = new BufferedReader(new InputStreamReader(inputStream,
+                java.nio.charset.Charset.forName(StandardCharsets.UTF_8.name())))) {
+            int character = 0;
+            while ((character = reader.read()) != -1) {
+                data.append((char) character);
+            }
+        }
+        return data.toString();
     }
-    
+
+    public final static boolean mkfile(final Path path) throws IOException {
+        return mkfile(path.toFile());
+    }
+
     public final static boolean mkfile(final String path) throws IOException {
         return mkfile(new File(path));
     }
-    
+
     public final static boolean mkfile(final File file) throws IOException {
         return file.exists() ? false : file.createNewFile();
     }
-    
+
     public static boolean mkdir(final Path path) {
         return mkdir(path.toFile());
     }
-    
+
     public static boolean mkdir(final String path) {
         return mkdir(new File(path));
     }
-    
+
     public static boolean mkdir(final File file) {
         return file.exists() ? false : file.mkdirs();
     }

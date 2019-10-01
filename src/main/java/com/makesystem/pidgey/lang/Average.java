@@ -65,7 +65,7 @@ public class Average<I> implements Serializable {
 
     @JsonIgnore
     public double getAverage() {
-        return MathHelper.divide(total.get(), count.get());
+        return NumberHelper.divide(total.get(), count.get());
     }
 
     @Override
