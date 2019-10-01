@@ -12,7 +12,7 @@ import java.io.IOException;
  *
  * @author riche
  */
-public class Schell {
+public class Shell {
 
     private final Runtime runtime = Runtime.getRuntime();
 
