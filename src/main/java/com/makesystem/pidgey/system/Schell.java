@@ -16,7 +16,12 @@ public class Schell {
 
     private final Runtime runtime = Runtime.getRuntime();
 
-    protected Process $(final String command) throws IOException {
+    final Process $(final String command) throws IOException {
+
+        if (command == null) {
+            throw new IllegalArgumentException("Command can not be null");
+        }
+
         if (SystemHelper.IS_OS_WINDOWS) {
             return runtime.exec(String.format("cmd.exe /c %s", command));
         } else {
@@ -43,7 +48,7 @@ public class Schell {
         public Process getProcess() {
             return process;
         }
-        
+
         public String getResult() {
             return result;
         }
