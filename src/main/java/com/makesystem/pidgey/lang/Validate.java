@@ -164,7 +164,7 @@ public class Validate {
      */
     public static void isTrue(final boolean expression, final String message, final Object... values) {
         if (!expression) {
-            throw new IllegalArgumentException(String.format(message, values));
+            throw new IllegalArgumentException(message);//String.format(message, values));
         }
     }
 
@@ -236,7 +236,7 @@ public class Validate {
      */
     public static <T> T notNull(final T object, final String message, final Object... values) {
         if (object == null) {
-            throw new NullPointerException(String.format(message, values));
+            throw new NullPointerException(message);//String.format(message, values));
         }
         return object;
     }
@@ -264,10 +264,10 @@ public class Validate {
      */
     public static <T> T[] notEmpty(final T[] array, final String message, final Object... values) {
         if (array == null) {
-            throw new NullPointerException(String.format(message, values));
+            throw new NullPointerException(message);//String.format(message, values));
         }
         if (array.length == 0) {
-            throw new IllegalArgumentException(String.format(message, values));
+            throw new IllegalArgumentException(message);//String.format(message, values));
         }
         return array;
     }
@@ -317,10 +317,10 @@ public class Validate {
      */
     public static <T extends Collection<?>> T notEmpty(final T collection, final String message, final Object... values) {
         if (collection == null) {
-            throw new NullPointerException(String.format(message, values));
+            throw new NullPointerException(message);//String.format(message, values));
         }
         if (collection.isEmpty()) {
-            throw new IllegalArgumentException(String.format(message, values));
+            throw new IllegalArgumentException(message);//String.format(message, values));
         }
         return collection;
     }
@@ -371,10 +371,10 @@ public class Validate {
      */
     public static <T extends Map<?, ?>> T notEmpty(final T map, final String message, final Object... values) {
         if (map == null) {
-            throw new NullPointerException(String.format(message, values));
+            throw new NullPointerException(message);//String.format(message, values));
         }
         if (map.isEmpty()) {
-            throw new IllegalArgumentException(String.format(message, values));
+            throw new IllegalArgumentException(message);//String.format(message, values));
         }
         return map;
     }
@@ -426,10 +426,10 @@ public class Validate {
      */
     public static <T extends CharSequence> T notEmpty(final T chars, final String message, final Object... values) {
         if (chars == null) {
-            throw new NullPointerException(String.format(message, values));
+            throw new NullPointerException(message);//String.format(message, values));
         }
         if (chars.length() == 0) {
-            throw new IllegalArgumentException(String.format(message, values));
+            throw new IllegalArgumentException(message);//String.format(message, values));
         }
         return chars;
     }
@@ -486,10 +486,10 @@ public class Validate {
      */
     public static <T extends CharSequence> T notBlank(final T chars, final String message, final Object... values) {
         if (chars == null) {
-            throw new NullPointerException(String.format(message, values));
+            throw new NullPointerException(message);//String.format(message, values));
         }
         if (StringHelper.isBlank(chars)) {
-            throw new IllegalArgumentException(String.format(message, values));
+            throw new IllegalArgumentException(message);//String.format(message, values));
         }
         return chars;
     }
@@ -686,7 +686,7 @@ public class Validate {
     public static <T> T[] validIndex(final T[] array, final int index, final String message, final Object... values) {
         notNull(array);
         if (index < 0 || index >= array.length) {
-            throw new IndexOutOfBoundsException(String.format(message, values));
+            throw new IndexOutOfBoundsException(message);//String.format(message, values));
         }
         return array;
     }
@@ -751,7 +751,7 @@ public class Validate {
     public static <T extends Collection<?>> T validIndex(final T collection, final int index, final String message, final Object... values) {
         notNull(collection);
         if (index < 0 || index >= collection.size()) {
-            throw new IndexOutOfBoundsException(String.format(message, values));
+            throw new IndexOutOfBoundsException(message);//String.format(message, values));
         }
         return collection;
     }
@@ -814,7 +814,7 @@ public class Validate {
     public static <T extends CharSequence> T validIndex(final T chars, final int index, final String message, final Object... values) {
         notNull(chars);
         if (index < 0 || index >= chars.length()) {
-            throw new IndexOutOfBoundsException(String.format(message, values));
+            throw new IndexOutOfBoundsException(message);//String.format(message, values));
         }
         return chars;
     }
@@ -902,7 +902,7 @@ public class Validate {
      */
     public static void validState(final boolean expression, final String message, final Object... values) {
         if (!expression) {
-            throw new IllegalStateException(String.format(message, values));
+            throw new IllegalStateException(message);//String.format(message, values));
         }
     }
 
@@ -947,7 +947,7 @@ public class Validate {
      */
     public static void notNaN(final double value, final String message, final Object... values) {
         if (Double.isNaN(value)) {
-            throw new IllegalArgumentException(String.format(message, values));
+            throw new IllegalArgumentException(message);//String.format(message, values));
         }
     }
 
@@ -991,7 +991,7 @@ public class Validate {
      */
     public static void finite(final double value, final String message, final Object... values) {
         if (Double.isNaN(value) || Double.isInfinite(value)) {
-            throw new IllegalArgumentException(String.format(message, values));
+            throw new IllegalArgumentException(message);//String.format(message, values));
         }
     }
 
@@ -1046,7 +1046,7 @@ public class Validate {
     public static <T> void inclusiveBetween(final T start, final T end, final Comparable<T> value, final String message, final Object... values) {
         // TODO when breaking BC, consider returning value
         if (value.compareTo(start) < 0 || value.compareTo(end) > 0) {
-            throw new IllegalArgumentException(String.format(message, values));
+            throw new IllegalArgumentException(message);//String.format(message, values));
         }
     }
 
@@ -1193,7 +1193,7 @@ public class Validate {
     public static <T> void exclusiveBetween(final T start, final T end, final Comparable<T> value, final String message, final Object... values) {
         // TODO when breaking BC, consider returning value
         if (value.compareTo(start) <= 0 || value.compareTo(end) >= 0) {
-            throw new IllegalArgumentException(String.format(message, values));
+            throw new IllegalArgumentException(message);//String.format(message, values));
         }
     }
 
@@ -1284,127 +1284,6 @@ public class Validate {
         // TODO when breaking BC, consider returning value
         if (value <= start || value >= end) {
             throw new IllegalArgumentException(message);
-        }
-    }
-
-    // isInstanceOf
-    //---------------------------------------------------------------------------------
-    /**
-     * Validates that the argument is an instance of the specified class, if not
-     * throws an exception.
-     *
-     * <p>
-     * This method is useful when validating according to an arbitrary class</p>
-     *
-     * <pre>Validate.isInstanceOf(OkClass.class, object);</pre>
-     *
-     * <p>
-     * The message of the exception is &quot;Expected type: {type}, actual:
-     * {obj_type}&quot;</p>
-     *
-     * @param type the class the object must be validated against, not null
-     * @param obj the object to check, null throws an exception
-     * @throws IllegalArgumentException if argument is not of specified class
-     * @see #isInstanceOf(Class, Object, String, Object...)
-     *
-     * @since 3.0
-     */
-    public static void isInstanceOf(final Class<?> type, final Object obj) {
-        // TODO when breaking BC, consider returning obj
-        if (!type.isInstance(obj)) {
-            throw new IllegalArgumentException(String.format(DEFAULT_IS_INSTANCE_OF_EX_MESSAGE, type.getName(),
-                    obj == null ? "null" : obj.getClass().getName()));
-        }
-    }
-
-    /**
-     * <p>
-     * Validate that the argument is an instance of the specified class;
-     * otherwise throwing an exception with the specified message. This method
-     * is useful when validating according to an arbitrary class</p>
-     *
-     * <pre>Validate.isInstanceOf(OkClass.class, object, "Wrong class, object is of class %s",
-     *   object.getClass().getName());</pre>
-     *
-     * @param type the class the object must be validated against, not null
-     * @param obj the object to check, null throws an exception
-     * @param message the {@link String#format(String, Object...)} exception
-     * message if invalid, not null
-     * @param values the optional values for the formatted exception message,
-     * null array not recommended
-     * @throws IllegalArgumentException if argument is not of specified class
-     * @see #isInstanceOf(Class, Object)
-     *
-     * @since 3.0
-     */
-    public static void isInstanceOf(final Class<?> type, final Object obj, final String message, final Object... values) {
-        // TODO when breaking BC, consider returning obj
-        if (!type.isInstance(obj)) {
-            throw new IllegalArgumentException(String.format(message, values));
-        }
-    }
-
-    // isAssignableFrom
-    //---------------------------------------------------------------------------------
-    /**
-     * Validates that the argument can be converted to the specified class, if
-     * not, throws an exception.
-     *
-     * <p>
-     * This method is useful when validating that there will be no casting
-     * errors.</p>
-     *
-     * <pre>Validate.isAssignableFrom(SuperClass.class, object.getClass());</pre>
-     *
-     * <p>
-     * The message format of the exception is &quot;Cannot assign {type} to
-     * {superType}&quot;</p>
-     *
-     * @param superType the class the class must be validated against, not null
-     * @param type the class to check, not null
-     * @throws IllegalArgumentException if type argument is not assignable to
-     * the specified superType
-     * @see #isAssignableFrom(Class, Class, String, Object...)
-     *
-     * @since 3.0
-     */
-    public static void isAssignableFrom(final Class<?> superType, final Class<?> type) {
-        // TODO when breaking BC, consider returning type
-        if (!superType.isAssignableFrom(type)) {
-            throw new IllegalArgumentException(String.format(DEFAULT_IS_ASSIGNABLE_EX_MESSAGE, type == null ? "null" : type.getName(),
-                    superType.getName()));
-        }
-    }
-
-    /**
-     * Validates that the argument can be converted to the specified class, if
-     * not throws an exception.
-     *
-     * <p>
-     * This method is useful when validating if there will be no casting
-     * errors.</p>
-     *
-     * <pre>Validate.isAssignableFrom(SuperClass.class, object.getClass());</pre>
-     *
-     * <p>
-     * The message of the exception is &quot;The validated object can not be
-     * converted to the&quot; followed by the name of the class and
-     * &quot;class&quot;</p>
-     *
-     * @param superType the class the class must be validated against, not null
-     * @param type the class to check, not null
-     * @param message the {@link String#format(String, Object...)} exception
-     * message if invalid, not null
-     * @param values the optional values for the formatted exception message,
-     * null array not recommended
-     * @throws IllegalArgumentException if argument can not be converted to the
-     * specified class
-     * @see #isAssignableFrom(Class, Class)
-     */
-    public static void isAssignableFrom(final Class<?> superType, final Class<?> type, final String message, final Object... values) {
-        // TODO when breaking BC, consider returning type
-        if (!superType.isAssignableFrom(type)) {
-            throw new IllegalArgumentException(String.format(message, values));
         }
     }
 }
