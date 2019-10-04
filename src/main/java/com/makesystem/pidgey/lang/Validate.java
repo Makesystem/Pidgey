@@ -8,7 +8,6 @@ package com.makesystem.pidgey.lang;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * <p>
@@ -904,66 +903,6 @@ public class Validate {
     public static void validState(final boolean expression, final String message, final Object... values) {
         if (!expression) {
             throw new IllegalStateException(String.format(message, values));
-        }
-    }
-
-    // matchesPattern
-    //---------------------------------------------------------------------------------
-    /**
-     * <p>
-     * Validate that the specified argument character sequence matches the
-     * specified regular expression pattern; otherwise throwing an
-     * exception.</p>
-     *
-     * <pre>Validate.matchesPattern("hi", "[a-z]*");</pre>
-     *
-     * <p>
-     * The syntax of the pattern is the one used in the {@link Pattern}
-     * class.</p>
-     *
-     * @param input the character sequence to validate, not null
-     * @param pattern the regular expression pattern, not null
-     * @throws IllegalArgumentException if the character sequence does not match
-     * the pattern
-     * @see #matchesPattern(CharSequence, String, String, Object...)
-     *
-     * @since 3.0
-     */
-    public static void matchesPattern(final CharSequence input, final String pattern) {
-        // TODO when breaking BC, consider returning input
-        if (!Pattern.matches(pattern, input)) {
-            throw new IllegalArgumentException(String.format(DEFAULT_MATCHES_PATTERN_EX, input, pattern));
-        }
-    }
-
-    /**
-     * <p>
-     * Validate that the specified argument character sequence matches the
-     * specified regular expression pattern; otherwise throwing an exception
-     * with the specified message.</p>
-     *
-     * <pre>Validate.matchesPattern("hi", "[a-z]*", "%s does not match %s", "hi" "[a-z]*");</pre>
-     *
-     * <p>
-     * The syntax of the pattern is the one used in the {@link Pattern}
-     * class.</p>
-     *
-     * @param input the character sequence to validate, not null
-     * @param pattern the regular expression pattern, not null
-     * @param message the {@link String#format(String, Object...)} exception
-     * message if invalid, not null
-     * @param values the optional values for the formatted exception message,
-     * null array not recommended
-     * @throws IllegalArgumentException if the character sequence does not match
-     * the pattern
-     * @see #matchesPattern(CharSequence, String)
-     *
-     * @since 3.0
-     */
-    public static void matchesPattern(final CharSequence input, final String pattern, final String message, final Object... values) {
-        // TODO when breaking BC, consider returning input
-        if (!Pattern.matches(pattern, input)) {
-            throw new IllegalArgumentException(String.format(message, values));
         }
     }
 
