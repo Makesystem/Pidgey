@@ -39,7 +39,8 @@ import java.util.Map;
  * @see java.lang.String#format(String, Object...)
  * @author Richeli Vargas
  */
-@SuppressWarnings("UnnecessaryBoxing")
+
+@SuppressWarnings({"UnnecessaryBoxing", "MismatchedReadAndWriteOfArray"})
 public class Validate {
 
     private static final String DEFAULT_NOT_NAN_EX_MESSAGE
@@ -50,7 +51,6 @@ public class Validate {
             = "The value %s is not in the specified exclusive range of %s to %s";
     private static final String DEFAULT_INCLUSIVE_BETWEEN_EX_MESSAGE
             = "The value %s is not in the specified inclusive range of %s to %s";
-    private static final String DEFAULT_MATCHES_PATTERN_EX = "The string %s does not match the pattern %s";
     private static final String DEFAULT_IS_NULL_EX_MESSAGE = "The validated object is null";
     private static final String DEFAULT_IS_TRUE_EX_MESSAGE = "The validated expression is false";
     private static final String DEFAULT_NO_NULL_ELEMENTS_ARRAY_EX_MESSAGE
@@ -106,7 +106,7 @@ public class Validate {
      */
     public static void isTrue(final boolean expression, final String message, final long value) {
         if (!expression) {
-            throw new IllegalArgumentException(String.format(message, Long.valueOf(value)));
+            throw new IllegalArgumentException(message);//String.format(message, Long.valueOf(value)));
         }
     }
 
@@ -136,7 +136,7 @@ public class Validate {
      */
     public static void isTrue(final boolean expression, final String message, final double value) {
         if (!expression) {
-            throw new IllegalArgumentException(String.format(message, Double.valueOf(value)));
+            throw new IllegalArgumentException(message);//String.format(message, Double.valueOf(value)));
         }
     }
 
@@ -555,7 +555,7 @@ public class Validate {
         for (int i = 0; i < array.length; i++) {
             if (array[i] == null) {
                 final Object[] values2 = CollectionHelper.add(values, i, Object[]::new);
-                throw new IllegalArgumentException(String.format(message, values2));
+                throw new IllegalArgumentException(message);//String.format(message, values2));
             }
         }
         return array;
@@ -622,7 +622,7 @@ public class Validate {
         for (final Iterator<?> it = iterable.iterator(); it.hasNext(); i++) {
             if (it.next() == null) {
                 final Object[] values2 = CollectionHelper.add(values, i, Object[]::new);
-                throw new IllegalArgumentException(String.format(message, values2));
+                throw new IllegalArgumentException(message);//String.format(message, values2));
             }
         }
         return iterable;
@@ -1017,7 +1017,11 @@ public class Validate {
     public static <T> void inclusiveBetween(final T start, final T end, final Comparable<T> value) {
         // TODO when breaking BC, consider returning value
         if (value.compareTo(start) < 0 || value.compareTo(end) > 0) {
-            throw new IllegalArgumentException(String.format(DEFAULT_INCLUSIVE_BETWEEN_EX_MESSAGE, value, start, end));
+            throw new IllegalArgumentException(
+                    DEFAULT_INCLUSIVE_BETWEEN_EX_MESSAGE
+                            .replaceFirst("%s", String.valueOf(value))
+                            .replaceFirst("%s", String.valueOf(start))
+                            .replaceFirst("%s", String.valueOf(end)));//String.format(DEFAULT_INCLUSIVE_BETWEEN_EX_MESSAGE, value, start, end));
         }
     }
 
@@ -1068,7 +1072,10 @@ public class Validate {
     public static void inclusiveBetween(final long start, final long end, final long value) {
         // TODO when breaking BC, consider returning value
         if (value < start || value > end) {
-            throw new IllegalArgumentException(String.format(DEFAULT_INCLUSIVE_BETWEEN_EX_MESSAGE, value, start, end));
+            throw new IllegalArgumentException(DEFAULT_INCLUSIVE_BETWEEN_EX_MESSAGE
+                    .replaceFirst("%s", String.valueOf(value))
+                    .replaceFirst("%s", String.valueOf(start))
+                    .replaceFirst("%s", String.valueOf(end)));//String.format(DEFAULT_INCLUSIVE_BETWEEN_EX_MESSAGE, value, start, end));
         }
     }
 
@@ -1114,7 +1121,10 @@ public class Validate {
     public static void inclusiveBetween(final double start, final double end, final double value) {
         // TODO when breaking BC, consider returning value
         if (value < start || value > end) {
-            throw new IllegalArgumentException(String.format(DEFAULT_INCLUSIVE_BETWEEN_EX_MESSAGE, value, start, end));
+            throw new IllegalArgumentException(DEFAULT_INCLUSIVE_BETWEEN_EX_MESSAGE
+                    .replaceFirst("%s", String.valueOf(value))
+                    .replaceFirst("%s", String.valueOf(start))
+                    .replaceFirst("%s", String.valueOf(end)));//String.format(DEFAULT_INCLUSIVE_BETWEEN_EX_MESSAGE, value, start, end));
         }
     }
 
@@ -1164,7 +1174,10 @@ public class Validate {
     public static <T> void exclusiveBetween(final T start, final T end, final Comparable<T> value) {
         // TODO when breaking BC, consider returning value
         if (value.compareTo(start) <= 0 || value.compareTo(end) >= 0) {
-            throw new IllegalArgumentException(String.format(DEFAULT_EXCLUSIVE_BETWEEN_EX_MESSAGE, value, start, end));
+            throw new IllegalArgumentException(DEFAULT_EXCLUSIVE_BETWEEN_EX_MESSAGE
+                    .replaceFirst("%s", String.valueOf(value))
+                    .replaceFirst("%s", String.valueOf(start))
+                    .replaceFirst("%s", String.valueOf(end)));//String.format(DEFAULT_EXCLUSIVE_BETWEEN_EX_MESSAGE, value, start, end));
         }
     }
 
@@ -1214,7 +1227,10 @@ public class Validate {
     public static void exclusiveBetween(final long start, final long end, final long value) {
         // TODO when breaking BC, consider returning value
         if (value <= start || value >= end) {
-            throw new IllegalArgumentException(String.format(DEFAULT_EXCLUSIVE_BETWEEN_EX_MESSAGE, value, start, end));
+            throw new IllegalArgumentException(DEFAULT_EXCLUSIVE_BETWEEN_EX_MESSAGE
+                    .replaceFirst("%s", String.valueOf(value))
+                    .replaceFirst("%s", String.valueOf(start))
+                    .replaceFirst("%s", String.valueOf(end)));//String.format(DEFAULT_EXCLUSIVE_BETWEEN_EX_MESSAGE, value, start, end));
         }
     }
 
@@ -1259,7 +1275,10 @@ public class Validate {
     public static void exclusiveBetween(final double start, final double end, final double value) {
         // TODO when breaking BC, consider returning value
         if (value <= start || value >= end) {
-            throw new IllegalArgumentException(String.format(DEFAULT_EXCLUSIVE_BETWEEN_EX_MESSAGE, value, start, end));
+            throw new IllegalArgumentException(DEFAULT_EXCLUSIVE_BETWEEN_EX_MESSAGE
+                    .replaceFirst("%s", String.valueOf(value))
+                    .replaceFirst("%s", String.valueOf(start))
+                    .replaceFirst("%s", String.valueOf(end)));//String.format(DEFAULT_EXCLUSIVE_BETWEEN_EX_MESSAGE, value, start, end));
         }
     }
 

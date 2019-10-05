@@ -550,6 +550,7 @@ public class StringHelper {
         if (cs instanceof String) {
             return ((String) cs).indexOf(searchChar, start);
         }
+        
         final int sz = cs.length();
         if (start < 0) {
             start = 0;

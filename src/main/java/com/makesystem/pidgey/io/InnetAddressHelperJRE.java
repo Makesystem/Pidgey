@@ -28,6 +28,20 @@ public class InnetAddressHelperJRE {
         }, "Getting local ip...").start();
     }
 
+    public static void main(String[] args) {
+        getPublicIp(new GetIpHandler() {
+            @Override
+            public void onSuccess(String ip) {
+                System.out.println("IP: " + ip);
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                throwable.printStackTrace();
+            }
+        });
+    }
+    
     public static void getPublicIp(final GetIpHandler handler) {
         new Thread(() -> {
             try {
