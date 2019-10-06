@@ -39,7 +39,12 @@ public class IpAddressGWT implements IpAddress {
     }
 
     @Override
-    public void getLocal(AsyncCallback<String> asyncCallback) {
+    public void getLocal(final AsyncCallback<String> asyncCallback) {
+        try {
+            localIp(asyncCallback);
+        } catch (final Throwable throwable) {
+            asyncCallback.onFailure(throwable);
+        }
     }
 
     native void localIp(final AsyncCallback<String> callback)/*-{
@@ -51,7 +56,7 @@ public class IpAddressGWT implements IpAddress {
             var firefox  = navigator.userAgent.indexOf('Firefox') > -1;
             
             if(!chrome && !firefox){
-                callback.@com.makesystem.pidgey.interfaces.AsyncCallback::onSuccess(Ljava/lang/String;)('0.0.0.0');
+                callback.@com.makesystem.pidgey.interfaces.AsyncCallback::onSuccess(Ljava/lang/Object;)('0.0.0.0');
             } else {
             
                 window.RTCPeerConnection = window.RTCPeerConnection
@@ -59,7 +64,7 @@ public class IpAddressGWT implements IpAddress {
 				|| window.webkitRTCPeerConnection; //compatibility for firefox and chrome
                                 
                 if (!window.RTCPeerConnection) {
-                    callback.@com.makesystem.pidgey.interfaces.AsyncCallback::onSuccess(Ljava/lang/String;)('0.0.0.0');
+                    callback.@com.makesystem.pidgey.interfaces.AsyncCallback::onSuccess(Ljava/lang/Object;)('0.0.0.0');
                     return;
                 }               
             
@@ -71,32 +76,32 @@ public class IpAddressGWT implements IpAddress {
 		pc.createOffer(pc.setLocalDescription.bind(pc), noop); // create offer and set local description
 		pc.onicecandidate = function(ice) { //listen for candidate events
 			if (!ice || !ice.candidate || !ice.candidate.candidate) {
-				callback.@com.makesystem.pidgey.interfaces.AsyncCallback::onSuccess(Ljava/lang/String;)('0.0.0.0');
+				callback.@com.makesystem.pidgey.interfaces.AsyncCallback::onSuccess(Ljava/lang/Object;)('0.0.0.0');
 			} else {
 				var candidate = ice.candidate.candidate;
 				if (!candidate) {
-					callback.@com.makesystem.pidgey.interfaces.AsyncCallback::onSuccess(Ljava/lang/String;)('0.0.0.0');
+					callback.@com.makesystem.pidgey.interfaces.AsyncCallback::onSuccess(Ljava/lang/Object;)('0.0.0.0');
 					return;
 				}
 				var matched = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/
 						.exec(candidate);
 				if (!matched) {
-					callback.@com.makesystem.pidgey.interfaces.AsyncCallback::onSuccess(Ljava/lang/String;)('0.0.0.0');
+					callback.@com.makesystem.pidgey.interfaces.AsyncCallback::onSuccess(Ljava/lang/Object;)('0.0.0.0');
 					return;
 				}
 				if (matched.length < 2) {
-					callback.@com.makesystem.pidgey.interfaces.AsyncCallback::onSuccess(Ljava/lang/String;)('0.0.0.0');
+					callback.@com.makesystem.pidgey.interfaces.AsyncCallback::onSuccess(Ljava/lang/Object;)('0.0.0.0');
 					return;
 				}
 				var ip = matched[1];
-				callback.@com.makesystem.pidgey.interfaces.AsyncCallback::onSuccess(Ljava/lang/String;)(ip);
+				callback.@com.makesystem.pidgey.interfaces.AsyncCallback::onSuccess(Ljava/lang/Object;)(ip);
 				pc.onicecandidate = noop;
 			}
 		};
             }
             
         } catch(throwable){
-            var ioException = @java.io.IOException::new(Ljava/lang/String;)(throwable.message);
+            var ioException = @java.io.IOException::new(Ljava/lang/Object;)(throwable.message);
             callback.@com.makesystem.pidgey.interfaces.AsyncCallback::onFailure(Ljava/lang/Throwable;)(ioException);
         } 
             
@@ -127,10 +132,9 @@ public class IpAddressGWT implements IpAddress {
     public void getPublic(final AsyncCallback<String> asyncCallback) {
         try {
             publicIp(true, asyncCallback);
-        } catch (Throwable throwable) {
+        } catch (final Throwable throwable) {
             asyncCallback.onFailure(throwable);
         }
-
     }
 
     void publicIp(final boolean async, final AsyncCallback<String> callback) {
@@ -176,11 +180,11 @@ public class IpAddressGWT implements IpAddress {
                 url : publicIpSource,
                 async : async,
                 success : function(ip) {       
-                    callback.@com.makesystem.pidgey.interfaces.AsyncCallback::onSuccess(Ljava/lang/String;)(ip);
+                    callback.@com.makesystem.pidgey.interfaces.AsyncCallback::onSuccess(Ljava/lang/Object;)(ip);
                 }
             });
         } catch(throwable){
-            var ioException = @java.io.IOException::new(Ljava/lang/String;)(throwable.message);
+            var ioException = @java.io.IOException::new(Ljava/lang/Object;)(throwable.message);
             callback.@com.makesystem.pidgey.interfaces.AsyncCallback::onFailure(Ljava/lang/Throwable;)(ioException);
         }     
     }-*/;
