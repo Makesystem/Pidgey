@@ -7,7 +7,6 @@ package com.makesystem.pidgey.io.net;
 
 import com.makesystem.pidgey.interfaces.AsyncCallback;
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  *
@@ -20,24 +19,23 @@ public class IpAddressGWT implements IpAddress {
 
     @Override
     public String getLocal() throws IOException {
-        final AtomicReference<String> reference = new AtomicReference<>();
-        final AtomicReference<Throwable> throwable = new AtomicReference<>();
+        final AsyncResponse<String> response = new AsyncResponse<>();
         localIp(new AsyncCallback<String>() {
             @Override
             public void onSuccess(final String ip) {
-                reference.set(ip);
+                response.setSuccess(ip);
             }
 
             @Override
-            public void onFailure(Throwable caught) {
-                throwable.set(caught);
+            public void onFailure(final Throwable caught) {
+                response.setFailure(caught);
             }
         });
         
-        if(throwable.get() != null)
-            throw new IOException(throwable.get());
+        if(response.getFailure() != null)
+            throw new IOException(response.getFailure());
         
-        return reference.get();
+        return response.getSuccess();
     }
 
     @Override
@@ -106,24 +104,23 @@ public class IpAddressGWT implements IpAddress {
 
     @Override
     public String getPublic() throws IOException {
-        final AtomicReference<String> reference = new AtomicReference<>();
-        final AtomicReference<Throwable> throwable = new AtomicReference<>();
+        final AsyncResponse<String> response = new AsyncResponse<>();
         publicIp(false, new AsyncCallback<String>() {
             @Override
             public void onSuccess(final String ip) {
-                reference.set(ip);
+                response.setSuccess(ip);
             }
 
             @Override
-            public void onFailure(Throwable caught) {
-                throwable.set(caught);
+            public void onFailure(final Throwable caught) {
+                response.setFailure(caught);
             }
         });
         
-        if(throwable.get() != null)
-            throw new IOException(throwable.get());
+        if(response.getFailure() != null)
+            throw new IOException(response.getFailure());
         
-        return reference.get();
+        return response.getSuccess();
     }
 
     @Override
