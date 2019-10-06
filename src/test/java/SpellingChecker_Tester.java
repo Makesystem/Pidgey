@@ -1,5 +1,5 @@
 
-import com.makesystem.pidgey.monitor.MonitorHelper;
+import com.makesystem.pidgey.monitor.Monitor;
 import com.makesystem.pidgey.tester.AbstractTester;
 import com.makesystem.pidgey.util.LinkedMap;
 import java.util.Collection;
@@ -262,7 +262,7 @@ public class SpellingChecker_Tester extends AbstractTester {
             final SpellChecker spellCheck = new SpellChecker();
             spellCheck.initialize("/mailing_columns.dictionary");
 
-            MonitorHelper.execute(()
+            Monitor.MONITOR_JRE.exec(()
                     -> expected.entrySet().stream().forEach(entry -> {
 
                         final String word = entry.getKey().replaceAll("[^a-zA-Z]", "");
@@ -280,7 +280,7 @@ public class SpellingChecker_Tester extends AbstractTester {
                     })
             ).print();
 
-            MonitorHelper.execute(()
+            Monitor.MONITOR_JRE.exec(()
                     -> expected.entrySet().stream().forEach(entry -> {
 
                         final String word = entry.getKey().replaceAll("[^a-zA-Z]", "");
@@ -298,7 +298,7 @@ public class SpellingChecker_Tester extends AbstractTester {
                     })
             ).print();
 
-            MonitorHelper.execute(()
+            Monitor.MONITOR_JRE.exec(()
                     -> expected.entrySet().stream().forEach(entry -> {
 
                         final String word = entry.getKey();

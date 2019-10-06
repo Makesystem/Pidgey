@@ -42,10 +42,11 @@ public class InnetAddressHelperJRE {
         });
     }
     
+    
     public static void getPublicIp(final GetIpHandler handler) {
         new Thread(() -> {
             try {
-                final URL whatismyip = new URL("http://checkip.amazonaws.com");
+                final URL whatismyip = new URL("https://www.myexternalip.com/raw");
                 BufferedReader in = null;
                 try {
                     in = new BufferedReader(new InputStreamReader(

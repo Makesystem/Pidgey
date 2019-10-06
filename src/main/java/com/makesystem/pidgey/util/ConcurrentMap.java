@@ -5,6 +5,7 @@
  */
 package com.makesystem.pidgey.util;
 
+import com.makesystem.pidgey.interfaces.Generator;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**

@@ -9,6 +9,8 @@ package com.makesystem.pidgey.monitor;
  *
  * @author Richeli.vargas
  */
-public interface Runnable {
-    public void run() throws Throwable;
+public enum MonitorStatus {    
+    SUCCESS,
+    RUNNING,
+    ERROR    
 }

@@ -7,9 +7,9 @@ package com.makesystem.pidgey.tester;
 
 import com.makesystem.pidgey.console.ConsoleColor;
 import com.makesystem.pidgey.lang.ObjectHelper;
-import com.makesystem.pidgey.monitor.MonitorHelper;
-import com.makesystem.pidgey.monitor.RunnableResult;
-import com.makesystem.pidgey.monitor.RunnableStatus;
+import com.makesystem.pidgey.monitor.Monitor;
+import com.makesystem.pidgey.monitor.MonitorResult;
+import com.makesystem.pidgey.monitor.MonitorStatus;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
@@ -38,12 +38,12 @@ public abstract class AbstractTester {
 
     public final <V> void Assert(final MethodExecution<V> methodExecution, final V expectedValue) {
         final Collection<V> buffer = new LinkedHashSet();
-        final RunnableResult result = MonitorHelper.execute(() -> buffer.add(methodExecution.exec()));
+        final MonitorResult result = Monitor.MONITOR_JRE.exec(() -> buffer.add(methodExecution.exec()));
         assertResult(buffer.isEmpty() ? null : buffer.iterator().next(), expectedValue, result).print();
         System.gc();
     }
 
-    protected final <V> RunnableResult assertResult(final V valueObtained, final V expectedValue, final RunnableResult result) {
+    protected final <V> MonitorResult assertResult(final V valueObtained, final V expectedValue, final MonitorResult result) {
 
         switch (result.getStatus()) {
             case SUCCESS:
@@ -63,11 +63,12 @@ public abstract class AbstractTester {
                             .append(ConsoleColor.RESET.getColor())
                             .append("]");
 
-                    return new RunnableResult(
+                    return new MonitorResult(
+                            "Assert Result",
                             result.getStartAt(), 
                             result.getEndAt(), 
                             result.getDuration(), 
-                            RunnableStatus.ERROR, 
+                            MonitorStatus.ERROR, 
                             new RuntimeException(error.toString()));
                 }
 

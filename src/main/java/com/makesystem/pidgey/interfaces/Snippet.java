@@ -3,16 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.makesystem.pidgey.util;
+package com.makesystem.pidgey.interfaces;
 
 /**
  *
- * @author riche
- * @param <V>
+ * @author Richeli.vargas
  */
-@FunctionalInterface
-public interface Generator<V> {
-    
-    public V get();
-    
+public interface Snippet {
+    public void exec() throws Throwable;
 }

@@ -9,28 +9,39 @@ import com.makesystem.pidgey.console.ConsoleColor;
 import com.makesystem.pidgey.console.Console;
 import com.makesystem.pidgey.console.ConsoleRow;
 import com.makesystem.pidgey.console.ConsoleValue;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  *
  * @author Richeli.vargas
  */
-public class RunnableResult {
+public class MonitorResult {
 
+    private final String id = UUID.randomUUID().toString();
+    private int num = 0;
+    private String title;
     private long startAt;
     private long endAt;
     private long duration;
-    private RunnableStatus status;
+    private MonitorStatus status;
     private Throwable throwable;
 
-    public RunnableResult() {
+    public MonitorResult() {
     }
 
-    public RunnableResult(
-            final long startAt, 
-            final long endAt, 
-            final long duration, 
-            final RunnableStatus status, 
+    public MonitorResult(String title) {
+        this.title = title;
+    }
+
+    public MonitorResult(
+            final String title,
+            final long startAt,
+            final long endAt,
+            final long duration,
+            final MonitorStatus status,
             final Throwable throwable) {
+        this.title = title;
         this.startAt = startAt;
         this.endAt = endAt;
         this.duration = duration;
@@ -38,42 +49,93 @@ public class RunnableResult {
         this.throwable = throwable;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public int getNum() {
+        return num;
+    }
+
+    public MonitorResult setNum(final int num) {
+        this.num = num;
+        return this;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public MonitorResult setTitle(String title) {
+        this.title = title;
+        return this;
+    }
+
     public long getStartAt() {
         return startAt;
     }
 
-    protected void setStartAt(long startAt) {
+    protected MonitorResult setStartAt(long startAt) {
         this.startAt = startAt;
         this.duration = this.endAt - this.startAt;
+        return this;
     }
 
     public long getEndAt() {
         return endAt;
     }
 
-    protected void setEndAt(long endAt) {
+    protected MonitorResult setEndAt(long endAt) {
         this.endAt = endAt;
         this.duration = this.endAt - this.startAt;
+        return this;
     }
 
     public long getDuration() {
         return duration;
     }
 
-    public RunnableStatus getStatus() {
+    public MonitorStatus getStatus() {
         return status;
     }
 
-    protected void setStatus(RunnableStatus status) {
+    protected MonitorResult setStatus(MonitorStatus status) {
         this.status = status;
+        return this;
     }
 
     public Throwable getError() {
         return throwable;
     }
 
-    protected void setError(Throwable throwable) {
+    protected MonitorResult setError(Throwable throwable) {
         this.throwable = throwable;
+        return this;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.id);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final MonitorResult other = (MonitorResult) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return true;
     }
 
     @SuppressWarnings("CallToPrintStackTrace")
@@ -114,6 +176,7 @@ public class RunnableResult {
         final ConsoleRow titleRow = new ConsoleRow(startAtTitle, endAtTitle, durationTitle, statusTitle);
         titleRow.setColors(ConsoleColor.BLACK_BOLD);
 
+        Console.println(title, ConsoleColor.BLACK);
         Console.println(titleRow);
         Console.printDivider();
         Console.println(startAtValue, endAtValue, durationValue, statusValue);

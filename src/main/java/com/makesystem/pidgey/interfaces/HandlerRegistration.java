@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.makesystem.pidgey.monitor;
+package com.makesystem.pidgey.interfaces;
 
 /**
  *
  * @author Richeli.vargas
  */
-public enum RunnableStatus {    
-    SUCCESS,
-    RUNNING,
-    ERROR    
+public interface HandlerRegistration {
+ 
+    public void remove();
+    
 }
