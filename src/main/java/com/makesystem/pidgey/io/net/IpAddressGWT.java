@@ -101,7 +101,7 @@ public class IpAddressGWT implements IpAddress {
             }
             
         } catch(throwable){
-            var ioException = @java.io.IOException::new(Ljava/lang/Object;)(throwable.message);
+            var ioException = @java.io.IOException::new(Ljava/lang/String;)(throwable.message);
             callback.@com.makesystem.pidgey.interfaces.AsyncCallback::onFailure(Ljava/lang/Throwable;)(ioException);
         } 
             
@@ -184,7 +184,7 @@ public class IpAddressGWT implements IpAddress {
                 }
             });
         } catch(throwable){
-            var ioException = @java.io.IOException::new(Ljava/lang/Object;)(throwable.message);
+            var ioException = @java.io.IOException::new(Ljava/lang/String;)(throwable.message);
             callback.@com.makesystem.pidgey.interfaces.AsyncCallback::onFailure(Ljava/lang/Throwable;)(ioException);
         }     
     }-*/;
