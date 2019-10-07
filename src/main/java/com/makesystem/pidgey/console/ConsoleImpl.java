@@ -298,11 +298,15 @@ public class ConsoleImpl {
     }
 
     protected final static void jre_console(final Object data) {
-        System.out.println(data);
+        if (data != null) {
+            System.out.println(data.toString());
+        }
     }
 
     protected final static native void gwt_console(final Object data) /*-{
-        console.log(data);
+        if(data) {
+            console.log(data.toString().replace('\\x1b[', '\x1b['));
+        }    
     }-*/;
 
 }
