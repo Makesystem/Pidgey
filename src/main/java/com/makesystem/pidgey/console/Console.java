@@ -5,6 +5,7 @@
  */
 package com.makesystem.pidgey.console;
 
+import com.makesystem.pidgey.monitor.Monitor;
 import java.util.Date;
 import java.util.function.Consumer;
 
@@ -28,13 +29,28 @@ public interface Console {
         $.log(text, values);
     }
 
+    public static void log(final String text, final Object[][] values) {
+        $.log(text, values);
+    }
     
     
     public static void main(String[] args) {
 
-        final String value = "{s}Teste {s}{s} aqui {d} ali {b}";
+        final String value = "{s}\t{i}\t{d}";
 
-        Console.log("Name: {s} \t Age: {i}", "Richeli Vargas", 30);
-        Console.log("Name: {s} \t Age: {i}", "Patrícia Bays", 25);
+        final Object[][] values = {
+            {"Nome", "{ignore}Idade", "{ignore}Data"},
+            {"Richeli Trindade de Vargas", 30, new Date()},
+            {"Patrícia Bays", 25, new Date()},
+            {"João", 5, new Date()},
+        };
+        
+        Monitor.MONITOR_JRE.exec(() -> Console.log(value, "Richeli Trindade de Vargas", 30, new Date())).print();
+        Monitor.MONITOR_JRE.exec(() -> Console.log(value, "Richeli Trindade de Vargas", 30, new Date())).print();
+        Monitor.MONITOR_JRE.exec(() -> Console.log(value, "Richeli Trindade de Vargas", 30, new Date())).print();
+        
+        Monitor.MONITOR_JRE.exec(() -> Console.log(value, values)).print();
+        Monitor.MONITOR_JRE.exec(() -> Console.log(value, values)).print();
+        Monitor.MONITOR_JRE.exec(() -> Console.log(value, values)).print();
     }
 }

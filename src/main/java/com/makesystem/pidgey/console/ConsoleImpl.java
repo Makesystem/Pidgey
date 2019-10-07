@@ -5,6 +5,7 @@
  */
 package com.makesystem.pidgey.console;
 
+import com.makesystem.pidgey.lang.StringHelper;
 import com.makesystem.pidgey.system.Environment;
 import java.util.function.Consumer;
 
@@ -44,46 +45,42 @@ public class ConsoleImpl {
     }
 
     public void log(final String text, final Object... values) {
-        this.writer.accept(format(text, values));
+        log(text, new Object[][]{values});
     }
-    
-    public void log(final String text, final Object[][] values) {
-        
-        final Integer[] columns = new Integer[values[0].length];
-        
-        for(Object[] row : values){
+
+    public void log(final String text, final Object[]... values) {
+
+        final ConsoleFlag[] flags = ConsoleFlag.fromText(text);
+        final Integer[] maxValues = new Integer[flags.length];
+        final String[][] formattedValues = new String[values.length][flags.length];
+
+        for (int column = 0; column < maxValues.length; column++) {
+            maxValues[column] = 0;
         }
-    }
 
-    protected static String format(final String text, final Object... values) {
+        for (int row = 0; row < values.length; row++) {
+            for (int column = 0; column < flags.length; column++) {
+                final String value = flags[column].apply(values[row][column]);
+                maxValues[column] = Math.max(maxValues[column], value.length());
+                formattedValues[row][column] = value;
+            }
+        }
 
-        String finalValue = text;
-        String temp = text;
+        for (int row = 0; row < values.length; row++) {
+            String toWrite = text;
+            for (int column = 0; column < flags.length; column++) {
 
-        int indexOfStart = temp.indexOf("{");
-        int indexOfEnd = temp.indexOf("}") + 1;
-        int value = 0;
+                final ConsoleFlag flag = flags[column];
+                final int length = maxValues[column];
+                final String value = formattedValues[row][column];
+                final String finalValue = StringHelper.appendAtEnd(value, StringHelper.SPACE, length);
 
-        while (indexOfStart > -1 && indexOfEnd > 0) {
-
-            final String flag = temp.substring(indexOfStart, indexOfEnd);
-            final ConsoleFlag consoleFlag = ConsoleFlag.fromFlag(flag);
-
-            if (consoleFlag != null) {
-                // Replace flag by valeu
-                finalValue = finalValue.replaceFirst(forRegex(flag), consoleFlag.apply(values[value++]));
+                toWrite = flag.replace(toWrite, finalValue);
             }
 
-            temp = temp.substring(indexOfEnd);
-            indexOfStart = temp.indexOf("{");
-            indexOfEnd = temp.indexOf("}") + 1;
+            // Write the value
+            writer.accept(toWrite);
         }
-
-        return finalValue;
-    }
-
-    protected final static String forRegex(final String flag) {
-        return flag.replace("{", "\\{").replace("}", "\\}");
     }
 
     protected final static Consumer<Object> discovery() {

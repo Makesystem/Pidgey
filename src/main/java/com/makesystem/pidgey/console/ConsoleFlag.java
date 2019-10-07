@@ -8,7 +8,9 @@ package com.makesystem.pidgey.console;
 import com.makesystem.pidgey.formatation.NumericFormat;
 import com.makesystem.pidgey.formatation.TimeFormat;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.function.Function;
 
 /**
@@ -91,12 +93,19 @@ public enum ConsoleFlag {
             ? TimeFormat.format((Date) value, TimeFormat.DATE_TIME_PATTERN)
             : TimeFormat.format((Long) value, TimeFormat.DATE_TIME_PATTERN));
 
+    public static final String IGNORE = "{ignore}";
     private final String flag;
     private final Function<Object, String> mapper;
 
     private ConsoleFlag(final String flag, final Function<Object, String> mapper) {
         this.flag = flag;
-        this.mapper = mapper;
+        this.mapper = value -> {
+            if (value != null && value.toString().startsWith(IGNORE)) {
+                return value.toString().replaceFirst("\\{ignore\\}", "");
+            } else {
+                return mapper.apply(value);
+            }
+        };
     }
 
     public String getFlag() {
@@ -107,9 +116,46 @@ public enum ConsoleFlag {
         return mapper.apply(value);
     }
 
+    public String replace(final String text, final String value){
+        return text.replaceFirst(forRegex(flag), value);
+    }
+    
+    public String applyAndReplace(final String text, final Object object){
+        return replace(text, apply(object));
+    }
+    
+    protected final String forRegex(final String flag) {
+        return flag.replace("{", "\\{").replace("}", "\\}");
+    }
+    
     public static ConsoleFlag fromFlag(final String flag) {
         return Arrays.stream(values())
                 .filter(value -> value.getFlag().equalsIgnoreCase(flag))
                 .findAny().orElse(null);
+    }
+
+    public static ConsoleFlag[] fromText(final String text) {
+
+        String temp = text;
+
+        int indexOfStart = temp.indexOf("{");
+        int indexOfEnd = temp.indexOf("}") + 1;
+
+        final Collection<ConsoleFlag> flags = new LinkedList<>();
+        while (indexOfStart > -1 && indexOfEnd > 0) {
+
+            final String flag = temp.substring(indexOfStart, indexOfEnd);
+            final ConsoleFlag consoleFlag = ConsoleFlag.fromFlag(flag);
+
+            if (consoleFlag != null) {
+                flags.add(consoleFlag);
+            }
+
+            temp = temp.substring(indexOfEnd);
+            indexOfStart = temp.indexOf("{");
+            indexOfEnd = temp.indexOf("}") + 1;
+        }
+
+        return flags.stream().toArray(ConsoleFlag[]::new);
     }
 }
