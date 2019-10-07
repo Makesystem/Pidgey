@@ -3,11 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.makesystem.pidgey.console;
+package com.makesystem.pidgey.console.old.base;
 
-import com.makesystem.pidgey.console.base.AbstractPrintfSupport;
+import com.makesystem.pidgey.console.ConsoleColor;
+import com.makesystem.pidgey.console.old.base.AbstractPrintfSupport;
 import com.makesystem.pidgey.formatation.NumericFormat;
 import com.makesystem.pidgey.formatation.TimeFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -15,19 +17,6 @@ import java.util.Date;
  * @author Richeli.vargas
  */
 public class ConsoleValue extends AbstractPrintfSupport {
-
-    private static final String DATE_PATTERN
-            = TimeFormat.Patterns.YEAR + "/"
-            + TimeFormat.Patterns.MONTH + "/"
-            + TimeFormat.Patterns.DAY;
-    private static final String TIME_PATTERN
-            = TimeFormat.Patterns.HOURS + ":"
-            + TimeFormat.Patterns.MINUTES + ":"
-            + TimeFormat.Patterns.SECONDS + ":"
-            + TimeFormat.Patterns.MILLIS;
-    private static final String DATE_TIME_PATTERN
-            = DATE_PATTERN + " "
-            + TIME_PATTERN;
 
     public static enum Type {
         TEXT, 
@@ -152,18 +141,18 @@ public class ConsoleValue extends AbstractPrintfSupport {
                     break;
                 case DATE:
                     asString = value instanceof Date
-                            ? TimeFormat.format((Date) value, DATE_PATTERN)
-                            : TimeFormat.format((Long) value, DATE_PATTERN);
+                            ? TimeFormat.format((Date) value, TimeFormat.DATE_PATTERN)
+                            : TimeFormat.format((Long) value, TimeFormat.DATE_PATTERN);
                     break;
                 case TIME:
                     asString = value instanceof Date
-                            ? TimeFormat.format((Date) value, TIME_PATTERN)
-                            : TimeFormat.format((Long) value, TIME_PATTERN);
+                            ? TimeFormat.format((Date) value, TimeFormat.TIME_PATTERN)
+                            : TimeFormat.format((Long) value, TimeFormat.TIME_PATTERN);
                     break;
                 case DATE_TIME:
                     asString = value instanceof Date
-                            ? TimeFormat.format((Date) value, DATE_TIME_PATTERN)
-                            : TimeFormat.format((Long) value, DATE_TIME_PATTERN);
+                            ? TimeFormat.format((Date) value, TimeFormat.DATE_TIME_PATTERN)
+                            : TimeFormat.format((Long) value, TimeFormat.DATE_TIME_PATTERN);
                     break;
                 case TEXT:
                 default:
@@ -171,5 +160,12 @@ public class ConsoleValue extends AbstractPrintfSupport {
             }
         }
         return asString;
+    }
+    
+    public static void main(String[] args) {
+        System.out.println(" \033[0;37m \033[41m Hello \033[0;30m World");
+        
+        System.out.println("%c Hello %c World");
+        
     }
 }

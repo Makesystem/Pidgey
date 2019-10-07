@@ -1,7 +1,7 @@
 
-import com.makesystem.pidgey.console.Console;
+import com.makesystem.pidgey.console.old.base.Console__OLD;
 import com.makesystem.pidgey.console.ConsoleColor;
-import com.makesystem.pidgey.console.ConsoleValue;
+import com.makesystem.pidgey.console.old.base.ConsoleValue;
 import com.makesystem.pidgey.formatation.TimeFormat;
 import com.makesystem.pidgey.tester.AbstractTester;
 import com.makesystem.pidgey.thread.SchedulePool;
@@ -60,7 +60,7 @@ public class Thread_Tester extends AbstractTester {
     ScheduledFuture scheduleWithFixedDelay;
 
     void testSchedulePool() {
-        printTime("Start at", ConsoleColor.BLACK_BOLD);
+        printTime("Start at", ConsoleColor.BLACK);
         final SchedulePool schedulePool = new SchedulePool();
         schedulePool.schedule(()
                 -> printTime("schedule", ConsoleColor.CYAN), 4, TimeUnit.SECONDS);
@@ -85,10 +85,10 @@ public class Thread_Tester extends AbstractTester {
     void printTime(final String title, final ConsoleColor color) {
         final long time = System.currentTimeMillis();
         final String timeFormated = TimeFormat.format(time, TimeFormat.Patterns.Built.DATE_FULL_TIME);
-        Console.println(
+        Console__OLD.println(
                 new ConsoleValue(title + ": ", 30, color),
                 new ConsoleValue(timeFormated, ConsoleColor.BLUE),
-                new ConsoleValue(" | " + time, ConsoleColor.BLACK_BOLD));
+                new ConsoleValue(" | " + time, ConsoleColor.BLACK));
     }
 
     @Override

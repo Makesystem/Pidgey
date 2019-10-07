@@ -6,9 +6,11 @@
 package com.makesystem.pidgey.monitor;
 
 import com.makesystem.pidgey.console.ConsoleColor;
-import com.makesystem.pidgey.console.Console;
-import com.makesystem.pidgey.console.ConsoleRow;
-import com.makesystem.pidgey.console.ConsoleValue;
+import com.makesystem.pidgey.console.old.base.Console__OLD;
+import com.makesystem.pidgey.console.old.base.ConsoleRow;
+import com.makesystem.pidgey.console.old.base.ConsoleValue;
+import com.makesystem.pidgey.formatation.TimeFormat;
+import com.makesystem.pidgey.lang.StringHelper;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -139,8 +141,25 @@ public class MonitorResult {
     }
 
     @SuppressWarnings("CallToPrintStackTrace")
-    public void print() {
-
+    public void print() {   
+        
+        final StringBuilder builder = new StringBuilder();
+        // Title
+        builder.append("Start at").append(StringHelper.TB).append(StringHelper.TB).append(StringHelper.TB);
+        builder.append("End at").append(StringHelper.TB).append(StringHelper.TB).append(StringHelper.TB).append(StringHelper.TB);
+        builder.append("Duration").append(StringHelper.TB);
+        builder.append("Status").append(StringHelper.LF);
+        
+        // Values
+        builder.append(TimeFormat.format(startAt, TimeFormat.DATE_TIME_PATTERN)).append(StringHelper.TB).append(StringHelper.TB);
+        builder.append(TimeFormat.format(endAt, TimeFormat.DATE_TIME_PATTERN)).append(StringHelper.TB).append(StringHelper.TB);
+        builder.append(TimeFormat.millis(duration)).append(StringHelper.TB);
+        builder.append(status).append(StringHelper.LF);
+    
+        System.out.println(builder.toString());
+    }
+    
+    void x () {    
         final ConsoleColor statusColor;
         switch (status) {
             case SUCCESS:
@@ -153,7 +172,7 @@ public class MonitorResult {
                 statusColor = ConsoleColor.BLUE;
                 break;
             default:
-                statusColor = ConsoleColor.BLACK_BOLD;
+                statusColor = ConsoleColor.BLACK;
                 break;
         }
 
@@ -171,20 +190,28 @@ public class MonitorResult {
         final ConsoleValue endAtTitle = new ConsoleValue("End at", endAtColumnWidth);
         final ConsoleValue durationTitle = new ConsoleValue("Duration", durationColumnWidth);
         final ConsoleValue statusTitle = new ConsoleValue("Status", statusColumnWidth);
-        final ConsoleValue errorTitle = new ConsoleValue("Error: ", ConsoleColor.BLACK_BOLD);
+        final ConsoleValue errorTitle = new ConsoleValue("Error: ", ConsoleColor.BLACK);
 
         final ConsoleRow titleRow = new ConsoleRow(startAtTitle, endAtTitle, durationTitle, statusTitle);
-        titleRow.setColors(ConsoleColor.BLACK_BOLD);
+        titleRow.setColors(ConsoleColor.BLACK);
 
-        Console.println(title, ConsoleColor.BLACK);
-        Console.println(titleRow);
-        Console.printDivider();
-        Console.println(startAtValue, endAtValue, durationValue, statusValue);
-        Console.printDivider();
+        Console__OLD.println(title, ConsoleColor.BLACK);
+        Console__OLD.println(titleRow);
+        Console__OLD.printDivider();
+        Console__OLD.println(startAtValue, endAtValue, durationValue, statusValue);
+        Console__OLD.printDivider();
         if (throwable != null) {
-            Console.println(errorTitle);
+            Console__OLD.println(errorTitle);
             throwable.printStackTrace();
-            Console.printDivider();
+            Console__OLD.printDivider();
         }
+    }
+    
+    public static void main(String[] args) {
+        
+        
+        Monitor.MONITOR_JRE.exec(() -> System.out.println("1")).print();
+        
+        
     }
 }

@@ -41,7 +41,7 @@ public class Monitor {
     }
 
     public MonitorResult exec(final Snippet runnable) {
-        return Monitor.this.exec(StringHelper.EMPTY, runnable);
+        return exec(StringHelper.EMPTY, runnable);
     }
 
     public MonitorResult exec(final String title, final Snippet runnable) {

@@ -5,62 +5,36 @@
  */
 package com.makesystem.pidgey.console;
 
-import com.makesystem.pidgey.console.base.HasPrintfSupport;
+import java.util.Date;
+import java.util.function.Consumer;
 
 /**
  *
- * @author Richeli.vargas
+ * @author riche
  */
-public final class Console {
+public interface Console {
 
-    public static final int DIVIDER_WIDTH = 72;
-    public static final String DIVIDER_CHARACTER = "-";
-    public static final ConsoleColor DIVIDER_COLOR = ConsoleColor.BLACK_BOLD;
+    static final ConsoleImpl $ = new ConsoleImpl();
 
-    public static void print(final String text, final ConsoleColor... colors) {
-        final ConsoleValue consoleValue = new ConsoleValue(text, colors);
-        print(consoleValue);
+    public static void setWriter(final Consumer<Object> writer) {
+        $.setWriter(writer);
     }
 
-    public static void println(final String text, final ConsoleColor... colors) {
-        print(text, colors);
-        System.out.println();
+    public static void log(final Object value) {
+        $.log(value);
     }
 
-    public synchronized static void print(final HasPrintfSupport... values) {
-        System.out.print(ConsoleHelper.toPrintf(values));
+    public static void log(final String text, final Object... values) {
+        $.log(text, values);
     }
 
-    public static void printlnEach(final HasPrintfSupport... values) {
-        System.out.println(ConsoleHelper.toPrintln(values));
-    }
+    
+    
+    public static void main(String[] args) {
 
-    public static void println(final HasPrintfSupport... values) {
-        print(values);
-        System.out.println();
-    }
+        final String value = "{s}Teste {s}{s} aqui {d} ali {b}";
 
-    public static void printDivider() {
-        printDivider(DIVIDER_CHARACTER, DIVIDER_WIDTH, DIVIDER_COLOR);
-    }
-
-    public static void printDivider(final String dividerChar) {
-        printDivider(dividerChar, DIVIDER_WIDTH, DIVIDER_COLOR);
-    }
-
-    public static void printDivider(final int width) {
-        printDivider(DIVIDER_CHARACTER, width, DIVIDER_COLOR);
-    }
-
-    public static void printDivider(final ConsoleColor... colors) {
-        printDivider(DIVIDER_CHARACTER, DIVIDER_WIDTH, colors);
-    }
-
-    public static void printDivider(final int width, final ConsoleColor... colors) {
-        printDivider(DIVIDER_CHARACTER, width, colors);
-    }
-
-    public static void printDivider(final String dividerChar, final int width, final ConsoleColor... colors) {
-        printlnEach(ConsoleHelper.getRowDivider(dividerChar, width, colors));
+        Console.log("Name: {s} \t Age: {i}", "Richeli Vargas", 30);
+        Console.log("Name: {s} \t Age: {i}", "Patrícia Bays", 25);
     }
 }

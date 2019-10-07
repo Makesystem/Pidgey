@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.makesystem.pidgey.console.base;
+package com.makesystem.pidgey.console.old.base;
 
 import com.makesystem.pidgey.console.ConsoleColor;
 import java.util.Arrays;

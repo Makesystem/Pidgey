@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.makesystem.pidgey.console;
+package com.makesystem.pidgey.console.old.base;
 
-import com.makesystem.pidgey.console.base.HasPrintfSupport;
+import com.makesystem.pidgey.console.ConsoleColor;
+import com.makesystem.pidgey.console.old.base.HasPrintfSupport;
 import com.makesystem.pidgey.formatation.StringFormat;
 import java.util.Arrays;
 import java.util.stream.Collectors;
