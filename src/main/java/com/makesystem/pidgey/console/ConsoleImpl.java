@@ -305,7 +305,8 @@ public class ConsoleImpl {
 
     protected final static native void gwt_console(final Object data) /*-{
         if(data) {
-            console.log(data.toString().replace('\\x1b[', '\x1b['));
+            // Solution for console colors at js console
+            console.log(data.toString().replace('x1b[', '\x1b['));
         }    
     }-*/;
 
