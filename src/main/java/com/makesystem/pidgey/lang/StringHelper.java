@@ -171,20 +171,24 @@ public class StringHelper {
             paterner.append(preserve);
         }
 
-        return stripDifferentOf(value, paterner.toString());
+        return stripDiffOf(value, paterner.toString());
     }
 
-    public static final String stripDifferentOfLetter(final String value) {
-        return stripDifferentOf(value, LETTERS_FOR_PARTNERS);
+    public static final String stripDiffOfLetter(final String value, final String... andPreserve) {
+        return stripDiffOf(value, LETTERS_FOR_PARTNERS, concat(EMPTY, (Object[]) andPreserve));
     }
 
-    public static final String stripDifferentOfNumber(final String value) {
-        return stripDifferentOf(value, NUMBERS_FOR_PARTNERS);
+    public static final String stripDiffOfNumber(final String value, final String... andPreserve) {
+        return stripDiffOf(value, NUMBERS_FOR_PARTNERS, concat(EMPTY, (Object[]) andPreserve));
     }
 
-    public static final String stripDifferentOf(final String value, final String preserve) {
+    public static final String stripDifOfAlphanumeric(final String value, final String... andPreserve) {
+        return stripDiffOf(value, LETTERS_FOR_PARTNERS, NUMBERS_FOR_PARTNERS, concat(EMPTY, (Object[]) andPreserve));
+    }
 
-        if (preserve == null || preserve.isEmpty()) {
+    public static final String stripDiffOf(final String value, final String... preserve) {
+
+        if (preserve == null || preserve.length == 0) {
             throw new IllegalArgumentException("Param 'preserve' can not be null or empty");
         }
 
@@ -194,7 +198,7 @@ public class StringHelper {
 
         final StringBuilder paterner = new StringBuilder();
         paterner.append("[^");
-        paterner.append(preserve);
+        paterner.append(concat(EMPTY, (Object[]) preserve));
         paterner.append("]+");
 
         return value.replaceAll(paterner.toString(), "");
@@ -550,7 +554,8 @@ public class StringHelper {
         if (cs instanceof String) {
             return ((String) cs).indexOf(searchChar, start);
         }
-        
+
+        @SuppressWarnings("null")
         final int sz = cs.length();
         if (start < 0) {
             start = 0;

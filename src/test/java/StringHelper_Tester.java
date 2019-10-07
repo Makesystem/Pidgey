@@ -26,7 +26,7 @@ public class StringHelper_Tester extends AbstractTester {
         System.out.println(StringHelper.stripAccents("ÁÉÍÓÚÇ áéíóúç"));
         System.out.println(StringHelper.stripSpecialChars("123 AEIOUÇ aeiouç ÁÉÍÓÚÇ áéíóúç ;.,-_=+§'\"\\!@#$%¨&*()¹²³£¢¬´`~^[{ª]}º<,>.:;?/°|"));
         System.out.println(StringHelper.stripSpecialChars("123 AEIOUÇ aeiouç ÁÉÍÓÚÇ áéíóúç ;.,-_=+§'\"\\!@#$%¨&*()¹²³£¢¬´`~^[{ª]}º<,>.:;?/°|", " "));
-        System.out.println(StringHelper.stripDifferentOf("123456789", "123"));
+        System.out.println(StringHelper.stripDiffOf("123456789", "123"));
         System.out.println(StringHelper.appendAtStart("123", "0", 6));
         System.out.println(StringHelper.appendAtEnd("123", "0", 6));
     }

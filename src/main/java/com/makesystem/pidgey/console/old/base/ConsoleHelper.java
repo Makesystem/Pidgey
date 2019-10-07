@@ -6,10 +6,6 @@
 package com.makesystem.pidgey.console.old.base;
 
 import com.makesystem.pidgey.console.ConsoleColor;
-import com.makesystem.pidgey.console.old.base.HasPrintfSupport;
-import com.makesystem.pidgey.formatation.StringFormat;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -25,13 +21,6 @@ public class ConsoleHelper {
         return builder.toString();
     }
     
-    public static String toPrintf(final HasPrintfSupport... values){
-        return Arrays.stream(values).map(value -> StringFormat.printf(value.getPrintfFormat(), value.getPrintfArgs())).collect(Collectors.joining());
-    }
-    
-    public static String toPrintln(final HasPrintfSupport... values){
-        return Arrays.stream(values).map(value -> StringFormat.printf(value.getPrintfFormat(), value.getPrintfArgs())).collect(Collectors.joining("\n"));
-    }
     
     public final static ConsoleRow getRowDivider(final String dividerChar, final int width, final ConsoleColor... colors) {
         return new ConsoleRow(new ConsoleValue(divider(dividerChar, width), colors));

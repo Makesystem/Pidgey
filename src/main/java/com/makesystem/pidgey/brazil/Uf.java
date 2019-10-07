@@ -5,7 +5,7 @@
  */
 package com.makesystem.pidgey.brazil;
 
-import com.makesystem.pidgey.formatation.StringFormat;
+import com.makesystem.pidgey.lang.StringHelper;
 
 
 /**
@@ -92,7 +92,7 @@ public enum Uf {
             return null;
         }
         
-        final String toNumeric = StringFormat.onlyNumbers(cep);
+        final String toNumeric = StringHelper.stripDiffOfNumber(cep);
         
         if (toNumeric.isEmpty()) {
             return null;

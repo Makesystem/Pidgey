@@ -22,7 +22,7 @@ public class Environment {
             /*
              * In GWT at client site, this code will throw an exception
              */
-            System.getProperties();
+            //System.getProperties();
             return Type.JRE;
         } catch (Throwable throwable) {
             return Type.GWT;

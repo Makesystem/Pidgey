@@ -29,11 +29,11 @@ public final class Console__OLD {
     }
 
     public synchronized static void print(final HasPrintfSupport... values) {
-        System.out.print(ConsoleHelper.toPrintf(values));
+  //      System.out.print(ConsoleHelper.toPrintf(values));
     }
 
     public static void printlnEach(final HasPrintfSupport... values) {
-        System.out.println(ConsoleHelper.toPrintln(values));
+    //    System.out.println(ConsoleHelper.toPrintln(values));
     }
 
     public static void println(final HasPrintfSupport... values) {
