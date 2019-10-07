@@ -91,17 +91,28 @@ public enum ConsoleFlag {
      */
     DATE_TIME("{dt}", value -> value instanceof Date
             ? TimeFormat.format((Date) value, TimeFormat.DATE_TIME_PATTERN)
-            : TimeFormat.format((Long) value, TimeFormat.DATE_TIME_PATTERN));
+            : TimeFormat.format((Long) value, TimeFormat.DATE_TIME_PATTERN)),
+    /**
+     * Set a console color
+     * <pre style="color:red;">
+     * Ex.: Red text
+     * </pre>
+     */
+    COLOR("{cc}", value -> ConsoleColor.valueOf(value.toString()).getColor());
 
     public static final String IGNORE = "{ig}";
+    public static final String IGNORE__FOR_REGX = "\\{ig\\}";
+
     private final String flag;
     private final Function<Object, String> mapper;
 
     private ConsoleFlag(final String flag, final Function<Object, String> mapper) {
         this.flag = flag;
         this.mapper = value -> {
-            if (value != null && value.toString().startsWith(IGNORE)) {
-                return value.toString().replaceFirst(forRegex(IGNORE), "");
+            if (value == null) {
+                return "null";
+            } else if (value.toString().startsWith(IGNORE)) {
+                return value.toString().replaceFirst(IGNORE__FOR_REGX, "");
             } else {
                 return mapper.apply(value);
             }
@@ -116,18 +127,18 @@ public enum ConsoleFlag {
         return mapper.apply(value);
     }
 
-    public String replace(final String text, final String value){
+    public String replace(final String text, final String value) {
         return text.replaceFirst(forRegex(flag), value);
     }
-    
-    public String applyAndReplace(final String text, final Object object){
+
+    public String applyAndReplace(final String text, final Object object) {
         return replace(text, apply(object));
     }
-    
-    protected final String forRegex(final String flag) {
+
+    protected static final String forRegex(final String flag) {
         return flag.replace("{", "\\{").replace("}", "\\}");
     }
-    
+
     public static ConsoleFlag fromFlag(final String flag) {
         return Arrays.stream(values())
                 .filter(value -> value.getFlag().equalsIgnoreCase(flag))

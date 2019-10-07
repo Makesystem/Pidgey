@@ -5,14 +5,16 @@
  */
 package com.makesystem.pidgey.console;
 
+import com.makesystem.pidgey.system.Environment;
+
 /**
  *
  * @author Richeli.vargas
  */
 public enum ConsoleColor {
-    
+
     // Reset
-    //RESET("0m"), // Text Reset
+    //RESET("0m"), // Text Reset, It does not work in js console
     RESET("30m"), // Text Reset
 
     // Regular Color
@@ -26,34 +28,41 @@ public enum ConsoleColor {
     WHITE("37m"), // WHITE
 
     // Background
-    BLACK_BACKGROUND("\033[40m"), // BLACK
-    RED_BACKGROUND("\033[41m"), // RED
-    GREEN_BACKGROUND("\033[42m"), // GREEN
-    YELLOW_BACKGROUND("\033[43m"), // YELLOW
-    BLUE_BACKGROUND("\033[44m"), // BLUE
-    PURPLE_BACKGROUND("\033[45m"), // PURPLE
-    CYAN_BACKGROUND("\033[46m"), // CYAN
-    WHITE_BACKGROUND("\033[47m"); // WHITE
+    BLACK_BACKGROUND("40m"), // BLACK
+    RED_BACKGROUND("41m"), // RED
+    GREEN_BACKGROUND("42m"), // GREEN
+    YELLOW_BACKGROUND("43m"), // YELLOW
+    BLUE_BACKGROUND("44m"), // BLUE
+    PURPLE_BACKGROUND("45m"), // PURPLE
+    CYAN_BACKGROUND("46m"), // CYAN
+    WHITE_BACKGROUND("47m"); // WHITE
 
-    private static final String JRE_TAG = "\033[0;";
+    private static final String JRE_TAG = "\033[";
     private static final String JS_TAG = "\\x1b[";
-    
+
+    private final String code;
     private final String color;
 
-    private ConsoleColor(final String color) {
-        this.color = color;
+    private ConsoleColor(final String code) {
+        this.code = code;
+        this.color = getTag() + code;
     }
 
-    @Deprecated
-    public String getColor(){
-        return forJRE();
+    public String getCode() {
+        return code;
     }
-    
-    public String forJRE() {
-        return JRE_TAG + color;
+
+    public String getColor() {
+        return color;
     }
-    
-    public String forBrowser() {
-        return JS_TAG + color;
+
+    String getTag() {
+        switch (Environment.TYPE) {
+            case GWT:
+                return JS_TAG;
+            case JRE:
+            default:
+                return JRE_TAG;
+        }
     }
 }

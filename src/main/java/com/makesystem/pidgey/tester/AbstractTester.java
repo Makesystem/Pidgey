@@ -18,8 +18,6 @@ import java.util.LinkedHashSet;
  * @author Richeli.vargas
  */
 public abstract class AbstractTester {
-
-    protected final Monitor monitor = new Monitor();
     
     protected interface MethodExecution<V> {
 
@@ -40,7 +38,7 @@ public abstract class AbstractTester {
 
     public final <V> void Assert(final MethodExecution<V> methodExecution, final V expectedValue) {
         final Collection<V> buffer = new LinkedHashSet();
-        final MonitorResult result = monitor.exec(() -> buffer.add(methodExecution.exec()));
+        final MonitorResult result = Monitor.exec(() -> buffer.add(methodExecution.exec()));
         assertResult(buffer.isEmpty() ? null : buffer.iterator().next(), expectedValue, result).print();
         System.gc();
     }

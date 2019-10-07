@@ -1,8 +1,8 @@
 
-import com.makesystem.pidgey.console.old.base.Console__OLD;
+import com.makesystem.pidgey.console.Console;
 import com.makesystem.pidgey.console.ConsoleColor;
-import com.makesystem.pidgey.console.old.base.ConsoleValue;
-import com.makesystem.pidgey.formatation.TimeFormat;
+import com.makesystem.pidgey.console.ConsoleFlag;
+import com.makesystem.pidgey.lang.StringHelper;
 import com.makesystem.pidgey.tester.AbstractTester;
 import com.makesystem.pidgey.thread.SchedulePool;
 import com.makesystem.pidgey.thread.ThreadPool;
@@ -32,14 +32,14 @@ public class Thread_Tester extends AbstractTester {
 
     @Override
     protected void execution() {
-        testThreadPool();
-        //testSchedulePool();
+        //testThreadPool();
+        testSchedulePool();
     }
 
     void testThreadPool() {
         final ThreadPool pool = new ThreadPool();
         new Thread(() -> {
-            for (int i = 0; i < 1000000; i++) {
+            for (int i = 0; i < 100; i++) {
                 new Thread(() -> pool.execute(toSimulate())).start();
                 pool.execute(toSimulate());
             }
@@ -83,12 +83,18 @@ public class Thread_Tester extends AbstractTester {
     }
 
     void printTime(final String title, final ConsoleColor color) {
+        final String titleMinLength = StringHelper.appendAtEnd(title, StringHelper.SPACE, 30);
         final long time = System.currentTimeMillis();
-        final String timeFormated = TimeFormat.format(time, TimeFormat.Patterns.Built.DATE_FULL_TIME);
-        Console__OLD.println(
-                new ConsoleValue(title + ": ", 30, color),
-                new ConsoleValue(timeFormated, ConsoleColor.BLUE),
-                new ConsoleValue(" | " + time, ConsoleColor.BLACK));
+        
+        final String format = new StringBuilder()
+                .append(ConsoleFlag.COLOR.getFlag())
+                .append(ConsoleFlag.TEXT.getFlag())
+                .append(StringHelper.TB)
+                .append(ConsoleFlag.COLOR.getFlag())
+                .append(ConsoleFlag.DATE_TIME.getFlag())
+                .toString();
+        
+        Console.log(format, color, titleMinLength, ConsoleColor.BLUE, time);
     }
 
     @Override

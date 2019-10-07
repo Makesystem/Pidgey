@@ -90,15 +90,15 @@ public class NumericFormat {
         final int length = value.length();
 
         if (length > 15) {
-            return currency((double) (size / (Math.pow(1000, 5)))) + " HB";
+            return currency((double) (size / (Math.pow(1000, 5)))) + "HB";
         } else if (length > 12) {
-            return currency((double) (size / (Math.pow(1000, 4)))) + " TB";
+            return currency((double) (size / (Math.pow(1000, 4)))) + "TB";
         } else if (length > 9) {
-            return currency((double) (size / (Math.pow(1000, 3)))) + " GB";
+            return currency((double) (size / (Math.pow(1000, 3)))) + "GB";
         } else if (length > 6) {
-            return currency((double) (size / (Math.pow(1000, 2)))) + " MB";
+            return currency((double) (size / (Math.pow(1000, 2)))) + "MB";
         } else if (length > 3) {
-            return currency((double) (size / (Math.pow(1000, 1)))) + " KB";
+            return currency((double) (size / (Math.pow(1000, 1)))) + "KB";
         } else {
             return size + " Bytes";
         }

@@ -7,11 +7,7 @@ package com.makesystem.pidgey.monitor;
 
 import com.makesystem.pidgey.console.Console;
 import com.makesystem.pidgey.console.ConsoleColor;
-import com.makesystem.pidgey.console.old.base.Console__OLD;
-import com.makesystem.pidgey.console.old.base.ConsoleRow;
-import com.makesystem.pidgey.console.old.base.ConsoleValue;
-import com.makesystem.pidgey.formatation.TimeFormat;
-import com.makesystem.pidgey.lang.StringHelper;
+import com.makesystem.pidgey.lang.ThrowableHelper;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -144,12 +140,16 @@ public class MonitorResult {
     @SuppressWarnings("CallToPrintStackTrace")
     public void print() {   
         
-        final String format = "{dt}\t{dt}\t{ms}\t{s}";
+        // Read first row only
+        final String error = ThrowableHelper.toString(throwable).split("\n")[0].replace("\r", "");
+        
+        final String format = "{dt}  \t{dt}  \t{ms}\t{cc}{s}\t{s}";
         final Object[][] values = {
-            {"{ig}Start at", "{ig}End at", "{ig}Duration", "{ig}Status"},
-            {startAt, endAt, duration, status}
+            {"{ig}Start at", "{ig}End at", "{ig}Duration","{ig}", "{ig}Status", ""},
+            {startAt, endAt, duration, status.getColor(), status, error}
         };
         
+        Console.log("{cc}", ConsoleColor.RESET);
         Console.log(format, values);
     }
 }

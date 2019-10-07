@@ -5,12 +5,25 @@
  */
 package com.makesystem.pidgey.monitor;
 
+import com.makesystem.pidgey.console.ConsoleColor;
+
 /**
  *
  * @author Richeli.vargas
  */
-public enum MonitorStatus {    
-    SUCCESS,
-    RUNNING,
-    ERROR    
+public enum MonitorStatus {
+    SUCCESS(ConsoleColor.GREEN),
+    RUNNING(ConsoleColor.BLUE),
+    ERROR(ConsoleColor.RED);
+
+    private final ConsoleColor color;
+
+    private MonitorStatus(final ConsoleColor color) {
+        this.color = color;
+    }
+
+    public ConsoleColor getColor() {
+        return color;
+    }
+
 }
