@@ -5,6 +5,7 @@
  */
 package com.makesystem.pidgey.monitor;
 
+import com.makesystem.pidgey.console.Console;
 import com.makesystem.pidgey.console.ConsoleColor;
 import com.makesystem.pidgey.console.old.base.Console__OLD;
 import com.makesystem.pidgey.console.old.base.ConsoleRow;
@@ -143,75 +144,12 @@ public class MonitorResult {
     @SuppressWarnings("CallToPrintStackTrace")
     public void print() {   
         
-        final StringBuilder builder = new StringBuilder();
-        // Title
-        builder.append("Start at").append(StringHelper.TB).append(StringHelper.TB).append(StringHelper.TB);
-        builder.append("End at").append(StringHelper.TB).append(StringHelper.TB).append(StringHelper.TB).append(StringHelper.TB);
-        builder.append("Duration").append(StringHelper.TB);
-        builder.append("Status").append(StringHelper.LF);
+        final String format = "{dt}\t{dt}\t{ms}\t{s}";
+        final Object[][] values = {
+            {"{ig}Start at", "{ig}End at", "{ig}Duration", "{ig}Status"},
+            {startAt, endAt, duration, status}
+        };
         
-        // Values
-        builder.append(TimeFormat.format(startAt, TimeFormat.DATE_TIME_PATTERN)).append(StringHelper.TB).append(StringHelper.TB);
-        builder.append(TimeFormat.format(endAt, TimeFormat.DATE_TIME_PATTERN)).append(StringHelper.TB).append(StringHelper.TB);
-        builder.append(TimeFormat.millis(duration)).append(StringHelper.TB);
-        builder.append(status).append(StringHelper.LF);
-    
-        System.out.println(builder.toString());
-    }
-    
-    void x () {    
-        final ConsoleColor statusColor;
-        switch (status) {
-            case SUCCESS:
-                statusColor = ConsoleColor.GREEN;
-                break;
-            case ERROR:
-                statusColor = ConsoleColor.RED;
-                break;
-            case RUNNING:
-                statusColor = ConsoleColor.BLUE;
-                break;
-            default:
-                statusColor = ConsoleColor.BLACK;
-                break;
-        }
-
-        final int startAtColumnWidth = 25;
-        final int endAtColumnWidth = 25;
-        final int durationColumnWidth = 15;
-        final int statusColumnWidth = 15;
-
-        final ConsoleValue startAtValue = new ConsoleValue(startAt, ConsoleValue.Type.DATE_TIME, startAtColumnWidth);
-        final ConsoleValue endAtValue = new ConsoleValue(endAt, ConsoleValue.Type.DATE_TIME, endAtColumnWidth);
-        final ConsoleValue durationValue = new ConsoleValue(duration, ConsoleValue.Type.MILLIS, durationColumnWidth);
-        final ConsoleValue statusValue = new ConsoleValue(status, statusColumnWidth, statusColor);
-
-        final ConsoleValue startAtTitle = new ConsoleValue("Start at", startAtColumnWidth);
-        final ConsoleValue endAtTitle = new ConsoleValue("End at", endAtColumnWidth);
-        final ConsoleValue durationTitle = new ConsoleValue("Duration", durationColumnWidth);
-        final ConsoleValue statusTitle = new ConsoleValue("Status", statusColumnWidth);
-        final ConsoleValue errorTitle = new ConsoleValue("Error: ", ConsoleColor.BLACK);
-
-        final ConsoleRow titleRow = new ConsoleRow(startAtTitle, endAtTitle, durationTitle, statusTitle);
-        titleRow.setColors(ConsoleColor.BLACK);
-
-        Console__OLD.println(title, ConsoleColor.BLACK);
-        Console__OLD.println(titleRow);
-        Console__OLD.printDivider();
-        Console__OLD.println(startAtValue, endAtValue, durationValue, statusValue);
-        Console__OLD.printDivider();
-        if (throwable != null) {
-            Console__OLD.println(errorTitle);
-            throwable.printStackTrace();
-            Console__OLD.printDivider();
-        }
-    }
-    
-    public static void main(String[] args) {
-        
-        
-        Monitor.MONITOR_JRE.exec(() -> System.out.println("1")).print();
-        
-        
+        Console.log(format, values);
     }
 }

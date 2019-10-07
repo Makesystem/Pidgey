@@ -262,7 +262,7 @@ public class SpellingChecker_Tester extends AbstractTester {
             final SpellChecker spellCheck = new SpellChecker();
             spellCheck.initialize("/mailing_columns.dictionary");
 
-            Monitor.MONITOR_JRE.exec(()
+            Monitor.MONITOR.exec(()
                     -> expected.entrySet().stream().forEach(entry -> {
 
                         final String word = entry.getKey().replaceAll("[^a-zA-Z]", "");
@@ -280,7 +280,7 @@ public class SpellingChecker_Tester extends AbstractTester {
                     })
             ).print();
 
-            Monitor.MONITOR_JRE.exec(()
+            Monitor.MONITOR.exec(()
                     -> expected.entrySet().stream().forEach(entry -> {
 
                         final String word = entry.getKey().replaceAll("[^a-zA-Z]", "");
@@ -298,7 +298,7 @@ public class SpellingChecker_Tester extends AbstractTester {
                     })
             ).print();
 
-            Monitor.MONITOR_JRE.exec(()
+            Monitor.MONITOR.exec(()
                     -> expected.entrySet().stream().forEach(entry -> {
 
                         final String word = entry.getKey();

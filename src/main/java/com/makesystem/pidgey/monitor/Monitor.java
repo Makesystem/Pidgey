@@ -5,6 +5,7 @@
  */
 package com.makesystem.pidgey.monitor;
 
+import com.makesystem.pidgey.console.Console;
 import com.makesystem.pidgey.interfaces.Snippet;
 import com.makesystem.pidgey.formatation.TimeFormat;
 import com.makesystem.pidgey.lang.StringHelper;
@@ -21,8 +22,7 @@ import java.util.stream.Collectors;
  */
 public class Monitor {
 
-    public static final Monitor MONITOR_JRE = new Monitor(Monitor::jre_console);
-    public static final Monitor MONITOR_GWT = new Monitor(Monitor::gwt_console);
+    public static final Monitor MONITOR = new Monitor();
 
     public static final Comparator<MonitorResult> MONITOR_RESULT__COMPARATOR
             = Comparator.comparing(MonitorResult::getDuration);
@@ -30,6 +30,7 @@ public class Monitor {
     private Consumer<String> writer;
 
     public Monitor() {
+        this(Console::log);
     }
 
     public Monitor(final Consumer<String> writer) {
@@ -71,8 +72,14 @@ public class Monitor {
                 .collect(Collectors.toList());
     }
 
+    
     public Collection<MonitorResult> compare(final Snippet... runnables) {
+        return compare(StringHelper.EMPTY, runnables);
+    }
+    
+    public Collection<MonitorResult> compare(final String title, final Snippet... runnables) {
         final Collection<MonitorResult> results = exec(runnables);
+        writer.accept("Comparation of Snippets: " + title);
         write(results);
         return results;
     }
@@ -87,23 +94,17 @@ public class Monitor {
             return;
         }
 
+        //Snippet #?    00:00:00:000    STATUS
         final String toPrint = Arrays.stream(results).sorted(MONITOR_RESULT__COMPARATOR)
                 .map(result
                         -> new StringBuilder("Snippet #")
                         .append(result.getNum())
                         .append(StringHelper.TB)
                         .append(TimeFormat.millis(result.getDuration()))
-                        .append(StringHelper.TB).toString())
+                        .append(StringHelper.TB)
+                        .append(result.getStatus()).toString())
                 .collect(Collectors.joining(StringHelper.LF));
 
         writer.accept(toPrint);
     }
-
-    private static void jre_console(final String data) {
-        System.out.println(data);
-    }
-
-    private static native void gwt_console(final String data) /*-{
-        console.log(data);
-    }-*/;
 }

@@ -57,7 +57,7 @@ public enum ConsoleFlag {
      * Ex.: 123:30:40
      * </pre>
      */
-    SECONDS("{sec}", value -> TimeFormat.seconds(Integer.valueOf(value.toString()))),
+    SECONDS("{ss}", value -> TimeFormat.seconds(Integer.valueOf(value.toString()))),
     /**
      * Set value as millis counter
      * <pre>
@@ -93,7 +93,7 @@ public enum ConsoleFlag {
             ? TimeFormat.format((Date) value, TimeFormat.DATE_TIME_PATTERN)
             : TimeFormat.format((Long) value, TimeFormat.DATE_TIME_PATTERN));
 
-    public static final String IGNORE = "{ignore}";
+    public static final String IGNORE = "{ig}";
     private final String flag;
     private final Function<Object, String> mapper;
 
@@ -101,7 +101,7 @@ public enum ConsoleFlag {
         this.flag = flag;
         this.mapper = value -> {
             if (value != null && value.toString().startsWith(IGNORE)) {
-                return value.toString().replaceFirst("\\{ignore\\}", "");
+                return value.toString().replaceFirst(forRegex(IGNORE), "");
             } else {
                 return mapper.apply(value);
             }

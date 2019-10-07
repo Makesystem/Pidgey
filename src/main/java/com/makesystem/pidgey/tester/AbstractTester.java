@@ -19,6 +19,8 @@ import java.util.LinkedHashSet;
  */
 public abstract class AbstractTester {
 
+    protected final Monitor monitor = new Monitor();
+    
     protected interface MethodExecution<V> {
 
         public V exec() throws Throwable;
@@ -38,7 +40,7 @@ public abstract class AbstractTester {
 
     public final <V> void Assert(final MethodExecution<V> methodExecution, final V expectedValue) {
         final Collection<V> buffer = new LinkedHashSet();
-        final MonitorResult result = Monitor.MONITOR_JRE.exec(() -> buffer.add(methodExecution.exec()));
+        final MonitorResult result = monitor.exec(() -> buffer.add(methodExecution.exec()));
         assertResult(buffer.isEmpty() ? null : buffer.iterator().next(), expectedValue, result).print();
         System.gc();
     }

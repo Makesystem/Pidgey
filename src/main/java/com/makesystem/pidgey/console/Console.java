@@ -32,25 +32,27 @@ public interface Console {
     public static void log(final String text, final Object[][] values) {
         $.log(text, values);
     }
-    
-    
+
     public static void main(String[] args) {
 
         final String value = "{s}\t{i}\t{d}";
 
         final Object[][] values = {
-            {"Nome", "{ignore}Idade", "{ignore}Data"},
+            {"Nome", "{ig}Idade", "{ig}Data"},
             {"Richeli Trindade de Vargas", 30, new Date()},
             {"Patrícia Bays", 25, new Date()},
-            {"João", 5, new Date()},
-        };
-        
-        Monitor.MONITOR_JRE.exec(() -> Console.log(value, "Richeli Trindade de Vargas", 30, new Date())).print();
-        Monitor.MONITOR_JRE.exec(() -> Console.log(value, "Richeli Trindade de Vargas", 30, new Date())).print();
-        Monitor.MONITOR_JRE.exec(() -> Console.log(value, "Richeli Trindade de Vargas", 30, new Date())).print();
-        
-        Monitor.MONITOR_JRE.exec(() -> Console.log(value, values)).print();
-        Monitor.MONITOR_JRE.exec(() -> Console.log(value, values)).print();
-        Monitor.MONITOR_JRE.exec(() -> Console.log(value, values)).print();
+            {"João", 5, new Date()},};
+
+        Monitor.MONITOR.exec(() -> Console.log(value, "Richeli Trindade de Vargas", 30, new Date())).print();
+        Monitor.MONITOR.exec(() -> Console.log(value, "Richeli Trindade de Vargas", 30, new Date())).print();
+        Monitor.MONITOR.exec(() -> Console.log(value, "Richeli Trindade de Vargas", 30, new Date())).print();
+
+        Monitor.MONITOR.exec(() -> Console.log(value, values)).print();
+        Monitor.MONITOR.exec(() -> Console.log(value, values)).print();
+        Monitor.MONITOR.exec(() -> Console.log(value, values)).print();
+
+        Monitor.MONITOR.compare(
+                () -> Console.log(value, values),
+                () -> Console.log(value, values));
     }
 }
