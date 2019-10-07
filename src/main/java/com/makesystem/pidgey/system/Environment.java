@@ -19,13 +19,15 @@ public class Environment {
 
     protected final static Type discovery() {
         try {
-            /*
-             * In GWT at client site, this code will throw an exception
-             */
-            //System.getProperties();
-            return Type.JRE;
-        } catch (Throwable throwable) {
+            test_gwt();
             return Type.GWT;
+        } catch (Throwable ignore) {
+            return Type.JRE;
         }
     }
+
+    static native void test_gwt()/*-{
+	// In GWT environment this method will be compile
+    }-*/;
+   
 }
