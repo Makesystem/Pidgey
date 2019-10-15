@@ -5,14 +5,11 @@
  */
 package com.makesystem.pidgey.io.file;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -257,15 +254,35 @@ public class FilesHelper {
     }
 
     public final static byte[] readBytes(final String file) throws IOException {
+
+        /**
+         * First attempt
+         */
+        try {
+            return readURL(file);
+        } catch (@SuppressWarnings("UseSpecificCatch") Throwable ignore) {
+        }
+
+        /**
+         * Second attempt
+         */
         try {
             return readBytesOnWebService(file);
         } catch (@SuppressWarnings("UseSpecificCatch") Throwable ignore) {
-            try {
-                return readBytesOnDesktop(file);
-            } catch (@SuppressWarnings("UseSpecificCatch") Throwable ignoreTwo) {
-                return readBytesInnerProject(file);
-            }
         }
+
+        /**
+         * Third attempt
+         */
+        try {
+            return readBytesOnDesktop(file);
+        } catch (@SuppressWarnings("UseSpecificCatch") Throwable ignore) {
+        }
+
+        /**
+         * Last attempt
+         */
+        return readBytesInnerProject(file);
     }
 
     final static byte[] readBytesInnerProject(final String file) throws IOException {
@@ -291,16 +308,23 @@ public class FilesHelper {
         }
     }
 
+    final static byte[] readURL(final String file) throws IOException {
+        final URL url = FilesHelper.class.getResource(file.startsWith("/") || file.startsWith(".") ? file : "/" + file);
+        return readInputStream(url.openStream());
+    }
+
+    final static byte[] readInputStream(final InputStream inputStream) throws IOException {
+        final byte[] array = new byte[inputStream.available()];
+        inputStream.read(array);
+        return array;
+    }
+
     public final static String read(final InputStream inputStream) throws IOException {
-        final StringBuilder data = new StringBuilder();
-        try (Reader reader = new BufferedReader(new InputStreamReader(inputStream,
-                java.nio.charset.Charset.forName(StandardCharsets.UTF_8.name())))) {
-            int character = 0;
-            while ((character = reader.read()) != -1) {
-                data.append((char) character);
-            }
-        }
-        return data.toString();
+        return read(inputStream, StandardCharsets.UTF_8);
+    }
+
+    public final static String read(final InputStream inputStream, final java.nio.charset.Charset charset) throws IOException {
+        return new String(readInputStream(inputStream), charset);
     }
 
     public final static boolean mkfile(final Path path) throws IOException {
