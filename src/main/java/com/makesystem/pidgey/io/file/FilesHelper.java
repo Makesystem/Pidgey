@@ -28,6 +28,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.io.FileNotFoundException;
+import java.util.function.Function;
 
 /**
  *
@@ -92,11 +93,11 @@ public class FilesHelper {
         final URL url = getURL(file);
         return url == null ? new FileInputStream(file) : url.openStream();
     }
-
+    
     public final static void replaceLines(
             final String file,
             final Charset charset,
-            final LineReplacement lineReplacement) throws IOException {
+            final Function<String, String> mapper) throws IOException {
 
         final String original = file + ".tmp";
         final File originalFile = new File(original);
@@ -104,9 +105,8 @@ public class FilesHelper {
         newFile.renameTo(originalFile);
 
         try {
-            final Path originalFilePath = originalFile.toPath();
-            final Path newFilePath = newFile.toPath();
-            replaceLines(originalFilePath, newFilePath, charset, lineReplacement);
+            replaceLines(original, file, charset, mapper);
+            originalFile.delete();
         } catch (IOException throwable) {
             originalFile.renameTo(newFile);
             throw throwable;
@@ -114,41 +114,22 @@ public class FilesHelper {
     }
 
     final static void replaceLines(
-            final Path fileSource,
-            final Path fileTarget,
+            final String fileSource,
+            final String fileTarget,
             final Charset charset,
-            final LineReplacement lineReplacement) throws IOException {
+            final Function<String, String> mapper) throws IOException {
 
-        FileInputStream inputStream = null;
-        Scanner sc = null;
-        BufferedWriter writer = null;
-
-        try {
-            inputStream = new FileInputStream(fileSource.toFile());
-            sc = new Scanner(inputStream, charset.getName());
-            writer = Files.newBufferedWriter(fileTarget, charset.toNative());
-            int number = 0;
-            while (sc.hasNextLine()) {
-                final String line = lineReplacement.replace(number++, sc.nextLine());
+        try (final BufferedWriter writer = Files.newBufferedWriter(new File(fileTarget).toPath(), charset.toNative())) {
+            readLines(fileSource, charset, line -> {
                 if (line != null && !line.isEmpty()) {
-                    writer.write(line);
-                    writer.newLine();
+                    try {
+                        writer.write(mapper.apply(line));
+                        writer.newLine();
+                    } catch (IOException cause) {
+                        throw new RuntimeException(cause);
+                    }
                 }
-            }
-            if (sc.ioException() != null) {
-                throw sc.ioException();
-            }
-        } finally {
-            if (inputStream != null) {
-                inputStream.close();
-            }
-            if (sc != null) {
-                sc.close();
-            }
-            if (writer != null) {
-                writer.flush();
-                writer.close();
-            }
+            });
         }
     }
 
@@ -159,10 +140,15 @@ public class FilesHelper {
     public final static void readLines(final String file,
             final Charset charset, final Consumer<String> consumer) throws IOException {
 
-        try (final InputStream inputStream = getInputStream(file);
+        try (
+                final InputStream inputStream = getInputStream(file);
                 final Scanner scanner = new Scanner(inputStream, charset.getName())) {
             while (scanner.hasNextLine()) {
                 consumer.accept(scanner.nextLine());
+            }
+
+            if (scanner.ioException() != null) {
+                throw scanner.ioException();
             }
         }
     }
