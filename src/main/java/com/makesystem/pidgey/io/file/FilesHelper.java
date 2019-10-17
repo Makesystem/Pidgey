@@ -17,7 +17,6 @@ import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CharsetDecoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -327,11 +326,11 @@ public class FilesHelper {
     }
 
     public final static String read(final InputStream inputStream) throws IOException {
-        return read(inputStream, StandardCharsets.UTF_8);
+        return read(inputStream, DEFAULT_CHARSET);
     }
 
-    public final static String read(final InputStream inputStream, final java.nio.charset.Charset charset) throws IOException {
-        return new String(readInputStream(inputStream), charset);
+    public final static String read(final InputStream inputStream, final Charset charset) throws IOException {
+        return new String(readInputStream(inputStream), charset.toNative());
     }
 
     final static byte[] readInputStream(final InputStream inputStream) throws IOException {
@@ -362,10 +361,5 @@ public class FilesHelper {
 
     public static boolean mkdir(final File file) {
         return file.exists() ? false : file.mkdirs();
-    }
-
-    public static interface LineReplacement {
-
-        public String replace(final int lineNumber, final String originalLine);
     }
 }
