@@ -24,8 +24,10 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+import java.io.FileNotFoundException;
 
 /**
  *
@@ -70,16 +72,25 @@ public class FilesHelper {
         throw new IOException("Charset can not be identified");
     }
 
+    final static String resolveName(final String file) {
+        return (file.startsWith("/") ? "" : "/") + file;
+    }
+
     public final static URL getURL(final String file) {
-        try {
-            return FilesHelper.class.getClassLoader().getResource(file);
-        } catch (Throwable ignore) {
-            return FilesHelper.class.getResource((file.startsWith("/") ? "" : "/") + file);
-        }
+        return FilesHelper.class.getResource(resolveName(file));
     }
 
     public final static URI getURI(final String file) throws URISyntaxException {
-        return getURL(file).toURI();
+        final URL url = getURL(file);
+        if (url == null) {
+            throw new IllegalArgumentException("Invalid path: " + file);
+        }
+        return url.toURI();
+    }
+
+    public final static InputStream getInputStream(final String file) throws FileNotFoundException, IOException {
+        final URL url = getURL(file);
+        return url == null ? new FileInputStream(file) : url.openStream();
     }
 
     public final static void replaceLines(
@@ -137,6 +148,21 @@ public class FilesHelper {
             if (writer != null) {
                 writer.flush();
                 writer.close();
+            }
+        }
+    }
+
+    public final static void readLines(final String file, final Consumer<String> consumer) throws IOException {
+        readLines(file, DEFAULT_CHARSET, consumer);
+    }
+
+    public final static void readLines(final String file,
+            final Charset charset, final Consumer<String> consumer) throws IOException {
+
+        try (final InputStream inputStream = getInputStream(file);
+                final Scanner scanner = new Scanner(inputStream, charset.getName())) {
+            while (scanner.hasNextLine()) {
+                consumer.accept(scanner.nextLine());
             }
         }
     }
@@ -309,14 +335,9 @@ public class FilesHelper {
     }
 
     final static byte[] readURL(final String file) throws IOException {
-        final URL url = FilesHelper.class.getResource(file.startsWith("/") || file.startsWith(".") ? file : "/" + file);
-        return readInputStream(url.openStream());
-    }
-
-    final static byte[] readInputStream(final InputStream inputStream) throws IOException {
-        final byte[] array = new byte[inputStream.available()];
-        inputStream.read(array);
-        return array;
+        try (final InputStream inputStream = getInputStream(file)) {
+            return readInputStream(inputStream);
+        }
     }
 
     public final static String read(final InputStream inputStream) throws IOException {
@@ -325,6 +346,12 @@ public class FilesHelper {
 
     public final static String read(final InputStream inputStream, final java.nio.charset.Charset charset) throws IOException {
         return new String(readInputStream(inputStream), charset);
+    }
+
+    final static byte[] readInputStream(final InputStream inputStream) throws IOException {
+        final byte[] array = new byte[inputStream.available()];
+        inputStream.read(array);
+        return array;
     }
 
     public final static boolean mkfile(final Path path) throws IOException {
