@@ -299,7 +299,9 @@ public class ConsoleImpl {
 
     protected final static void jre_console(final Object data) {
         if (data != null) {
-            System.out.println(data.toString());
+            System.out.println(data.toString() 
+                    // Reset color console for others future prints
+                    + "\033[0m");
         }
     }
 
