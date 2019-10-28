@@ -7,7 +7,9 @@ package com.makesystem.pidgey.console;
 
 import com.makesystem.pidgey.lang.StringHelper;
 import com.makesystem.pidgey.system.Environment;
+import com.makesystem.pidgey.util.Reference;
 import java.util.function.Consumer;
+import java.util.stream.IntStream;
 
 /**
  *
@@ -42,6 +44,9 @@ public class ConsoleImpl {
 
     public void log(final Object value) {
         this.writer.accept(String.valueOf(value));
+    }
+
+    public void log(final Throwable throwable) {
     }
 
     /**
@@ -258,33 +263,38 @@ public class ConsoleImpl {
         final Integer[] maxValues = new Integer[flags.length];
         final String[][] formattedValues = new String[values.length][flags.length];
 
-        for (int column = 0; column < maxValues.length; column++) {
-            maxValues[column] = 0;
-        }
+        IntStream.range(0, maxValues.length).forEach(column -> maxValues[column] = 0);
 
-        for (int row = 0; row < values.length; row++) {
-            for (int column = 0; column < flags.length; column++) {
-                final String value = flags[column].apply(values[row][column]);
-                maxValues[column] = Math.max(maxValues[column], value.length());
-                formattedValues[row][column] = value;
-            }
-        }
+        IntStream.range(0, values.length).forEach(row
+                -> IntStream.range(0, flags.length).forEach(column -> {
+                    final String value = flags[column].apply(values[row][column]);
+                    maxValues[column] = Math.max(maxValues[column], value.length());
+                    formattedValues[row][column] = value;
+                }));
 
-        for (int row = 0; row < values.length; row++) {
-            String toWrite = text;
-            for (int column = 0; column < flags.length; column++) {
+        IntStream.range(0, values.length).forEach(row -> {
 
-                final ConsoleFlag flag = flags[column];
-                final int length = maxValues[column];
-                final String value = formattedValues[row][column];
-                final String finalValue = flag.equals(ConsoleFlag.COLOR) ? value : StringHelper.appendAtEnd(value, StringHelper.SPACE, length);
+            final Reference<String> toWrite = new Reference(text);
 
-                toWrite = flag.replace(toWrite, finalValue);
-            }
+            IntStream.range(0, flags.length).forEach(column
+                    -> toWrite.updateAndGet(to_write -> {
+
+                        final ConsoleFlag flag = flags[column];
+                        final int length = maxValues[column];
+                        final String value = formattedValues[row][column];
+                        final String finalValue = flag.equals(ConsoleFlag.COLOR)
+                                ? value
+                                : StringHelper.appendAtEnd(value, StringHelper.SPACE, length);
+                        
+                        return flag.replace(to_write, finalValue);
+                        
+                    }));
 
             // Write the value
             writer.accept(toWrite);
-        }
+
+        });
+
     }
 
     protected final static Consumer<Object> discovery() {
@@ -299,7 +309,7 @@ public class ConsoleImpl {
 
     protected final static void jre_console(final Object data) {
         if (data != null) {
-            System.out.println(data.toString() 
+            System.out.println(data.toString()
                     // Reset color console for others future prints
                     + "\033[0m");
         }
