@@ -6,6 +6,7 @@
 package com.makesystem.pidgey.console;
 
 import com.makesystem.pidgey.lang.StringHelper;
+import java.io.IOException;
 import java.util.function.Consumer;
 
 /**
@@ -14,6 +15,10 @@ import java.util.function.Consumer;
  */
 public interface Console {
 
+    public static void main(String... args){
+        log(new IOException("Erro de conexão"));
+    }
+    
     static final ConsoleImpl $ = new ConsoleImpl();
 
     public static void setWriter(final Consumer<Object> writer) {
@@ -26,6 +31,10 @@ public interface Console {
 
     public static void log(final Object value) {
         $.log(value);
+    }
+    
+    public static void log(final Throwable throwable) {
+        $.log(throwable);
     }
 
     /**

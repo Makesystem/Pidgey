@@ -6,6 +6,7 @@
 package com.makesystem.pidgey.console;
 
 import com.makesystem.pidgey.lang.StringHelper;
+import com.makesystem.pidgey.lang.ThrowableHelper;
 import com.makesystem.pidgey.system.Environment;
 import com.makesystem.pidgey.util.Reference;
 import java.util.function.Consumer;
@@ -47,6 +48,7 @@ public class ConsoleImpl {
     }
 
     public void log(final Throwable throwable) {
+        log("{cc}{s}", ConsoleColor.RED, ThrowableHelper.toString(throwable));
     }
 
     /**
@@ -285,16 +287,15 @@ public class ConsoleImpl {
                         final String finalValue = flag.equals(ConsoleFlag.COLOR)
                                 ? value
                                 : StringHelper.appendAtEnd(value, StringHelper.SPACE, length);
-                        
+
                         return flag.replace(to_write, finalValue);
-                        
+
                     }));
 
             // Write the value
-            writer.accept(toWrite);
+            writer.accept(toWrite.get());
 
         });
-
     }
 
     protected final static Consumer<Object> discovery() {
