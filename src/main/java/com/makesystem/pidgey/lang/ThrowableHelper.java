@@ -15,21 +15,33 @@ import java.util.stream.Collectors;
 public class ThrowableHelper {
 
     public final static String toString(final Throwable throwable) {
-        
-        if(throwable == null){
+        return toString(throwable, Boolean.FALSE);
+    }
+
+    private static String toString(final Throwable throwable, final boolean isCause) {
+
+        if (throwable == null) {
             return "";
         }
-        
+
         final StringBuilder builder = new StringBuilder();
-        builder.append("\r");
+        
+        if (isCause) {
+            builder.append(StringHelper.LF).append(StringHelper.TB);
+        }
+        
         builder.append(throwable.getClass().getName())
                 .append(": ")
                 .append(throwable.getMessage());
-        builder.append("\n\t");
+        
+        builder.append(StringHelper.LF).append(StringHelper.TB);
+        
         builder.append(Arrays.stream(throwable.getStackTrace())
                 .map(stackTrace -> stackTrace.toString())
-                .collect(Collectors.joining("\n\t")));
-        builder.append(toString(throwable.getCause()));        
+                .collect(Collectors.joining(StringHelper.LF + StringHelper.TB)));
+        
+        builder.append(toString(throwable.getCause(), Boolean.TRUE));
+        
         return builder.toString();
     }
 

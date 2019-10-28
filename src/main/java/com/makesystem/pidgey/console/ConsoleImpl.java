@@ -10,6 +10,7 @@ import com.makesystem.pidgey.lang.ThrowableHelper;
 import com.makesystem.pidgey.system.Environment;
 import com.makesystem.pidgey.util.Reference;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -48,7 +49,14 @@ public class ConsoleImpl {
     }
 
     public void log(final Throwable throwable) {
-        log("{cc}{s}", ConsoleColor.RED, ThrowableHelper.toString(throwable));
+
+        final String red = ConsoleColor.RED.getColor();
+        final StringBuilder data = new StringBuilder(red);
+        data.append(ThrowableHelper
+                .toString(throwable)
+                .replace(StringHelper.LF, StringHelper.LF + red));
+
+        log(data);
     }
 
     /**
@@ -274,7 +282,7 @@ public class ConsoleImpl {
                     formattedValues[row][column] = value;
                 }));
 
-        IntStream.range(0, values.length).forEach(row -> {
+        final String print = IntStream.range(0, values.length).mapToObj(row -> {
 
             final Reference<String> toWrite = new Reference(text);
 
@@ -292,10 +300,12 @@ public class ConsoleImpl {
 
                     }));
 
-            // Write the value
-            writer.accept(toWrite.get());
+            return toWrite.get();
 
-        });
+        }).collect(Collectors.joining(StringHelper.LF));
+
+        // Write the value
+        writer.accept(print);
     }
 
     protected final static Consumer<Object> discovery() {
