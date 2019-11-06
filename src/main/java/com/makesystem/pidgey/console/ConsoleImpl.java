@@ -320,9 +320,13 @@ public class ConsoleImpl {
 
     protected final static void jre_console(final Object data) {
         if (data != null) {
-            System.out.println(data.toString()
+            
+            final String string = data.toString();
+            final boolean resetColor = string.contains(ConsoleColor.JRE_TAG);
+            
+            System.out.println(string
                     // Reset color console for others future prints
-                    + "\033[0m");
+                    + (resetColor ? "\033[0m" : ""));
         }
     }
 

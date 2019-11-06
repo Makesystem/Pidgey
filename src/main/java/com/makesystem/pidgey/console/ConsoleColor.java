@@ -37,8 +37,8 @@ public enum ConsoleColor {
     CYAN_BACKGROUND("46m"), // CYAN
     WHITE_BACKGROUND("47m"); // WHITE
 
-    private static final String JRE_TAG = "\033[";
-    private static final String JS_TAG = "\\x1b[";
+    public static final String JRE_TAG = "\033[";
+    public static final String JS_TAG = "\\x1b[";
 
     private final String code;
     private final String color;
