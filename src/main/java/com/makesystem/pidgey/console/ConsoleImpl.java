@@ -268,9 +268,20 @@ public class ConsoleImpl {
      * @param values
      */
     public void log(final String text, final Object[]... values) {
+        writer.accept(format(text, values));
+    }
 
+    /**
+     * Format the values to print into console
+     * 
+     * @param text
+     * @param values
+     * @return 
+     */
+    public String format(final String text, final Object[]... values) {
+        
         final ConsoleFlag[] flags = ConsoleFlag.fromText(text);
-        final Integer[] maxValues = new Integer[flags.length];
+        final int[] maxValues = new int[flags.length];
         final String[][] formattedValues = new String[values.length][flags.length];
 
         IntStream.range(0, maxValues.length).forEach(column -> maxValues[column] = 0);
@@ -282,6 +293,8 @@ public class ConsoleImpl {
                     formattedValues[row][column] = value;
                 }));
 
+        //System.out.println("sum: " + IntStream.of(maxValues).sum());
+        
         final String print = IntStream.range(0, values.length).mapToObj(row -> {
 
             final Reference<String> toWrite = new Reference(text);
@@ -303,9 +316,8 @@ public class ConsoleImpl {
             return toWrite.get();
 
         }).collect(Collectors.joining(StringHelper.LF));
-
-        // Write the value
-        writer.accept(print);
+        
+        return print;
     }
 
     protected final static Consumer<Object> discovery() {
@@ -320,10 +332,10 @@ public class ConsoleImpl {
 
     protected final static void jre_console(final Object data) {
         if (data != null) {
-            
+
             final String string = data.toString();
             final boolean resetColor = string.contains(ConsoleColor.JRE_TAG);
-            
+
             System.out.println(string
                     // Reset color console for others future prints
                     + (resetColor ? "\033[0m" : ""));

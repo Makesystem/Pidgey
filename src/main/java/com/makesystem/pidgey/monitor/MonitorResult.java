@@ -7,6 +7,7 @@ package com.makesystem.pidgey.monitor;
 
 import com.makesystem.pidgey.console.Console;
 import com.makesystem.pidgey.console.ConsoleColor;
+import com.makesystem.pidgey.lang.StringHelper;
 import com.makesystem.pidgey.lang.ThrowableHelper;
 import java.util.Objects;
 import java.util.UUID;
@@ -29,7 +30,7 @@ public class MonitorResult {
     public MonitorResult() {
     }
 
-    public MonitorResult(String title) {
+    public MonitorResult(final String title) {
         this.title = title;
     }
 
@@ -65,7 +66,7 @@ public class MonitorResult {
         return title;
     }
 
-    public MonitorResult setTitle(String title) {
+    public MonitorResult setTitle(final String title) {
         this.title = title;
         return this;
     }
@@ -74,7 +75,7 @@ public class MonitorResult {
         return startAt;
     }
 
-    protected MonitorResult setStartAt(long startAt) {
+    protected MonitorResult setStartAt(final long startAt) {
         this.startAt = startAt;
         this.duration = this.endAt - this.startAt;
         return this;
@@ -84,7 +85,7 @@ public class MonitorResult {
         return endAt;
     }
 
-    protected MonitorResult setEndAt(long endAt) {
+    protected MonitorResult setEndAt(final long endAt) {
         this.endAt = endAt;
         this.duration = this.endAt - this.startAt;
         return this;
@@ -98,7 +99,7 @@ public class MonitorResult {
         return status;
     }
 
-    protected MonitorResult setStatus(MonitorStatus status) {
+    protected MonitorResult setStatus(final MonitorStatus status) {
         this.status = status;
         return this;
     }
@@ -107,7 +108,7 @@ public class MonitorResult {
         return throwable;
     }
 
-    protected MonitorResult setError(Throwable throwable) {
+    protected MonitorResult setError(final Throwable throwable) {
         this.throwable = throwable;
         return this;
     }
@@ -138,18 +139,31 @@ public class MonitorResult {
     }
 
     @SuppressWarnings("CallToPrintStackTrace")
-    public void print() {   
-        
+    public void print() {
+
         // Read first row only
         final String error = ThrowableHelper.toString(throwable).split("\n")[0].replace("\r", "");
-        
+
         final String format = "{dt}  \t{dt}  \t{ms}\t{cc}{s}\t{s}";
         final Object[][] values = {
-            {"{ig}Start at", "{ig}End at", "{ig}Duration","{ig}", "{ig}Status", ""},
-            {startAt, endAt, duration, status.getColor(), status, error}
+            {"{ig}Start at", "{ig}End at", "{ig}Duration", "{ig}", "{ig}Status", ""},
+            {startAt, endAt, duration, status.getColor(), status, error} // <-- It has 70 chars more 3 \t
         };
-        
+
         Console.log("{cc}", ConsoleColor.RESET);
+        if (!StringHelper.isBlank(this.title)) {
+            final int charPerRow = 70;
+            Console.log("{cc}{cc}{s}{s}\t\t\t{cc}",
+                    ConsoleColor.CYAN_BACKGROUND,
+                    ConsoleColor.BLACK,
+                    StringHelper.SPACE,
+                    StringHelper.appendAtEnd(
+                            this.title,
+                            StringHelper.SPACE,
+                            charPerRow),
+                    ConsoleColor.RESET);
+        }
         Console.log(format, values);
     }
+
 }
