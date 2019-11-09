@@ -24,7 +24,31 @@ public class StringHelper {
      *
      */
     public static final String SPACE = " ";
-
+    
+    /**
+     * The underline String {@code "_"}.
+     *
+     */
+    public static final String UL = "_";
+    
+    /**
+     * The unserline String {@code "_"}.
+     *
+     */
+    public static final String DOT = ".";
+    
+    /**
+     * The double quotes String {@code """}.
+     *
+     */
+    public static final String DQ = "\"";
+    
+    /**
+     * The back slash String {@code "\"}.
+     *
+     */
+    public static final String BS = "\\";
+        
     /**
      * The empty String {@code ""}.
      *

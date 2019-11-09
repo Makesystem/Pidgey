@@ -5,6 +5,7 @@
  */
 package com.makesystem.pidgey.lang;
 
+import com.makesystem.pidgey.interfaces.Snippet;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -61,6 +62,13 @@ public class ObjectHelper {
 
     public final static <O> boolean isDifferent(final O object_1, final O object_2) {
         return !isEquals(object_1, object_2);
+    }
+
+    public final static <O> O orDefault(final O object, final O defaultValue) {
+        if (isNull(object)) {
+            return defaultValue;
+        }
+        return object;
     }
 
     @SuppressWarnings("null")
