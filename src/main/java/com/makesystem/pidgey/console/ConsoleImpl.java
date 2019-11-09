@@ -10,6 +10,7 @@ import com.makesystem.pidgey.lang.ThrowableHelper;
 import com.makesystem.pidgey.system.Environment;
 import com.makesystem.pidgey.util.Reference;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -48,7 +49,14 @@ public class ConsoleImpl {
     }
 
     public void log(final Throwable throwable) {
-        log("{cc}{s}", ConsoleColor.RED, ThrowableHelper.toString(throwable));
+
+        final String red = ConsoleColor.RED.getColor();
+        final StringBuilder data = new StringBuilder(red);
+        data.append(ThrowableHelper
+                .toString(throwable)
+                .replace(StringHelper.LF, StringHelper.LF + red));
+
+        log(data);
     }
 
     /**
@@ -260,9 +268,20 @@ public class ConsoleImpl {
      * @param values
      */
     public void log(final String text, final Object[]... values) {
+        writer.accept(format(text, values));
+    }
 
+    /**
+     * Format the values to print into console
+     * 
+     * @param text
+     * @param values
+     * @return 
+     */
+    public String format(final String text, final Object[]... values) {
+        
         final ConsoleFlag[] flags = ConsoleFlag.fromText(text);
-        final Integer[] maxValues = new Integer[flags.length];
+        final int[] maxValues = new int[flags.length];
         final String[][] formattedValues = new String[values.length][flags.length];
 
         IntStream.range(0, maxValues.length).forEach(column -> maxValues[column] = 0);
@@ -274,7 +293,9 @@ public class ConsoleImpl {
                     formattedValues[row][column] = value;
                 }));
 
-        IntStream.range(0, values.length).forEach(row -> {
+        //System.out.println("sum: " + IntStream.of(maxValues).sum());
+        
+        final String print = IntStream.range(0, values.length).mapToObj(row -> {
 
             final Reference<String> toWrite = new Reference(text);
 
@@ -292,10 +313,11 @@ public class ConsoleImpl {
 
                     }));
 
-            // Write the value
-            writer.accept(toWrite.get());
+            return toWrite.get();
 
-        });
+        }).collect(Collectors.joining(StringHelper.LF));
+        
+        return print;
     }
 
     protected final static Consumer<Object> discovery() {
@@ -310,9 +332,13 @@ public class ConsoleImpl {
 
     protected final static void jre_console(final Object data) {
         if (data != null) {
-            System.out.println(data.toString()
+
+            final String string = data.toString();
+            final boolean resetColor = string.contains(ConsoleColor.JRE_TAG);
+
+            System.out.println(string
                     // Reset color console for others future prints
-                    + "\033[0m");
+                    + (resetColor ? "\033[0m" : ""));
         }
     }
 
