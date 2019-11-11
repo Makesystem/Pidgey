@@ -5,6 +5,9 @@
  */
 package com.makesystem.pidgey.lang;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 /**
  *
  * @author riche
@@ -21,7 +24,7 @@ public class Concatenator {
     protected Concatenator(final String separator) {
         this.separator = separator;
     }
-    
+
     protected Concatenator(
             final String startWith,
             final String endWith) {
@@ -65,33 +68,36 @@ public class Concatenator {
         return this;
     }
 
-    public String concat(final Object... values){
-        return getStartWith() + StringHelper.concat(getSeparator(), values) + getEndWith();
+    public String concat(final Object... values) {
+        final String content = Arrays.stream(values)
+                .map(var -> var == null ? StringHelper.EMPTY : var.toString())
+                .collect(Collectors.joining(getSeparator()));
+        return getStartWith() + content + getEndWith();
     }
-    
+
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public static final Concatenator get() {
         return new Concatenator();
     }
 
     /**
-     * 
+     *
      * @param separator
-     * @return 
+     * @return
      */
     public static final Concatenator get(
             final String separator) {
         return new Concatenator(separator);
     }
-    
+
     /**
-     * 
+     *
      * @param startWith
      * @param endWith
-     * @return 
+     * @return
      */
     public static final Concatenator get(
             final String startWith,
@@ -100,11 +106,11 @@ public class Concatenator {
     }
 
     /**
-     * 
+     *
      * @param startWith
      * @param endWith
      * @param separator
-     * @return 
+     * @return
      */
     public static final Concatenator get(
             final String startWith,

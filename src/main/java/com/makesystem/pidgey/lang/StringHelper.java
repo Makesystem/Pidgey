@@ -199,15 +199,15 @@ public class StringHelper {
     }
 
     public static final String stripDiffOfLetter(final String value, final String... andPreserve) {
-        return stripDiffOf(value, LETTERS_FOR_PARTNERS, concat(EMPTY, (Object[]) andPreserve));
+        return stripDiffOf(value, LETTERS_FOR_PARTNERS, join(andPreserve));
     }
 
     public static final String stripDiffOfNumber(final String value, final String... andPreserve) {
-        return stripDiffOf(value, NUMBERS_FOR_PARTNERS, concat(EMPTY, (Object[]) andPreserve));
+        return stripDiffOf(value, NUMBERS_FOR_PARTNERS, join(andPreserve));
     }
 
     public static final String stripDifOfAlphanumeric(final String value, final String... andPreserve) {
-        return stripDiffOf(value, LETTERS_FOR_PARTNERS, NUMBERS_FOR_PARTNERS, concat(EMPTY, (Object[]) andPreserve));
+        return stripDiffOf(value, LETTERS_FOR_PARTNERS, NUMBERS_FOR_PARTNERS, join((Object[]) andPreserve));
     }
 
     public static final String stripDiffOf(final String value, final String... preserve) {
@@ -222,21 +222,21 @@ public class StringHelper {
 
         final StringBuilder paterner = new StringBuilder();
         paterner.append("[^");
-        paterner.append(concat(EMPTY, (Object[]) preserve));
+        paterner.append(join((Object[]) preserve));
         paterner.append("]+");
 
         return value.replaceAll(paterner.toString(), "");
     }
-
+    
     /**
      * Concat values with null prevent
      *
-     * @param separator
+     * @param <O>
      * @param data
      * @return
      */
-    public static String concat(final String separator, final Object... data) {
-        return Arrays.stream(data).map(var -> var == null ? "" : var.toString()).collect(Collectors.joining(separator));
+    public static <O> String join(final O... data) {
+        return Arrays.stream(data).map(var -> var == null ? EMPTY : var.toString()).collect(Collectors.joining());
     }
 
     /**
