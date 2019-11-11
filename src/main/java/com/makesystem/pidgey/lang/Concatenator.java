@@ -68,7 +68,7 @@ public class Concatenator {
         return this;
     }
 
-    public String concat(final Object... values) {
+    public <V> String concat(final V... values) {
         final String content = Arrays.stream(values)
                 .map(var -> var == null ? StringHelper.EMPTY : var.toString())
                 .collect(Collectors.joining(getSeparator()));
