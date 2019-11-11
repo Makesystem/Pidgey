@@ -21,6 +21,13 @@ public class Concatenator {
     public Concatenator(final String separator) {
         this.separator = separator;
     }
+    
+    public Concatenator(
+            final String startWith,
+            final String endWith) {
+        this.startWith = startWith;
+        this.endWith = endWith;
+    }
 
     public Concatenator(
             final String startWith,
@@ -60,5 +67,49 @@ public class Concatenator {
 
     public String concat(final Object... values){
         return getStartWith() + StringHelper.concat(getSeparator(), values) + getEndWith();
+    }
+    
+    /**
+     * 
+     * @return 
+     */
+    public static final Concatenator get() {
+        return new Concatenator();
+    }
+
+    /**
+     * 
+     * @param separator
+     * @return 
+     */
+    public static final Concatenator get(
+            final String separator) {
+        return new Concatenator(separator);
+    }
+    
+    /**
+     * 
+     * @param startWith
+     * @param endWith
+     * @return 
+     */
+    public static final Concatenator get(
+            final String startWith,
+            final String endWith) {
+        return new Concatenator(startWith, endWith);
+    }
+
+    /**
+     * 
+     * @param startWith
+     * @param endWith
+     * @param separator
+     * @return 
+     */
+    public static final Concatenator get(
+            final String startWith,
+            final String endWith,
+            final String separator) {
+        return new Concatenator(startWith, endWith, separator);
     }
 }
