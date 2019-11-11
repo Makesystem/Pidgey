@@ -47,7 +47,7 @@ public class StringHelper {
      * The back slash String {@code "\"}.
      *
      */
-    public static final String BS = "\\";
+    public static final String BS = "\\\\";
         
     /**
      * The empty String {@code ""}.

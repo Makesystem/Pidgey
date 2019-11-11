@@ -128,13 +128,18 @@ public enum ConsoleFlag {
     }
 
     public String replace(final String text, final String value) {
-        return text.replaceFirst(forRegex(flag), value);
+        return text.replaceFirst(forRegex(flag), prepareValue(value));
     }
 
     public String applyAndReplace(final String text, final Object object) {
         return replace(text, apply(object));
     }
 
+    protected final String prepareValue(final String value){
+        return value
+                .replace("$", "\\$");
+    }
+    
     protected static final String forRegex(final String flag) {
         return flag.replace("{", "\\{").replace("}", "\\}");
     }
