@@ -15,21 +15,21 @@ public class Concatenator {
     private String endWith = StringHelper.EMPTY;
     private String separator = StringHelper.EMPTY;
 
-    public Concatenator() {
+    protected Concatenator() {
     }
 
-    public Concatenator(final String separator) {
+    protected Concatenator(final String separator) {
         this.separator = separator;
     }
     
-    public Concatenator(
+    protected Concatenator(
             final String startWith,
             final String endWith) {
         this.startWith = startWith;
         this.endWith = endWith;
     }
 
-    public Concatenator(
+    protected Concatenator(
             final String startWith,
             final String endWith,
             final String separator) {
