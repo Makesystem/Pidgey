@@ -72,7 +72,7 @@ public class SystemProperty<V> implements IsSystemProperty<V> {
         if (value == null) {
             return defaultValue;
         }
-        return ObjectHelper.valueOf(type, value);
+        return ClassHelperJRE.valueOf(type, value);
     }
 
     protected static final Properties toProperties(final SystemProperty... systemProperties) {

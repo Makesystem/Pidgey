@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.makesystem.pidgey.lang.CollectionHelper;
-import com.makesystem.pidgey.lang.ObjectHelper;
+import com.makesystem.pidgey.lang.ClassHelperJRE;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -85,7 +85,7 @@ public class ObjectMapperJRE {
                 final Class<?> mapValueType = CollectionHelper.getMapValueType(map);
                 if (mapKeyType == null) {
                     type = null;
-                } else if (!ObjectHelper.isBasicJavaClass(mapKeyType)) {
+                } else if (!ClassHelperJRE.isBasicJavaClass(mapKeyType)) {
                     throw new IllegalArgumentException("Map Key can not be " + mapKeyType.getName() + ". It must be a primitive type, or a String or an enum.");
                 } else {
                     type = TYPE_FACTORY.constructMapType(LinkedHashMap.class, mapKeyType, mapValueType);
