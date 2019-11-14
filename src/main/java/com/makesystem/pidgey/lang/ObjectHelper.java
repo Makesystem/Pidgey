@@ -5,7 +5,6 @@
  */
 package com.makesystem.pidgey.lang;
 
-import com.makesystem.pidgey.interfaces.Snippet;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
