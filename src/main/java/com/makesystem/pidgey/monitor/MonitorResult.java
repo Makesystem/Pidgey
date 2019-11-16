@@ -153,15 +153,14 @@ public class MonitorResult {
         Console.log("{cc}", ConsoleColor.RESET);
         if (!StringHelper.isBlank(this.title)) {
             final int charPerRow = 70;
-            Console.log("{cc}{cc}{s}{s}\t\t\t{cc}",
+            Console.log("{cc}{cc}{s}{s}\t\t\t",
                     ConsoleColor.CYAN_BACKGROUND,
                     ConsoleColor.BLACK,
                     StringHelper.SPACE,
                     StringHelper.appendAtEnd(
                             this.title,
                             StringHelper.SPACE,
-                            charPerRow),
-                    ConsoleColor.RESET);
+                            charPerRow));
         }
         Console.log(format, values);
     }
