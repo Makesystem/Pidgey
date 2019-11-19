@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  *
@@ -24,31 +25,31 @@ public class StringHelper {
      *
      */
     public static final String SPACE = " ";
-    
+
     /**
      * The underline String {@code "_"}.
      *
      */
     public static final String UL = "_";
-    
+
     /**
      * The unserline String {@code "_"}.
      *
      */
     public static final String DOT = ".";
-    
+
     /**
      * The double quotes String {@code """}.
      *
      */
     public static final String DQ = "\"";
-    
+
     /**
      * The back slash String {@code "\"}.
      *
      */
     public static final String BS = "\\\\";
-        
+
     /**
      * The empty String {@code ""}.
      *
@@ -227,7 +228,7 @@ public class StringHelper {
 
         return value.replaceAll(paterner.toString(), "");
     }
-    
+
     /**
      * Concat values with null prevent
      *
@@ -277,6 +278,68 @@ public class StringHelper {
         return value == null ? null
                 : value.substring(0,
                         Math.min(maxLength, value.length()));
+    }
+
+    /**
+     * Remove these sequences:
+     * <code>
+     * <br/> '123'
+     * <br/> 'abc' <br/> 'ABC'
+     * <br/> 'aaa' <br/> 'AAA'
+     * </code>
+     *
+     * @param value
+     * @return
+     */
+    public static final String stripSeqs(final String value) {
+
+        if (isBlank(value)) {
+            return value;
+        }
+
+        final char[] chars = value.toCharArray();
+        return streamToStrepSeq(value).mapToObj(index -> String.valueOf((char) chars[index])).collect(Collectors.joining());
+    }
+
+    /**
+     * Remove these sequences:
+     * <code>
+     * <br/> '123'
+     * <br/> 'abc' <br/> 'ABC' <br/> 'AbCd'
+     * <br/> 'aaa' <br/> 'AAA' <br/> 'AaAa'
+     * </code>
+     *
+     * @param value
+     * @return
+     */
+    public static final String stripSeqsIgnoreCase(final String value) {
+
+        if (isBlank(value)) {
+            return value;
+        }
+
+        final char[] chars = value.toCharArray();
+        return streamToStrepSeq(value.toLowerCase()).mapToObj(index -> String.valueOf((char) chars[index])).collect(Collectors.joining());
+    }
+
+    protected static final IntStream streamToStrepSeq(final String value) {
+        final char[] chars = value.toCharArray();
+        return IntStream.range(0, chars.length).filter(index -> {
+
+            final int last = index > 0 ? (int) chars[index - 1] : -1;
+            final int curr = chars[index];
+            final int next = (index + 1) < chars.length ? (int) chars[index + 1] : -1;
+
+            final boolean lastChar = Character.isLetterOrDigit((char) last);
+            final boolean currChar = Character.isLetterOrDigit((char) curr);
+            final boolean nextChar = Character.isLetterOrDigit((char) next);
+
+            final boolean lastIsSeq = currChar && lastChar && (curr == (last + 1) || curr == last);
+            final boolean nextIsSeq = currChar && nextChar && (curr == (next - 1) || curr == next);
+
+            return !lastIsSeq && !nextIsSeq;
+
+        });
     }
 
     /**
