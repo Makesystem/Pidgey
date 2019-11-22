@@ -92,7 +92,7 @@ public class FilesHelper {
         final URL url = getURL(file);
         return url == null ? new FileInputStream(file) : url.openStream();
     }
-    
+
     public final static void replaceLines(
             final String file,
             final Charset charset,
@@ -348,6 +348,10 @@ public class FilesHelper {
     }
 
     public final static boolean mkfile(final File file) throws IOException {
+        final File parent = file.getParentFile();
+        if (!parent.exists()) {
+            parent.mkdirs();
+        }
         return file.exists() ? false : file.createNewFile();
     }
 
