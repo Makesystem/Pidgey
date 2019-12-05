@@ -5,6 +5,7 @@
  */
 package com.makesystem.pidgey.lang;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -19,7 +20,9 @@ import java.util.Map;
  *
  * @author riche
  */
-public class ClassHelperJRE {
+public class ClassHelperJRE implements Serializable {
+
+    private static final long serialVersionUID = 4835262989608455075L;
 
     public final static <O> boolean isDifferent(final O object_1, final O object_2) {
         return !isEquals(object_1, object_2);

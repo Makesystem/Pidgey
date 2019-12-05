@@ -22,6 +22,8 @@ import java.util.Properties;
  */
 public class SystemProperty<V> implements IsSystemProperty<V> {
 
+    private static final long serialVersionUID = -4280360625862773808L;
+
     private final String property;
     private final V defaultValue;
     private final Class type;

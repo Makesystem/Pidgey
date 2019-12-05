@@ -17,6 +17,8 @@ import java.net.URL;
  */
 public class IpAddressJRE implements IpAddress {
 
+    private static final long serialVersionUID = 3442322089391693765L;
+
     @Override
     public String getLocal() throws IOException {
         final InetAddress inetAddress = InetAddress.getLocalHost();
@@ -27,7 +29,6 @@ public class IpAddressJRE implements IpAddress {
     public void getLocal(final AsyncCallback<String> asyncCallback) {
         new Thread(() -> {
             try {
-                final InetAddress inetAddress = InetAddress.getLocalHost();
                 asyncCallback.onSuccess(getLocal());
             } catch (@SuppressWarnings("UseSpecificCatch") final Throwable error) {
                 asyncCallback.onFailure(error);
@@ -45,7 +46,6 @@ public class IpAddressJRE implements IpAddress {
     public void getPublic(final AsyncCallback<String> asyncCallback) {
         new Thread(() -> {
             try {
-                final InetAddress inetAddress = InetAddress.getLocalHost();
                 asyncCallback.onSuccess(getPublic());
             } catch (@SuppressWarnings("UseSpecificCatch") final Throwable error) {
                 asyncCallback.onFailure(error);

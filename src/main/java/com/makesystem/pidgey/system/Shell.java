@@ -8,6 +8,7 @@ package com.makesystem.pidgey.system;
 import com.makesystem.pidgey.io.file.FilesHelper;
 import com.makesystem.pidgey.lang.StringHelper;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -17,8 +18,10 @@ import java.util.stream.Collectors;
  *
  * @author riche
  */
-public class Shell {
-    
+public class Shell implements Serializable {
+
+    private static final long serialVersionUID = -4208239768975295244L;
+
     private final Runtime runtime = Runtime.getRuntime();
 
     final Process $(final String... commands) throws IOException {

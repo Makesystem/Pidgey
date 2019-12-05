@@ -15,6 +15,8 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 public class ThreadPool extends AbstractThreadPool<ThreadPoolExecutor> {
 
+    private static final long serialVersionUID = -2432981912131486269L;
+
     public ThreadPool() {
         super();
     }

@@ -5,6 +5,7 @@
  */
 package com.makesystem.pidgey.util;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -13,7 +14,9 @@ import java.util.function.Function;
  * @author Richeli Vargas
  * @param <T>
  */
-public class Reference<T> {
+public class Reference<T> implements Serializable {
+
+    private static final long serialVersionUID = -1773824990317337297L;
 
     private T reference;
 

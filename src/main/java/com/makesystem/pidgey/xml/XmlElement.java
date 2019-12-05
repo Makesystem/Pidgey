@@ -24,6 +24,8 @@ import org.w3c.dom.NodeList;
  */
 public class XmlElement implements Serializable, Comparable<XmlElement> {
 
+    private static final long serialVersionUID = -7097850786908056834L;
+
     private final String tag;
     private final String value;
     private final String textContent;

@@ -16,6 +16,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ConcurrentMap<K, V> extends ConcurrentHashMap<K, V> {
 
+    private static final long serialVersionUID = 3382837990238655476L;
+
     private Generator<V> defaultGenerator;
 
     public ConcurrentMap() {

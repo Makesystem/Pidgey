@@ -10,6 +10,7 @@ import com.makesystem.pidgey.console.ConsoleColor;
 import com.makesystem.pidgey.interfaces.Snippet;
 import com.makesystem.pidgey.formatation.TimeFormat;
 import com.makesystem.pidgey.lang.StringHelper;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -21,7 +22,9 @@ import java.util.stream.Collectors;
  *
  * @author Richeli.vargas
  */
-public class MonitorImpl {
+public class MonitorImpl implements Serializable {
+
+    private static final long serialVersionUID = 1434491745300800005L;
 
     public static final Comparator<MonitorResult> MONITOR_RESULT__COMPARATOR
             = Comparator.comparing(MonitorResult::getDuration);

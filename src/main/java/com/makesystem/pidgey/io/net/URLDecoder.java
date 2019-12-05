@@ -1,6 +1,7 @@
 package com.makesystem.pidgey.io.net;
 
 import com.makesystem.pidgey.io.file.Charset;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 
 /**
@@ -45,7 +46,9 @@ import java.io.UnsupportedEncodingException;
  * @author Michael McCloskey
  * @since 1.2
  */
-public class URLDecoder {
+public class URLDecoder implements Serializable {
+
+    private static final long serialVersionUID = -602401235559775800L;
 
     private URLDecoder() {
     }

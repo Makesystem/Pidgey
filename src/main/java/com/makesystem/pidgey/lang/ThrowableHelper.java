@@ -5,6 +5,7 @@
  */
 package com.makesystem.pidgey.lang;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -12,7 +13,9 @@ import java.util.stream.Collectors;
  *
  * @author Richeli.vargas
  */
-public class ThrowableHelper {
+public class ThrowableHelper implements Serializable {
+
+    private static final long serialVersionUID = 5286967193256118982L;
 
     public final static String toString(final Throwable throwable) {
         return toString(throwable, Boolean.FALSE);

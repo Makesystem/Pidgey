@@ -14,6 +14,8 @@ import java.io.Serializable;
  */
 public class AsyncResponse<T> implements Serializable {
 
+    private static final long serialVersionUID = -996332874538938687L;
+
     protected enum Status {
         UNDEFINED, SUCCESS, FAILURE
     };

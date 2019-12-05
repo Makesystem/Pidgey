@@ -9,6 +9,7 @@ import com.makesystem.pidgey.lang.StringHelper;
 import com.makesystem.pidgey.lang.ThrowableHelper;
 import com.makesystem.pidgey.system.Environment;
 import com.makesystem.pidgey.util.Reference;
+import java.io.Serializable;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -17,14 +18,10 @@ import java.util.stream.IntStream;
  *
  * @author riche
  */
-public class ConsoleImpl {
+public class ConsoleImpl implements Serializable {
 
-    /**
-     * Parttener to split text by flags
-     */
-    //public static final String SPLITTER = Arrays.stream(ConsoleFlag.values())
-    //        .map(flag -> flag.getFlag().replace("{", "\\{").replace("}", "\\}"))
-    //        .collect(Collectors.joining("|"));
+    private static final long serialVersionUID = -7374189924097418758L;
+
     /**
      * Writer for environment in use
      */
@@ -273,13 +270,13 @@ public class ConsoleImpl {
 
     /**
      * Format the values to print into console
-     * 
+     *
      * @param text
      * @param values
-     * @return 
+     * @return
      */
     public String format(final String text, final Object[]... values) {
-        
+
         final ConsoleFlag[] flags = ConsoleFlag.fromText(text);
         final int[] maxValues = new int[flags.length];
         final String[][] formattedValues = new String[values.length][flags.length];
@@ -294,7 +291,6 @@ public class ConsoleImpl {
                 }));
 
         //System.out.println("sum: " + IntStream.of(maxValues).sum());
-        
         final String print = IntStream.range(0, values.length).mapToObj(row -> {
 
             final Reference<String> toWrite = new Reference(text);
@@ -316,7 +312,7 @@ public class ConsoleImpl {
             return toWrite.get();
 
         }).collect(Collectors.joining(StringHelper.LF));
-        
+
         return print;
     }
 

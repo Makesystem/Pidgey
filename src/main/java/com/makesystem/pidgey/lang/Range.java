@@ -14,6 +14,8 @@ import java.io.Serializable;
  */
 public class Range<T> implements Serializable {
 
+    private static final long serialVersionUID = 3987415331765912539L;
+
     private T start;
     private T end;
 

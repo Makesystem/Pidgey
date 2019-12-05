@@ -9,6 +9,7 @@ import com.makesystem.pidgey.console.Console;
 import com.makesystem.pidgey.console.ConsoleColor;
 import com.makesystem.pidgey.lang.StringHelper;
 import com.makesystem.pidgey.lang.ThrowableHelper;
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -16,7 +17,9 @@ import java.util.UUID;
  *
  * @author Richeli.vargas
  */
-public class MonitorResult {
+public class MonitorResult implements Serializable {
+
+    private static final long serialVersionUID = -196617577158971147L;
 
     private final String id = UUID.randomUUID().toString();
     private int num = 0;

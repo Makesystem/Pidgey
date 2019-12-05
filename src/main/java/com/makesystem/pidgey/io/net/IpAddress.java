@@ -7,12 +7,13 @@ package com.makesystem.pidgey.io.net;
 
 import com.makesystem.pidgey.interfaces.AsyncCallback;
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  *
  * @author riche
  */
-public interface IpAddress {
+public interface IpAddress extends Serializable {
 
     public static final String NO_IP = "0.0.0.0";
     public static final String PUBLIC_IP_SOURCE = "https://www.myexternalip.com/raw";

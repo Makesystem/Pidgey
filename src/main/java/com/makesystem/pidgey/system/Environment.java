@@ -5,11 +5,15 @@
  */
 package com.makesystem.pidgey.system;
 
+import java.io.Serializable;
+
 /**
  *
  * @author riche
  */
-public class Environment {
+public class Environment implements Serializable {
+
+    private static final long serialVersionUID = 6675707843526798506L;
 
     public enum Type {
         JRE, GWT
@@ -29,5 +33,5 @@ public class Environment {
     static native void test_gwt()/*-{
 	// In GWT environment this method will be compile
     }-*/;
-   
+
 }

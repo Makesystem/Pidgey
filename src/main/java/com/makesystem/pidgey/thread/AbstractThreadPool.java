@@ -5,6 +5,7 @@
  */
 package com.makesystem.pidgey.thread;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -17,7 +18,9 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author Richeli.vargas
  * @param <E>
  */
-public abstract class AbstractThreadPool<E extends ExecutorService> {
+public abstract class AbstractThreadPool<E extends ExecutorService> implements Serializable {
+
+    private static final long serialVersionUID = 9049250666057026471L;
 
     // Determine the time to wait for thread is finished
     private static final int TIMEOUT_SHUTDOWN_THREAD = 15;

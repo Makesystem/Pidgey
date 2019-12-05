@@ -5,6 +5,7 @@
  */
 package com.makesystem.pidgey.lang;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 
@@ -12,7 +13,9 @@ import java.util.Map;
  *
  * @author Richeli.vargas
  */
-public class ObjectHelper {
+public class ObjectHelper implements Serializable {
+
+    private static final long serialVersionUID = -88421800383487956L;
 
     public final static boolean isNullOrEmpty(final Object object) {
         return isNull(object) || isEmpty(object);

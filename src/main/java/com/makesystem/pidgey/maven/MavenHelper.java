@@ -7,6 +7,7 @@ package com.makesystem.pidgey.maven;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Serializable;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -15,7 +16,9 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
  *
  * @author riche
  */
-public class MavenHelper {
+public class MavenHelper implements Serializable {
+
+    private static final long serialVersionUID = 4504761036738515055L;
 
     /**
      *

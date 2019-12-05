@@ -5,6 +5,7 @@
  */
 package com.makesystem.pidgey.lang;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,7 +17,9 @@ import java.util.stream.IntStream;
  *
  * @author riche
  */
-public class StringHelper {
+public class StringHelper implements Serializable {
+
+    private static final long serialVersionUID = -5088130764712820036L;
 
     private static final int NOT_FOUND = -1;
 

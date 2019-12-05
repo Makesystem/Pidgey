@@ -5,6 +5,7 @@
  */
 package com.makesystem.pidgey.lang;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -23,7 +24,9 @@ import java.util.concurrent.TimeUnit;
  * @since 2.0
  */
 @SuppressWarnings("UnnecessaryBoxing")
-public class NumberHelper {
+public class NumberHelper implements Serializable {
+
+    private static final long serialVersionUID = -1412752737576872363L;
 
     /**
      * Reusable Long constant for zero.
@@ -139,10 +142,10 @@ public class NumberHelper {
 
     /**
      * Divide two number and prevent zero
-     * 
+     *
      * @param valueOne
      * @param valueTwo
-     * @return 
+     * @return
      */
     public final static long divide(final long valueOne, final long valueTwo) {
         if (valueOne == 0 || valueTwo == 0) {
@@ -153,10 +156,10 @@ public class NumberHelper {
 
     /**
      * Calculate the difference
-     * 
+     *
      * @param valueOne
      * @param valueTwo
-     * @return 
+     * @return
      */
     public final static long calcDifference(final long valueOne, final long valueTwo) {
         return valueOne > valueTwo ? valueOne - valueTwo : valueTwo - valueOne;
@@ -164,10 +167,10 @@ public class NumberHelper {
 
     /**
      * Convert value to millis
-     * 
+     *
      * @param value
      * @param unit
-     * @return 
+     * @return
      */
     public final static long toMillis(final long value, final TimeUnit unit) {
         switch (unit) {
@@ -900,32 +903,32 @@ public class NumberHelper {
                 case 'f':
                 case 'F':
                     try {
-                        final Float f = createFloat(str);
-                        if (!(f.isInfinite() || f.floatValue() == 0.0F && !allZeros)) {
-                            //If it's too big for a float or the float value = 0 and the string
-                            //has non-zeros in it, then float does not have the precision we want
-                            return f;
-                        }
-
-                    } catch (final NumberFormatException nfe) { // NOPMD
-                        // ignore the bad number
+                    final Float f = createFloat(str);
+                    if (!(f.isInfinite() || f.floatValue() == 0.0F && !allZeros)) {
+                        //If it's too big for a float or the float value = 0 and the string
+                        //has non-zeros in it, then float does not have the precision we want
+                        return f;
                     }
+
+                } catch (final NumberFormatException nfe) { // NOPMD
+                    // ignore the bad number
+                }
                 //$FALL-THROUGH$
                 case 'd':
                 case 'D':
                     try {
-                        final Double d = createDouble(str);
-                        if (!(d.isInfinite() || d.floatValue() == 0.0D && !allZeros)) {
-                            return d;
-                        }
-                    } catch (final NumberFormatException nfe) { // NOPMD
-                        // ignore the bad number
+                    final Double d = createDouble(str);
+                    if (!(d.isInfinite() || d.floatValue() == 0.0D && !allZeros)) {
+                        return d;
                     }
-                    try {
-                        return createBigDecimal(numeric);
-                    } catch (final NumberFormatException e) { // NOPMD
-                        // ignore the bad number
-                    }
+                } catch (final NumberFormatException nfe) { // NOPMD
+                    // ignore the bad number
+                }
+                try {
+                    return createBigDecimal(numeric);
+                } catch (final NumberFormatException e) { // NOPMD
+                    // ignore the bad number
+                }
                 //$FALL-THROUGH$
                 default:
                     throw new NumberFormatException(str + " is not a valid number.");

@@ -7,6 +7,7 @@ package com.makesystem.pidgey.thread;
 
 import com.makesystem.pidgey.lang.NumberHelper;
 import com.makesystem.pidgey.lang.Validate;
+import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 import java.util.ArrayList;
@@ -18,11 +19,13 @@ import java.util.List;
  *
  * @author Richeli.vargas
  */
-public class ThreadsHelper {
+public class ThreadsHelper implements Serializable {
+
+    private static final long serialVersionUID = 2387257495323303838L;
 
     /**
-     * 
-     * @param millis 
+     *
+     * @param millis
      */
     public static void sleep(final long millis) {
         try {
@@ -33,9 +36,9 @@ public class ThreadsHelper {
     }
 
     /**
-     * 
+     *
      * @param value
-     * @param unit 
+     * @param unit
      */
     public static void sleep(final long value, final TimeUnit unit) {
         sleep(NumberHelper.toMillis(value, unit));

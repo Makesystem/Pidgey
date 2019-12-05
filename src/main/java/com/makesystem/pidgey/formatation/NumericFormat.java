@@ -5,13 +5,16 @@
  */
 package com.makesystem.pidgey.formatation;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
  *
  * @author Richeli.vargas
  */
-public class NumericFormat {
+public class NumericFormat implements Serializable {
+
+    private static final long serialVersionUID = -4815089416428523144L;
 
     public static final char[] HEX_CHARS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 

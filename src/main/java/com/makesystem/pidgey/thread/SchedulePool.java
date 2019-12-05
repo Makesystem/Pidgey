@@ -16,6 +16,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class SchedulePool extends AbstractThreadPool<ScheduledExecutorService> {
 
+    private static final long serialVersionUID = -8581197449637283647L;
+
     public SchedulePool() {
         super();
     }

@@ -5,6 +5,7 @@
  */
 package com.makesystem.pidgey.lang;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -19,8 +20,10 @@ import java.util.stream.StreamSupport;
  *
  * @author riche
  */
-public class CollectionHelper {
- 
+public class CollectionHelper implements Serializable {
+
+    private static final long serialVersionUID = -2250164591767814510L;
+
     public final static <E> Collection toCollection(final Iterable<E> iterable) {
         return StreamSupport
                 .stream(iterable.spliterator(), false)
@@ -60,5 +63,4 @@ public class CollectionHelper {
         return map.isEmpty() ? null : map.values().stream().filter(value -> value != null).findAny().map(value -> value.getClass()).orElse(null);
     }
 
-    
 }

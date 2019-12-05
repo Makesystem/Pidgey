@@ -5,13 +5,16 @@
  */
 package com.makesystem.pidgey.util;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 /**
  *
  * @author riche
  */
-public final class Encoder {
+public final class Encoder implements Serializable{
+
+    private static final long serialVersionUID = -3824488349302569648L;
 
     private final byte[] newline;
     private final int linemax;

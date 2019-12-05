@@ -7,12 +7,15 @@ package com.makesystem.pidgey.lang;
 
 import com.makesystem.pidgey.interfaces.Snippet;
 import com.makesystem.pidgey.interfaces.SnippetRes;
+import java.io.Serializable;
 
 /**
  *
- * @author riche
+ * @author Richeli Vargas
  */
-public class NullSafe {
+public class NullSafe implements Serializable {
+
+    private static final long serialVersionUID = -7208621565109765382L;
 
     public static <O> void ifNull(final O toCheck, final Snippet snippet) {
         try {
@@ -37,7 +40,7 @@ public class NullSafe {
             throw new RuntimeException(throwable.getMessage(), throwable);
         }
     }
-    
+
     public static <O, R> R nullSafe(
             final O toCheck,
             final SnippetRes<R> ifNoNull,

@@ -7,6 +7,7 @@ package com.makesystem.pidgey.formatation;
 
 import com.makesystem.pidgey.language.Language;
 import com.makesystem.pidgey.language.Locales;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.function.Function;
 
@@ -14,8 +15,10 @@ import java.util.function.Function;
  *
  * @author Richeli.vargas
  */
-public class TimeFormat {
-
+public class TimeFormat implements Serializable {
+  
+    private static final long serialVersionUID = -4815089416417412033L;
+    
     public static final long ONE_SECOND_IN_MILLIS = 1000;
     public static final long ONE_MINUTE_IN_MILLIS = ONE_SECOND_IN_MILLIS * 60;
     public static final long ONE_HOUR_IN_MILLIS = ONE_MINUTE_IN_MILLIS * 60;

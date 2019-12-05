@@ -9,6 +9,7 @@ import com.makesystem.pidgey.io.file.Charset;
 import com.makesystem.pidgey.io.file.FilesHelper;
 import com.makesystem.pidgey.util.LinkedMap;
 import java.io.File;
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Collection;
@@ -32,7 +33,9 @@ import org.w3c.dom.NodeList;
  *
  * @author Richeli.vargas
  */
-public class XmlHelper {
+public class XmlHelper implements Serializable {
+
+    private static final long serialVersionUID = -8264211858234314604L;
 
     private static Document DOCUMENT;
 

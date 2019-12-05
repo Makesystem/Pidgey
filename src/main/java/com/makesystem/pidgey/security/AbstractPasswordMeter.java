@@ -6,13 +6,15 @@
 package com.makesystem.pidgey.security;
 
 import com.makesystem.pidgey.lang.StringHelper;
-import static com.makesystem.pidgey.lang.StringHelper.isBlank;
+import java.io.Serializable;
 
 /**
  *
  * @author riche
  */
-abstract class AbstractPasswordMeter {
+abstract class AbstractPasswordMeter implements Serializable {
+
+    private static final long serialVersionUID = 8427582862071678707L;
 
     public final static String PARTNER__STRONG_PASSWORD = "^(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*\\W).*$";
     public final static String PARTNER__MEDIUM_PASSWORD = "^(?=.{7,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))).*$";

@@ -12,10 +12,13 @@ import java.util.concurrent.TimeUnit;
 /**
  *
  * @author riche
+ * @param <V>
  */
-public class ScheduleFuturePool<V> 
-        extends FuturePool<V, ScheduledFuture<V>> 
+public class ScheduleFuturePool<V>
+        extends FuturePool<V, ScheduledFuture<V>>
         implements Delayed, ScheduledFuture<V> {
+
+    private static final long serialVersionUID = -7023826916973832792L;
 
     protected ScheduleFuturePool(final AbstractThreadPool<?> pool, final Runnable runnable, final ScheduledFuture<V> future) {
         super(pool, runnable, future);

@@ -5,6 +5,7 @@
  */
 package com.makesystem.pidgey.thread;
 
+import java.io.Serializable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -16,7 +17,9 @@ import java.util.concurrent.TimeoutException;
  * @param <V>
  * @param <F>
  */
-public class FuturePool<V, F extends Future<V>> implements Future<V> {
+public class FuturePool<V, F extends Future<V>> implements Future<V>, Serializable {
+
+    private static final long serialVersionUID = 1625321830579045181L;
 
     protected final AbstractThreadPool<?> pool;
     protected final Runnable runnable;
@@ -32,7 +35,7 @@ public class FuturePool<V, F extends Future<V>> implements Future<V> {
     public boolean cancel(boolean mayInterruptIfRunning) {
         final boolean cancel = this.future.cancel(mayInterruptIfRunning);
         this.pool.unregisterRunnable(runnable);
-        return cancel; 
+        return cancel;
     }
 
     @Override

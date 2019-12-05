@@ -6,6 +6,7 @@
 package com.makesystem.pidgey.util;
 
 import com.makesystem.pidgey.interfaces.Generator;
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 
 /**
@@ -14,7 +15,9 @@ import java.util.LinkedHashMap;
  * @param <K>
  * @param <V>
  */
-public class LinkedMap<K, V> extends LinkedHashMap<K, V> {
+public class LinkedMap<K, V> extends LinkedHashMap<K, V> implements Serializable{
+
+    private static final long serialVersionUID = 7622227321731854176L;
 
     private Generator<V> defaultGenerator;
 

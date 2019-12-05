@@ -11,6 +11,8 @@ package com.makesystem.pidgey.security;
  */
 public class PasswordMeterGWT extends AbstractPasswordMeter {
 
+    private static final long serialVersionUID = -1653080120240066380L;
+
     @Override
     protected native boolean match(final String value, final String partner) /*-{
         return (new RegExp(partner, "g")).test(value);

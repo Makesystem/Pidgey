@@ -5,13 +5,16 @@
  */
 package com.makesystem.pidgey.util;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  *
  * @author riche
  */
-public class Base64 {
+public class Base64 implements Serializable {
+
+    private static final long serialVersionUID = -483102036388490057L;
 
     private Base64() {
     }

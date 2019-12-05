@@ -1,11 +1,14 @@
 package com.makesystem.pidgey.io.net;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.BitSet;
 
-public class URLEncoder {
+public class URLEncoder implements Serializable {
 
+    private static final long serialVersionUID = 1783839631516954620L;
+    
     static final BitSet dontNeedEncoding;
     static final int caseDiff = ('a' - 'A');
 

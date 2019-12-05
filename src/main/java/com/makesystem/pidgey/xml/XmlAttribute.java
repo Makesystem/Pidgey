@@ -14,6 +14,8 @@ import java.util.Objects;
  */
 public class XmlAttribute implements Serializable {
 
+    private static final long serialVersionUID = 209941139503514326L;
+
     private String name;
     private String value;
 

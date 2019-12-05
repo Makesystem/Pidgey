@@ -6,13 +6,16 @@
 package com.makesystem.pidgey.util;
 
 import com.makesystem.pidgey.io.file.Charset;
+import java.io.Serializable;
 import java.util.Arrays;
 
 /**
  *
  * @author riche
  */
-public final class Decoder {
+public final class Decoder implements Serializable {
+
+    private static final long serialVersionUID = 5808903184504100930L;
 
     private final boolean isURL;
     private final boolean isMIME;

@@ -5,12 +5,14 @@
  */
 package com.makesystem.pidgey.lang;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Richeli.vargas
  * @param <V>
  */
-public interface IsSystemProperty<V> {
+public interface IsSystemProperty<V> extends Serializable {
 
     public boolean isDefined();
     

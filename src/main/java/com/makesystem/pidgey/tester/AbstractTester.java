@@ -10,6 +10,7 @@ import com.makesystem.pidgey.lang.ClassHelperJRE;
 import com.makesystem.pidgey.monitor.Monitor;
 import com.makesystem.pidgey.monitor.MonitorResult;
 import com.makesystem.pidgey.monitor.MonitorStatus;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
@@ -17,8 +18,10 @@ import java.util.LinkedHashSet;
  *
  * @author Richeli.vargas
  */
-public abstract class AbstractTester {
-    
+public abstract class AbstractTester implements Serializable {
+
+    private static final long serialVersionUID = -8736021087666135945L;
+
     protected interface MethodExecution<V> {
 
         public V exec() throws Throwable;
@@ -48,7 +51,7 @@ public abstract class AbstractTester {
         switch (result.getStatus()) {
             case SUCCESS:
 
-                if (!ClassHelperJRE.isEquals(valueObtained, expectedValue)) {                    
+                if (!ClassHelperJRE.isEquals(valueObtained, expectedValue)) {
                     final StringBuilder error = new StringBuilder();
                     error.append("Value obtained is different of expected value.\n");
                     error.append("Obtained [")
@@ -65,10 +68,10 @@ public abstract class AbstractTester {
 
                     return new MonitorResult(
                             "Assert Result",
-                            result.getStartAt(), 
-                            result.getEndAt(), 
-                            result.getDuration(), 
-                            MonitorStatus.ERROR, 
+                            result.getStartAt(),
+                            result.getEndAt(),
+                            result.getDuration(),
+                            MonitorStatus.ERROR,
                             new RuntimeException(error.toString()));
                 }
 

@@ -5,6 +5,7 @@
  */
 package com.makesystem.pidgey.security;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -13,7 +14,9 @@ import java.security.NoSuchAlgorithmException;
  *
  * @author Richeli.vargas
  */
-public class MD5 {
+public class MD5 implements Serializable {
+
+    private static final long serialVersionUID = 2139011563175683482L;
 
     public static String toMD5(final String data) {
 

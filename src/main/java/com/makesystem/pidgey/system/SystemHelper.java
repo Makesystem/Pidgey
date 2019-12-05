@@ -7,12 +7,15 @@ package com.makesystem.pidgey.system;
 
 import com.makesystem.pidgey.lang.StringHelper;
 import java.io.File;
+import java.io.Serializable;
 
 /**
  *
  * @author riche
  */
-public class SystemHelper {
+public class SystemHelper implements Serializable{
+
+    private static final long serialVersionUID = 4760132236061384729L;
 
     /**
      * The prefix String for all Windows OS.

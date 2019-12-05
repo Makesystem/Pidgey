@@ -18,6 +18,8 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class Average<I> implements Serializable {
 
+    private static final long serialVersionUID = 7008295735272821328L;
+
     private I identifier;
     private final AtomicLong total = new AtomicLong(0);
     private final AtomicInteger count = new AtomicInteger(0);

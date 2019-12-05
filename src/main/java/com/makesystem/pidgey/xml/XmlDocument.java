@@ -14,6 +14,8 @@ import org.w3c.dom.Document;
  */
 public class XmlDocument extends XmlElement {
 
+    private static final long serialVersionUID = 7666724355988843144L;
+
     private final String encoding;
     private final boolean standalone;
     private final String version;

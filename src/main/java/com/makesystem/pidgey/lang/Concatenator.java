@@ -5,6 +5,7 @@
  */
 package com.makesystem.pidgey.lang;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -12,7 +13,9 @@ import java.util.stream.Collectors;
  *
  * @author riche
  */
-public class Concatenator {
+public class Concatenator implements Serializable {
+
+    private static final long serialVersionUID = 5151302030828813099L;
 
     private String startWith = StringHelper.EMPTY;
     private String endWith = StringHelper.EMPTY;

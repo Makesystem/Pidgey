@@ -15,6 +15,8 @@ import java.io.IOException;
  */
 public class IpAddressGWT implements IpAddress {
 
+    private static final long serialVersionUID = 8857096786988548802L;
+
     public static final String JQUERY_API = "ajax.googleapis.com/ajax/libs/jquery";
     public static final String JQUERY_API_URL = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js";
 

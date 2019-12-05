@@ -5,11 +5,13 @@
  */
 package com.makesystem.pidgey.language;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Richeli Vargas
  */
-public interface HasLanguage {
+public interface HasLanguage extends Serializable {
 
     public String[] getMonthsFull();
 

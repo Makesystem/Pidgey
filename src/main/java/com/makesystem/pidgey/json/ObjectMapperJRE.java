@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.makesystem.pidgey.lang.CollectionHelper;
 import com.makesystem.pidgey.lang.ClassHelperJRE;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -28,8 +29,10 @@ import java.util.Set;
  *
  * @author Richeli.vargas
  */
-public class ObjectMapperJRE {
-    
+public class ObjectMapperJRE implements Serializable {
+
+    private static final long serialVersionUID = 7027139277328281082L;
+
     private final static ObjectMapper MAPPER;
     private final static JsonFactory FACTORY;
     private final static TypeFactory TYPE_FACTORY;
@@ -41,6 +44,7 @@ public class ObjectMapperJRE {
 
         FACTORY = MAPPER.getFactory();
         TYPE_FACTORY = MAPPER.getTypeFactory();
+
     }
 
     /**
@@ -106,13 +110,7 @@ public class ObjectMapperJRE {
      * @throws JsonProcessingException
      */
     public static final <O> String write(final O object) throws JsonProcessingException {
-        //final JavaType type = getType(object);
-        //if (type == null) {
         return MAPPER.writer().writeValueAsString(object);
-        //} else {
-        //    Notworking with map.getValues() <-- The Jackson doesn't know this type of collection  
-        //    return mapper.writerFor(type).writeValueAsString(object);
-        //}
     }
 
     /**

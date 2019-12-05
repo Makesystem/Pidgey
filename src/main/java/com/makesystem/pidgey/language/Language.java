@@ -6,12 +6,15 @@
 package com.makesystem.pidgey.language;
 
 import com.makesystem.pidgey.language.languages.*;
+import java.io.Serializable;
 
 /**
  *
  * @author Richeli Vargas
  */
-public class Language {
+public class Language implements Serializable {
+
+    private static final long serialVersionUID = -229572251085663896L;
 
     /**
      *

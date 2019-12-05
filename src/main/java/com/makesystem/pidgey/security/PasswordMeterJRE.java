@@ -11,6 +11,8 @@ package com.makesystem.pidgey.security;
  */
 public class PasswordMeterJRE extends AbstractPasswordMeter {
 
+    private static final long serialVersionUID = -4463118814109329719L;
+
     @Override
     public boolean match(final String value, final String partner) {
         return java.util.regex.Pattern.compile(partner).matcher(value).find();

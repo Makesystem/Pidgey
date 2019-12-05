@@ -5,6 +5,7 @@
  */
 package com.makesystem.pidgey.lang;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -41,7 +42,9 @@ import java.util.Map;
  */
 
 @SuppressWarnings({"UnnecessaryBoxing", "MismatchedReadAndWriteOfArray"})
-public class Validate {
+public class Validate implements Serializable {
+
+    private static final long serialVersionUID = 3028763097388657487L;
 
     private static final String DEFAULT_NOT_NAN_EX_MESSAGE
             = "The validated value is not a number";

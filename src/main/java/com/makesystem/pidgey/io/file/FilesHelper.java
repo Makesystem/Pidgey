@@ -27,13 +27,16 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.util.function.Function;
 
 /**
  *
  * @author Richeli.vargas
  */
-public class FilesHelper {
+public class FilesHelper implements Serializable {
+
+    private static final long serialVersionUID = -5106513613191381392L;
 
     static final Charset DEFAULT_CHARSET = Charset.UTF_8;
 
