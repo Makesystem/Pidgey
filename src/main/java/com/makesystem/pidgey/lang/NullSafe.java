@@ -17,23 +17,54 @@ public class NullSafe implements Serializable {
 
     private static final long serialVersionUID = -7208621565109765382L;
 
+    /**
+     *
+     * @param <O>
+     */
+    public interface NullSafeSnippet<O> {
+
+        public void exec(final O checked) throws Throwable;
+    }
+
+    /**
+     *
+     * @param <O>
+     * @param <R>
+     */
+    public interface NullSafeSnippetRes<O, R> {
+
+        public R exec(final O checked) throws Throwable;
+    }
+
+    /**
+     *
+     * @param <O>
+     * @param toCheck
+     * @param snippet
+     */
     public static <O> void ifNull(final O toCheck, final Snippet snippet) {
         try {
-
-            if (ObjectHelper.isNull(toCheck)) {
+            
+            if (toCheck == null) {
                 snippet.exec();
             }
-
+            
         } catch (Throwable throwable) {
             throw new RuntimeException(throwable.getMessage(), throwable);
         }
     }
 
-    public static <O> void nullSafe(final O toCheck, final Snippet snippet) {
+    /**
+     *
+     * @param <O>
+     * @param toCheck
+     * @param snippet
+     */
+    public static <O> void nullSafe(final O toCheck, final NullSafeSnippet<O> snippet) {
         try {
 
-            if (ObjectHelper.isNotNull(toCheck)) {
-                snippet.exec();
+            if (toCheck != null) {
+                snippet.exec(toCheck);
             }
 
         } catch (Throwable throwable) {
@@ -41,17 +72,26 @@ public class NullSafe implements Serializable {
         }
     }
 
+    /**
+     *
+     * @param <O>
+     * @param <R>
+     * @param toCheck
+     * @param ifNoNull
+     * @param ifNull
+     * @return
+     */
     public static <O, R> R nullSafe(
             final O toCheck,
-            final SnippetRes<R> ifNoNull,
+            final NullSafeSnippetRes<O, R> ifNoNull,
             final SnippetRes<R> ifNull) {
 
         try {
 
-            if (ObjectHelper.isNull(toCheck)) {
+            if (toCheck == null) {
                 return ifNull.exec();
             } else {
-                return ifNoNull.exec();
+                return ifNoNull.exec(toCheck);
             }
 
         } catch (Throwable throwable) {
@@ -59,17 +99,24 @@ public class NullSafe implements Serializable {
         }
     }
 
+    /**
+     *
+     * @param <O>
+     * @param toCheck
+     * @param ifNoNull
+     * @param ifNull
+     */
     public static <O> void nullSafe(
             final O toCheck,
-            final Snippet ifNoNull,
+            final NullSafeSnippet<O> ifNoNull,
             final Snippet ifNull) {
 
         try {
 
-            if (ObjectHelper.isNull(toCheck)) {
+            if (toCheck == null) {
                 ifNull.exec();
             } else {
-                ifNoNull.exec();
+                ifNoNull.exec(toCheck);
             }
 
         } catch (Throwable throwable) {
