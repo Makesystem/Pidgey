@@ -3,6 +3,7 @@ import com.makesystem.pidgey.console.Console;
 import com.makesystem.pidgey.console.ConsoleColor;
 import com.makesystem.pidgey.console.ConsoleFlag;
 import com.makesystem.pidgey.lang.StringHelper;
+import com.makesystem.pidgey.monitor.Monitor;
 import com.makesystem.pidgey.tester.AbstractTester;
 import com.makesystem.pidgey.thread.SchedulePool;
 import com.makesystem.pidgey.thread.ThreadPool;
@@ -34,29 +35,36 @@ public class Thread_Tester extends AbstractTester {
     @Override
     protected void preExecution() {
 
-        final ExecutorService service = Executors.newFixedThreadPool(10);
+    }
+
+    @Override
+    protected void execution() {
+        //testThreadPool();
+        //testSchedulePool();
+        testExecuteAll();
+    }
+
+    void testExecuteAll() {
+
+        final int threads = 5000;
+        final ThreadPool pool = new ThreadPool(threads);
         final Collection<Callable<String>> callables = new LinkedList<>();
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < threads; i++) {
             callables.add(() -> {
-                Thread.sleep(5000);
+                Thread.sleep(1000);
                 return "thread x";
             });
 
         }
         try {
             Console.log("ali");
-            service.invokeAll(callables);
+            Monitor.exec(() -> pool.executeAll(callables.stream().toArray(Callable[]::new))).print();
             Console.log("aqui");
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
-    }
 
-    @Override
-    protected void execution() {
-        //testThreadPool();
-        testSchedulePool();
     }
 
     void testThreadPool() {
