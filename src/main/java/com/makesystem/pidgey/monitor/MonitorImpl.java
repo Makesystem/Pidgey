@@ -49,16 +49,18 @@ public class MonitorImpl implements Serializable {
 
     public MonitorResult exec(final String title, final Snippet snippet) {
         final MonitorResult result = new MonitorResult(title);
-        result.setStartAt(System.currentTimeMillis());
         result.setStatus(MonitorStatus.RUNNING);
         try {
-            snippet.exec();
+            try {
+                result.setStartAt(System.currentTimeMillis());
+                snippet.exec();
+            } finally {
+                result.setEndAt(System.currentTimeMillis());
+            }
             result.setStatus(MonitorStatus.SUCCESS);
         } catch (Throwable throwable) {
             result.setError(throwable);
             result.setStatus(MonitorStatus.ERROR);
-        } finally {
-            result.setEndAt(System.currentTimeMillis());
         }
         return result;
     }
