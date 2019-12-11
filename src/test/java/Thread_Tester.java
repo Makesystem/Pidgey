@@ -7,6 +7,11 @@ import com.makesystem.pidgey.tester.AbstractTester;
 import com.makesystem.pidgey.thread.SchedulePool;
 import com.makesystem.pidgey.thread.ThreadPool;
 import com.makesystem.pidgey.thread.ThreadsHelper;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -28,6 +33,24 @@ public class Thread_Tester extends AbstractTester {
 
     @Override
     protected void preExecution() {
+
+        final ExecutorService service = Executors.newFixedThreadPool(10);
+        final Collection<Callable<String>> callables = new LinkedList<>();
+
+        for (int i = 0; i < 10; i++) {
+            callables.add(() -> {
+                Thread.sleep(5000);
+                return "thread x";
+            });
+
+        }
+        try {
+            Console.log("ali");
+            service.invokeAll(callables);
+            Console.log("aqui");
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
     }
 
     @Override
@@ -85,7 +108,7 @@ public class Thread_Tester extends AbstractTester {
     void printTime(final String title, final ConsoleColor color) {
         final String titleMinLength = StringHelper.appendAtEnd(title, StringHelper.SPACE, 30);
         final long time = System.currentTimeMillis();
-        
+
         final String format = new StringBuilder()
                 .append(ConsoleFlag.COLOR.getFlag())
                 .append(ConsoleFlag.TEXT.getFlag())
@@ -93,7 +116,7 @@ public class Thread_Tester extends AbstractTester {
                 .append(ConsoleFlag.COLOR.getFlag())
                 .append(ConsoleFlag.DATE_TIME.getFlag())
                 .toString();
-        
+
         Console.log(format, color, titleMinLength, ConsoleColor.BLUE, time);
     }
 

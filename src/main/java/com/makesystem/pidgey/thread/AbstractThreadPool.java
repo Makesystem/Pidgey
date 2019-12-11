@@ -7,8 +7,8 @@ package com.makesystem.pidgey.thread;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -32,7 +32,7 @@ public abstract class AbstractThreadPool<E extends ExecutorService> implements S
     private static final int CORES_MULTIPLIER = 3;
 
     private final AtomicReference<E> atomicReference = new AtomicReference<>();
-    private final Collection<Runnable> runnables = Collections.synchronizedCollection(new LinkedList<>());
+    private final Collection processes = new ConcurrentLinkedQueue<>();
     private int numberOfThreads;
     private boolean alwaysActive = false;
 
@@ -76,7 +76,7 @@ public abstract class AbstractThreadPool<E extends ExecutorService> implements S
     }
 
     protected synchronized void callShutdown() {
-        if (!hasActiveRunnables() && !isAlwaysActive()) {
+        if (!hasActiveProcesses() && !isAlwaysActive()) {
             shutdown();
         }
     }
@@ -118,26 +118,26 @@ public abstract class AbstractThreadPool<E extends ExecutorService> implements S
         }
     }
 
-    protected void registerRunnable(final Runnable runnable) {
-        runnables.add(runnable);
+    protected void registerProcess(final Object process) {
+        processes.add(process);
     }
 
-    protected void unregisterRunnable(final Runnable runnable) {
-        runnables.remove(runnable);
+    protected void unregisterProcess(final Object process) {
+        processes.remove(process);
         callShutdown();
     }
 
-    public int getActiveRunnables() {
-        return runnables.size();
+    public int getActiveProcesses() {
+        return processes.size();
     }
 
-    public boolean hasActiveRunnables() {
-        return !runnables.isEmpty();
+    public boolean hasActiveProcesses() {
+        return !processes.isEmpty();
     }
 
     @SuppressWarnings("CallToPrintStackTrace")
     protected Runnable run(final Runnable runnable, final boolean unregisterAtEnd) {
-        registerRunnable(runnable);
+        registerProcess(runnable);
         return () -> {
             try {
                 runnable.run();
@@ -145,7 +145,20 @@ public abstract class AbstractThreadPool<E extends ExecutorService> implements S
                 ignore.printStackTrace();
             } finally {
                 if (unregisterAtEnd) {
-                    unregisterRunnable(runnable);
+                    unregisterProcess(runnable);
+                }
+            }
+        };
+    }
+    
+    protected <T> Callable<T> callable(final Callable<T> callable, final boolean unregisterAtEnd) {
+        registerProcess(callable);
+        return () -> {
+            try {
+                return callable.call();
+            } finally {
+                if (unregisterAtEnd) {
+                    unregisterProcess(callable);
                 }
             }
         };

@@ -22,19 +22,19 @@ public class FuturePool<V, F extends Future<V>> implements Future<V>, Serializab
     private static final long serialVersionUID = 1625321830579045181L;
 
     protected final AbstractThreadPool<?> pool;
-    protected final Runnable runnable;
+    protected final Object process;
     protected final F future;
 
-    protected FuturePool(final AbstractThreadPool<?> pool, final Runnable runnable, final F future) {
+    protected FuturePool(final AbstractThreadPool<?> pool, final Object process, final F future) {
         this.pool = pool;
-        this.runnable = runnable;
+        this.process = process;
         this.future = future;
     }
 
     @Override
-    public boolean cancel(boolean mayInterruptIfRunning) {
+    public boolean cancel(final boolean mayInterruptIfRunning) {
         final boolean cancel = this.future.cancel(mayInterruptIfRunning);
-        this.pool.unregisterRunnable(runnable);
+        this.pool.unregisterProcess(process);
         return cancel;
     }
 
@@ -54,7 +54,7 @@ public class FuturePool<V, F extends Future<V>> implements Future<V>, Serializab
     }
 
     @Override
-    public V get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+    public V get(final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         return this.future.get(timeout, unit);
     }
 
