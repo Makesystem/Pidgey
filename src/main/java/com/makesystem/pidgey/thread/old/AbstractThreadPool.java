@@ -3,13 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.makesystem.pidgey.thread;
+package com.makesystem.pidgey.thread.old;
 
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -32,7 +33,7 @@ public abstract class AbstractThreadPool<E extends ExecutorService> implements S
     private static final int CORES_MULTIPLIER = 3;
 
     private final AtomicReference<E> atomicReference = new AtomicReference<>();
-    private final Collection processes = new ConcurrentLinkedQueue<>();
+    private final Collection<Future> processes = new ConcurrentLinkedQueue<>();
     private int numberOfThreads;
     private boolean alwaysActive = false;
 
@@ -118,11 +119,11 @@ public abstract class AbstractThreadPool<E extends ExecutorService> implements S
         }
     }
 
-    protected void registerProcess(final Object process) {
+    protected void registerProcess(final Future process) {
         processes.add(process);
     }
 
-    protected void unregisterProcess(final Object process) {
+    protected void unregisterProcess(final Future process) {
         processes.remove(process);
         callShutdown();
     }
@@ -137,7 +138,7 @@ public abstract class AbstractThreadPool<E extends ExecutorService> implements S
 
     @SuppressWarnings("CallToPrintStackTrace")
     protected Runnable run(final Runnable runnable, final boolean unregisterAtEnd) {
-        registerProcess(runnable);
+        //registerProcess(runnable);
         return () -> {
             try {
                 runnable.run();
@@ -145,20 +146,20 @@ public abstract class AbstractThreadPool<E extends ExecutorService> implements S
                 ignore.printStackTrace();
             } finally {
                 if (unregisterAtEnd) {
-                    unregisterProcess(runnable);
+                    //unregisterProcess(runnable);
                 }
             }
         };
     }
     
     protected <T> Callable<T> callable(final Callable<T> callable, final boolean unregisterAtEnd) {
-        registerProcess(callable);
+        //registerProcess(callable);
         return () -> {
             try {
                 return callable.call();
             } finally {
                 if (unregisterAtEnd) {
-                    unregisterProcess(callable);
+                    //unregisterProcess(callable);
                 }
             }
         };

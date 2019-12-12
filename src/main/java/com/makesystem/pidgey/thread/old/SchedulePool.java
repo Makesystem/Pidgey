@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.makesystem.pidgey.thread;
+package com.makesystem.pidgey.thread.old;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

@@ -3,8 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.makesystem.pidgey.thread;
+package com.makesystem.pidgey.thread.old;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -24,18 +27,24 @@ public class FuturePool<V, F extends Future<V>> implements Future<V>, Serializab
     protected final AbstractThreadPool<?> pool;
     protected final Object process;
     protected final F future;
-
+    protected final PropertyChangeSupport support;
+    
     protected FuturePool(final AbstractThreadPool<?> pool, final Object process, final F future) {
         this.pool = pool;
         this.process = process;
         this.future = future;
+        this.pool.registerProcess(this.future);
+        this.support = new PropertyChangeSupport(this.future);
+        this.support.addPropertyChangeListener(event -> {});
     }
 
     @Override
     public boolean cancel(final boolean mayInterruptIfRunning) {
-        final boolean cancel = this.future.cancel(mayInterruptIfRunning);
-        this.pool.unregisterProcess(process);
-        return cancel;
+        try {
+            return this.future.cancel(mayInterruptIfRunning);
+        } finally {
+            this.pool.unregisterProcess(this.future);
+        }
     }
 
     @Override

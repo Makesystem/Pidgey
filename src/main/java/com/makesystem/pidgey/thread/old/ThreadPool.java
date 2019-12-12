@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.makesystem.pidgey.thread;
+package com.makesystem.pidgey.thread.old;
 
+import com.makesystem.pidgey.thread.ThreadsHelper;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -15,8 +16,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.function.Function;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -53,14 +52,14 @@ public class ThreadPool extends AbstractThreadPool<ThreadPoolExecutor> {
     }
     
     public <T> Collection<Future<T>> executeAll(final Runnable... runnables) throws InterruptedException {
-        return executeAll(runnables, runnable -> ThreadPool.this.execute(runnable));
+        return executeAll(runnables, runnable -> execute(runnable));
     }
 
     public <T> Collection<Future<T>> executeAll(final Callable<T>... callables) throws InterruptedException {
-        return executeAll(callables, callable -> ThreadPool.this.execute(callable));
+        return executeAll(callables, callable -> execute(callable));
     }
     
-    public <T, R> Collection<Future<R>> executeAll(final T[] callables, Function<T, Future<R>> mapper) throws InterruptedException {
+    public <T, R> Collection<Future<R>> executeAll(final T[] callables, final Function<T, Future<R>> mapper) throws InterruptedException {
         boolean done = false;
         final Collection<Future<R>> futures = new LinkedList<>();
         try {
@@ -69,7 +68,7 @@ public class ThreadPool extends AbstractThreadPool<ThreadPoolExecutor> {
                     .map(mapper)
                     .collect(Collectors.toList()));
 
-            for (Future<R> future : futures) {
+            for (final Future<R> future : futures) {
                 if (!future.isDone()) {
                     try {
                         future.get();
@@ -78,7 +77,7 @@ public class ThreadPool extends AbstractThreadPool<ThreadPoolExecutor> {
                     }
                 }
             }
-
+            
             done = true;
             return futures;
 
