@@ -337,7 +337,7 @@ public class ThreadPoolExecutor extends java.util.concurrent.ThreadPoolExecutor 
             final String name) {
         this(corePoolSize, maximumPoolSize, keepAliveTime, unit, null, null, null, name);
     }
-    
+
     /**
      * Creates a new {@code ThreadPoolExecutor} with the given initial
      * parameters and default thread factory and rejected execution handler.It
@@ -562,7 +562,7 @@ public class ThreadPoolExecutor extends java.util.concurrent.ThreadPoolExecutor 
     public int getNumber() {
         return number;
     }
-    
+
     /**
      * Returns a {@code RunnableFuture} for the given runnable and default
      * value.
@@ -627,5 +627,13 @@ public class ThreadPoolExecutor extends java.util.concurrent.ThreadPoolExecutor 
         } finally {
             shutdowning.set(false);
         }
+    }
+
+    public void awaitTermination() {
+        int active;
+        do {
+            ThreadsHelper.sleep(1);
+            active = getActiveCount();
+        } while (active > 0);
     }
 }
