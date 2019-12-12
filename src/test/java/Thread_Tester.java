@@ -84,7 +84,7 @@ public class Thread_Tester extends AbstractTester {
     void waitTermination() {
 
         final int availableProcessors = Runtime.getRuntime().availableProcessors();
-        final int threads = availableProcessors * 100;
+        final int threads = availableProcessors * 10;
         final int delay = 1000;
 
         final ThreadPoolExecutor executor = Executors.Fixed.create(threads, "Pool for tests");
@@ -93,13 +93,12 @@ public class Thread_Tester extends AbstractTester {
 
         try {
             
-            // It is to start all threads
+            // It is to start all 
             executor.invokeAll(callables);
 
             Monitor.exec("duration... ", () -> {
                 executor.invokeAll(callables);
             }).print();
-            
         } catch (Throwable ex) {
         } finally {
             executor.shutdown();
