@@ -6,10 +6,16 @@
 package com.makesystem.pidgey.thread;
 
 import com.makesystem.pidgey.lang.StringHelper;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.RejectedExecutionHandler;
@@ -629,11 +635,48 @@ public class ThreadPoolExecutor extends java.util.concurrent.ThreadPoolExecutor 
         }
     }
 
-    public void awaitTermination() {
+    public void await() {
         int active;
         do {
-            ThreadsHelper.sleep(1);
+            ThreadsHelper.sleep(10);
             active = getActiveCount();
         } while (active > 0);
+    }
+
+    @Override
+    public <T> List<Future<T>> invokeAll(final Collection<? extends Callable<T>> tasks)
+            throws InterruptedException {
+        if (tasks == null) {
+            throw new NullPointerException();
+        }
+        final ArrayList<Future<T>> futures = new ArrayList<>(tasks.size());
+        boolean done = false;
+        try {
+
+            tasks.stream().forEach(t -> {
+                final RunnableFuture<T> runnableFuture = newTaskFor(t);
+                futures.add(runnableFuture);
+                execute(runnableFuture);
+            });
+
+            futures.stream()
+                    .filter(future -> !future.isDone())
+                    .forEach(future -> {
+                        try {
+                            future.get();
+                        } catch (CancellationException | ExecutionException ignore) {
+                        } catch (InterruptedException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    });
+
+            done = true;
+            return futures;
+
+        } finally {
+            if (!done) {
+                futures.stream().forEach(future -> future.cancel(true));
+            }
+        }
     }
 }

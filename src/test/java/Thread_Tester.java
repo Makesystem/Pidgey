@@ -23,6 +23,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class Thread_Tester extends AbstractTester {
 
+    static final int CORES = Runtime.getRuntime().availableProcessors();
+
     public static void main(String[] args) {
         new Thread_Tester().run();
     }
@@ -34,9 +36,10 @@ public class Thread_Tester extends AbstractTester {
 
     @Override
     protected void execution() {
-        waitTermination();
+        //threads();
+        //await();
         //fixed();
-        //adaptive();
+        adaptive();
         //schedule();
     }
 
@@ -81,24 +84,31 @@ public class Thread_Tester extends AbstractTester {
         return callables;
     }
 
-    void waitTermination() {
+    void await() {
 
-        final int availableProcessors = Runtime.getRuntime().availableProcessors();
-        final int threads = availableProcessors * 10;
+        final ThreadPoolExecutor executor = Executors.Adaptive.create(CORES, "Wait termination test");
+        executor.execute(() -> ThreadsHelper.sleep(5000));
+
+        Monitor.exec("Await", () -> executor.await()).print();
+    }
+
+    void threads() {
+
+        final int threads = CORES * 1000;
         final int delay = 1000;
 
-        final ThreadPoolExecutor executor = Executors.Fixed.create(threads, "Pool for tests");
+        Console.log("Cores: {s}\nThreads: {s}\nDelay: {s}", CORES, threads, delay);
 
+        final ThreadPoolExecutor executor = Executors.Fixed.create(threads, "Pool for tests");
         final Collection<Callable<String>> callables = callables(threads, delay);
 
         try {
-            
-            // It is to start all 
+
+            // It is to start all threads
             executor.invokeAll(callables);
 
-            Monitor.exec("duration... ", () -> {
-                executor.invokeAll(callables);
-            }).print();
+            Monitor.exec("Result...", () -> executor.invokeAll(callables)).print();
+            
         } catch (Throwable ex) {
         } finally {
             executor.shutdown();

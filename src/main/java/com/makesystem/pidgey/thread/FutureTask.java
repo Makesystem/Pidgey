@@ -60,27 +60,23 @@ public class FutureTask<V> extends java.util.concurrent.FutureTask<V> {
         super(runnable, result);
     }
 
-    @Override
-    protected void done() {
-        
-        state();
-        
-    }
-
-    void state() {
-    
-        try {
-            
-            final Class<?> k = java.util.concurrent.FutureTask.class;
-            final Field field = k.getDeclaredField("state");
-            field.setAccessible(true);
-            final int state = field.getInt(this);
-            
-            
-            
-        } catch(Throwable throwable){
-            throwable.printStackTrace();
-        }
-        
-    }
+//    @Override
+//    protected void done() {        
+//        state();        
+//    }
+//
+//    void state() {
+//    
+//        try {
+//            
+//            final Class<?> k = java.util.concurrent.FutureTask.class;
+//            final Field field = k.getDeclaredField("state");
+//            field.setAccessible(true);
+//            final int state = field.getInt(this);
+//            
+//        } catch(Throwable throwable){
+//            throwable.printStackTrace();
+//        }
+//        
+//    }
 }
