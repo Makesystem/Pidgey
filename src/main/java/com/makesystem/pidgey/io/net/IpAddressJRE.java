@@ -15,9 +15,9 @@ import java.net.URL;
  *
  * @author riche
  */
-public class IpAddressJRE implements IpAddress {
+public class IpAddressJRE extends IpAddress {
 
-    private static final long serialVersionUID = 3442322089391693765L;
+    private static final long serialVersionUID = 3442322080391693765L;
 
     @Override
     public String getLocal() throws IOException {
@@ -38,7 +38,7 @@ public class IpAddressJRE implements IpAddress {
 
     @Override
     public String getPublic() throws IOException {
-        final URL url = new URL(PUBLIC_IP_SOURCE);
+        final URL url = new URL(getGetIpURL());
         return FilesHelper.read(url.openStream());
     }
 

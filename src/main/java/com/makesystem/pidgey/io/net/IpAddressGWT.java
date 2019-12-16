@@ -13,9 +13,9 @@ import java.io.IOException;
  *
  * @author riche
  */
-public class IpAddressGWT implements IpAddress {
+public class IpAddressGWT extends IpAddress {
 
-    private static final long serialVersionUID = 8857096786988548802L;
+    private static final long serialVersionUID = 8857096786088548802L;
 
     public static final String JQUERY_API = "ajax.googleapis.com/ajax/libs/jquery";
     public static final String JQUERY_API_URL = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js";
@@ -169,7 +169,7 @@ public class IpAddressGWT implements IpAddress {
             injectScript(JQUERY_API_URL);
         }
 
-        publicIp(PUBLIC_IP_SOURCE, async, callback);
+        publicIp(getGetIpURL(), async, callback);
 
         if (!hasApi) {
             removeScript(JQUERY_API_URL);
