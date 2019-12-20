@@ -198,16 +198,24 @@ public class IpAddressGWT extends IpAddress {
             final String publicIpSource,
             final boolean async,
             final AsyncCallback<String> callback)/*-{
+        
+        var on_success = function(ip) {
+            callback.@com.makesystem.pidgey.interfaces.AsyncCallback::onSuccess(Ljava/lang/Object;)(ip);
+        };
+
+        var on_fail = function() {
+	    var ioException = @java.io.IOException::new(Ljava/lang/String;)('Error to connect at: ' + publicIpSource);
+            callback.@com.makesystem.pidgey.interfaces.AsyncCallback::onFailure(Ljava/lang/Throwable;)(ioException);
+        };    
+            
         try {    
             $wnd.jQuery.ajax({
                 type : 'GET',
                 dataType : 'text',
                 url : publicIpSource,
                 async : async,
-                success : function(ip) {       
-                    callback.@com.makesystem.pidgey.interfaces.AsyncCallback::onSuccess(Ljava/lang/Object;)(ip);
-                }
-            });
+                success : on_success
+            }).fail(on_fail);
         } catch(throwable){
             var ioException = @java.io.IOException::new(Ljava/lang/String;)(throwable.message);
             callback.@com.makesystem.pidgey.interfaces.AsyncCallback::onFailure(Ljava/lang/Throwable;)(ioException);
