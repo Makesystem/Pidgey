@@ -5,6 +5,7 @@
  */
 package com.makesystem.pidgey.xml;
 
+import com.makesystem.pidgey.lang.StringHelper;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,8 +25,10 @@ import org.w3c.dom.NodeList;
  */
 public class XmlElement implements Serializable, Comparable<XmlElement> {
 
-    private static final long serialVersionUID = -7097850786908056834L;
+    private static final long serialVersionUID = -7097850786908056833L;
 
+    private static final String NAME = "name";
+    
     private final String tag;
     private final String value;
     private final String textContent;
@@ -78,9 +81,22 @@ public class XmlElement implements Serializable, Comparable<XmlElement> {
         this.attributes.addAll(Arrays.asList(attributes));
     }
 
+    private static final String DOUBLE_SPACE = "  ";
+
     protected final String clear(final String var) {
-        final String cleared = var == null ? null : var.trim().replaceAll("\t", "").replaceAll("\r", "").replaceAll("  ", "");
-        return cleared == null || cleared.replace(" ", "").isEmpty() ? "" : cleared;
+        
+        final String cleared = var == null
+                ? null
+                : var.trim()
+                        .replaceAll(StringHelper.TB, StringHelper.EMPTY)
+                        .replaceAll(StringHelper.CR, StringHelper.EMPTY)
+                        .replaceAll(DOUBLE_SPACE, StringHelper.EMPTY);
+        
+        return cleared == null || cleared
+                .replace(StringHelper.SPACE, StringHelper.EMPTY)
+                .isEmpty()
+                        ? StringHelper.EMPTY
+                        : cleared;
     }
 
     public String getTag() {
@@ -124,8 +140,8 @@ public class XmlElement implements Serializable, Comparable<XmlElement> {
         attributes.removeIf(attr -> attr.getName().equals(attribute.getName()));
     }
 
-    public String getAttribute(final String attribute) {        
-        final XmlAttribute xmlAttribute = attributes.stream().filter(attr -> attr.getName().equals(attribute)).findAny().orElse(null);        
+    public String getAttribute(final String attribute) {
+        final XmlAttribute xmlAttribute = attributes.stream().filter(attr -> attr.getName().equals(attribute)).findAny().orElse(null);
         return xmlAttribute == null ? null : xmlAttribute.getValue();
     }
 
@@ -268,8 +284,8 @@ public class XmlElement implements Serializable, Comparable<XmlElement> {
             return compareTag;
         }
 
-        final String thisName = getAttribute("name");
-        final String elementName = element.getAttribute("name");
+        final String thisName = getAttribute(NAME);
+        final String elementName = element.getAttribute(NAME);
 
         final boolean thisHasName = thisName != null;
         final boolean elementHasName = elementName != null;

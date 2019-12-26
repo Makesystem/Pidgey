@@ -5,6 +5,7 @@
  */
 package com.makesystem.pidgey.formatation;
 
+import com.makesystem.pidgey.lang.StringHelper;
 import com.makesystem.pidgey.language.Language;
 import com.makesystem.pidgey.language.Locales;
 import java.io.Serializable;
@@ -16,14 +17,27 @@ import java.util.function.Function;
  * @author Richeli.vargas
  */
 public class TimeFormat implements Serializable {
-  
-    private static final long serialVersionUID = -4815089416417412033L;
-    
+
+    private static final long serialVersionUID = -4815089416417412133L;
+
     public static final long ONE_SECOND_IN_MILLIS = 1000;
     public static final long ONE_MINUTE_IN_MILLIS = ONE_SECOND_IN_MILLIS * 60;
     public static final long ONE_HOUR_IN_MILLIS = ONE_MINUTE_IN_MILLIS * 60;
     public static final long ONE_DAY_IN_MILLIS = ONE_HOUR_IN_MILLIS * 24;
 
+    private static final String DEFAULT__SECONDS = "00:00:00";
+    private static final String DEFAULT__SECONDS_II = "00:00";
+    private static final String DEFAULT__SECONDS_III = "0h 0min";
+    private static final String DEFAULT__MILLIS = "00:00:00:000";
+    private static final String DEFAULT__LIVESTAMP = "0 ms";
+    
+    private static final String D = "d";
+    private static final String H = "h";
+    private static final String S = "s";
+    private static final String M = "m";
+    private static final String MIN = "min";
+    private static final String MS = "ms";
+    
     /**
      * Supported patterns
      */
@@ -39,41 +53,72 @@ public class TimeFormat implements Serializable {
         public static final String DAY_OF_WEEK_FULL = "{day_of_week_full}";
         public static final String DAY_OF_WEEK_SHORT = "{day_of_week_short}";
         public static final String DAY_OF_WEEK_LETTER = "{day_of_week_letter}";
-        public static final String HOURS = "{hous}";
+        public static final String HOURS = "{hours}";
         public static final String MINUTES = "{minutes}";
         public static final String SECONDS = "{seconds}";
         public static final String MILLIS = "{millis}";
 
         public static interface Built {
 
-            public static final String DATE = DAY + "/" + MONTH + "/" + YEAR;
-            public static final String DATE_FULL_TIME = DAY + "/" + MONTH + "/" + YEAR + " " + HOURS + ":" + MINUTES + ":" + SECONDS + ":" + MILLIS;
-            public static final String DATE_TIME = DAY + "/" + MONTH + "/" + YEAR + " " + HOURS + ":" + MINUTES + ":" + SECONDS;
-            public static final String DATE_SHORT_TIME = DAY + "/" + MONTH + "/" + YEAR + " " + HOURS + ":" + MINUTES;
+            /**
+             * <code>{day}/{month}/{year}</code>
+             */
+            public static final String DATE = StringHelper.join(
+                    DAY,
+                    StringHelper.FS,
+                    MONTH,
+                    StringHelper.FS,
+                    YEAR);
+
+            /**
+             * <code>{day}/{month}/{year} {hours}:{minutes}</code>
+             */
+            public static final String DATE_SHORT_TIME = StringHelper.join(
+                    DATE,
+                    StringHelper.SPACE,
+                    HOURS,
+                    StringHelper.DOUBLE_DOTS,
+                    MINUTES);
+
+            /**
+             * <code>{day}/{month}/{year} {hours}:{minutes}:{seconds}</code>
+             */
+            public static final String DATE_TIME = StringHelper.join(
+                    DATE_SHORT_TIME,
+                    StringHelper.DOUBLE_DOTS,
+                    SECONDS);
+
+            /**
+             * <code>{day}/{month}/{year} {hours}:{minutes}:{seconds}:{millis}</code>
+             */
+            public static final String DATE_FULL_TIME = StringHelper.join(
+                    DATE_TIME,
+                    StringHelper.DOUBLE_DOTS,
+                    MILLIS);
 
         }
     }
 
     /**
-     * 
+     *
      */
     public static final String DATE_PATTERN
-            = TimeFormat.Patterns.YEAR + "/"
-            + TimeFormat.Patterns.MONTH + "/"
+            = TimeFormat.Patterns.YEAR + StringHelper.FS
+            + TimeFormat.Patterns.MONTH + StringHelper.FS
             + TimeFormat.Patterns.DAY;
     /**
-     * 
+     *
      */
     public static final String TIME_PATTERN
-            = TimeFormat.Patterns.HOURS + ":"
-            + TimeFormat.Patterns.MINUTES + ":"
-            + TimeFormat.Patterns.SECONDS + ":"
+            = TimeFormat.Patterns.HOURS + StringHelper.DOUBLE_DOTS
+            + TimeFormat.Patterns.MINUTES + StringHelper.DOUBLE_DOTS
+            + TimeFormat.Patterns.SECONDS + StringHelper.DOUBLE_DOTS
             + TimeFormat.Patterns.MILLIS;
     /**
-     * 
+     *
      */
     public static final String DATE_TIME_PATTERN
-            = DATE_PATTERN + " "
+            = DATE_PATTERN + StringHelper.SPACE
             + TIME_PATTERN;
 
     /**
@@ -147,6 +192,15 @@ public class TimeFormat implements Serializable {
         return pattern;
     }
 
+    /**
+     * 
+     * @param <V>
+     * @param pattern
+     * @param valuePattern
+     * @param value
+     * @param mapper
+     * @return 
+     */
     private static <V> String replacePattern(final String pattern, final String valuePattern,
             final V value, final Function<V, String> mapper) {
         if (pattern.contains(valuePattern)) {
@@ -164,7 +218,7 @@ public class TimeFormat implements Serializable {
     public static String seconds(final int seconds) {
 
         if (seconds < 0) {
-            return "00:00:00";
+            return DEFAULT__SECONDS;
         }
 
         final int secondsRest = (seconds % 60);
@@ -173,9 +227,9 @@ public class TimeFormat implements Serializable {
 
         final StringBuffer builder = new StringBuffer();
         builder.append(NumericFormat.specificLength(hours, 2));
-        builder.append(":");
+        builder.append(StringHelper.DOUBLE_DOTS);
         builder.append(NumericFormat.specificLength(minutes, 2));
-        builder.append(":");
+        builder.append(StringHelper.DOUBLE_DOTS);
         builder.append(NumericFormat.specificLength(secondsRest, 2));
         return builder.toString();
     }
@@ -188,7 +242,7 @@ public class TimeFormat implements Serializable {
     public static String secondsII(final int seconds) {
 
         if (seconds < 0) {
-            return "00:00";
+            return DEFAULT__SECONDS_II;
         }
 
         final int minutes = (seconds % 60);
@@ -196,7 +250,7 @@ public class TimeFormat implements Serializable {
 
         final StringBuffer builder = new StringBuffer();
         builder.append(NumericFormat.specificLength(hours, 2));
-        builder.append(":");
+        builder.append(StringHelper.DOUBLE_DOTS);
         builder.append(NumericFormat.specificLength(minutes, 2));
 
         return builder.toString();
@@ -210,7 +264,7 @@ public class TimeFormat implements Serializable {
     public static String secondsIII(final int seconds) {
 
         if (seconds < 0) {
-            return "0h 0min";
+            return DEFAULT__SECONDS_III;
         }
 
         final int minutes = (seconds / 60) % 60;
@@ -219,9 +273,10 @@ public class TimeFormat implements Serializable {
         final StringBuffer builder = new StringBuffer();
 
         builder.append(hours);
-        builder.append("h ");
+        builder.append(H);
+        builder.append(StringHelper.SPACE);
         builder.append(minutes);
-        builder.append("min");
+        builder.append(MIN);
 
         return builder.toString();
     }
@@ -234,7 +289,7 @@ public class TimeFormat implements Serializable {
     public static String millis(final long millis) {
 
         if (millis < 0) {
-            return "00:00:00:000";
+            return DEFAULT__MILLIS;
         }
 
         final int millisRest = (int) (millis % 1000);
@@ -245,50 +300,55 @@ public class TimeFormat implements Serializable {
 
         final StringBuffer builder = new StringBuffer();
         builder.append(NumericFormat.specificLength(hours, 2));
-        builder.append(":");
+        builder.append(StringHelper.DOUBLE_DOTS);
         builder.append(NumericFormat.specificLength(minutes, 2));
-        builder.append(":");
+        builder.append(StringHelper.DOUBLE_DOTS);
         builder.append(NumericFormat.specificLength(secondsRest, 2));
-        builder.append(":");
+        builder.append(StringHelper.DOUBLE_DOTS);
         builder.append(NumericFormat.specificLength(millisRest, 3));
 
         return builder.toString();
     }
 
+    /**
+     * 
+     * @param millis
+     * @return 
+     */
     public static String toSimpleLivestamp(final long millis) {
 
         if (millis <= 0) {
-            return "0 ms";
+            return DEFAULT__LIVESTAMP;
         }
 
         if (millis < ONE_SECOND_IN_MILLIS) {
-            return millis + "ms";
+            return millis + MS;
         }
 
         final long ms = millis % 1000;
         final long seconds = millis / 1000;
 
         if (millis < ONE_MINUTE_IN_MILLIS) {
-            return seconds + "s " + (ms > 0 ? ms + "ms" : "");
+            return seconds + S + StringHelper.SPACE + (ms > 0 ? ms + MS : StringHelper.EMPTY);
         }
 
         final long minutes = seconds / 60;
 
         if (millis < ONE_HOUR_IN_MILLIS) {
             final long s = (seconds % 60);
-            return minutes + "m " + (s > 0 ? s + "ms" : "");
+            return minutes + M + StringHelper.SPACE + (s > 0 ? s + MS : StringHelper.EMPTY);
         }
 
         final long hours = (seconds / 60) / 60;
 
         if (millis < ONE_DAY_IN_MILLIS) {
             final long m = (minutes % 60);
-            return hours + "h " + (m > 0 ? m + "m" : "");
+            return hours + H + StringHelper.SPACE + (m > 0 ? m + M : StringHelper.EMPTY);
         }
 
         final long days = hours / 24;
         final long h = (hours % 24);
 
-        return days + "d " + (h > 0 ? h + "h" : "");
+        return days + D + StringHelper.SPACE + (h > 0 ? h + H : StringHelper.EMPTY);
     }
 }

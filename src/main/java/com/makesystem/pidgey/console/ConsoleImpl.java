@@ -20,7 +20,9 @@ import java.util.stream.IntStream;
  */
 public class ConsoleImpl implements Serializable {
 
-    private static final long serialVersionUID = -7374189924097418758L;
+    private static final long serialVersionUID = -7374189924097418358L;
+
+    private static final String RESET_JRE = "\033[0m";
 
     /**
      * Writer for environment in use
@@ -334,7 +336,7 @@ public class ConsoleImpl implements Serializable {
 
             System.out.println(string
                     // Reset color console for others future prints
-                    + (resetColor ? "\033[0m" : ""));
+                    + (resetColor ? RESET_JRE : StringHelper.EMPTY));
         }
     }
 

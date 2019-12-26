@@ -26,7 +26,11 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("UnnecessaryBoxing")
 public class NumberHelper implements Serializable {
 
-    private static final long serialVersionUID = -1412752737576872363L;
+    private static final long serialVersionUID = -1412752737576874363L;
+
+    protected static final String REGEX__EXPONENTIAL = "[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)";
+    
+    protected static final String[] HEX_PREFIXES = {"0x", "0X", "-0x", "-0X", "#", "-#"};
 
     /**
      * Reusable Long constant for zero.
@@ -120,8 +124,10 @@ public class NumberHelper implements Serializable {
     }
 
     protected static String preventComma(final String value) {
-        if (value.contains(",")) {
-            return value.replace(".", "").replace(",", ".");
+        if (value.contains(StringHelper.COMMA)) {
+            return value
+                    .replace(StringHelper.DOT, StringHelper.EMPTY)
+                    .replace(StringHelper.COMMA, StringHelper.DOT);
         } else {
             return value;
         }
@@ -131,7 +137,9 @@ public class NumberHelper implements Serializable {
         if (exponential == null || exponential.isEmpty()) {
             return false;
         } else {
-            return preventComma(exponential).replaceAll("[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)", "").isEmpty();
+            return preventComma(exponential)
+                    .replaceAll(REGEX__EXPONENTIAL, StringHelper.EMPTY)
+                    .isEmpty();
         }
     }
 
@@ -818,10 +826,9 @@ public class NumberHelper implements Serializable {
         if (StringHelper.isBlank(str)) {
             throw new NumberFormatException("A blank string is not a valid number");
         }
-        // Need to deal with all possible hex prefixes here
-        final String[] hex_prefixes = {"0x", "0X", "-0x", "-0X", "#", "-#"};
+        // Need to deal with all possible hex prefixes here        
         int pfxLen = 0;
-        for (final String pfx : hex_prefixes) {
+        for (final String pfx : HEX_PREFIXES) {
             if (str.startsWith(pfx)) {
                 pfxLen += pfx.length();
                 break;

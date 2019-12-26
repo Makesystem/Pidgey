@@ -15,8 +15,10 @@ import java.util.stream.Collectors;
  */
 public class ThrowableHelper implements Serializable {
 
-    private static final long serialVersionUID = 5286967193256118982L;
+    private static final long serialVersionUID = 5286967193256128982L;
 
+    protected static final String CLASS_END = ": ";
+    
     public final static String toString(final Throwable throwable) {
         return toString(throwable, Boolean.FALSE);
     }
@@ -24,7 +26,7 @@ public class ThrowableHelper implements Serializable {
     private static String toString(final Throwable throwable, final boolean isCause) {
 
         if (throwable == null) {
-            return "";
+            return StringHelper.EMPTY;
         }
 
         final StringBuilder builder = new StringBuilder();
@@ -34,7 +36,7 @@ public class ThrowableHelper implements Serializable {
         }
         
         builder.append(throwable.getClass().getName())
-                .append(": ")
+                .append(CLASS_END)
                 .append(throwable.getMessage());
         
         builder.append(StringHelper.LF).append(StringHelper.TB);

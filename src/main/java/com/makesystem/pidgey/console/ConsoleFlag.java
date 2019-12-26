@@ -7,6 +7,7 @@ package com.makesystem.pidgey.console;
 
 import com.makesystem.pidgey.formatation.NumericFormat;
 import com.makesystem.pidgey.formatation.TimeFormat;
+import com.makesystem.pidgey.lang.StringHelper;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -128,7 +129,8 @@ public enum ConsoleFlag {
     }
 
     public String replace(final String text, final String value) {
-        return text.replaceFirst(forRegex(flag), prepareValue(value));
+        return text
+                .replaceFirst(forRegex(flag), prepareValue(value));
     }
 
     public String applyAndReplace(final String text, final Object object) {
@@ -137,11 +139,13 @@ public enum ConsoleFlag {
 
     protected final String prepareValue(final String value){
         return value
-                .replace("$", "\\$");
+                .replace(StringHelper.DS, StringHelper.REAL_DS);
     }
     
     protected static final String forRegex(final String flag) {
-        return flag.replace("{", "\\{").replace("}", "\\}");
+        return flag
+                .replace(StringHelper.OCB, StringHelper.REAL_OCB)
+                .replace(StringHelper.CCB, StringHelper.REAL_CCB);
     }
 
     public static ConsoleFlag fromFlag(final String flag) {
@@ -154,8 +158,8 @@ public enum ConsoleFlag {
 
         String temp = text;
 
-        int indexOfStart = temp.indexOf("{");
-        int indexOfEnd = temp.indexOf("}") + 1;
+        int indexOfStart = temp.indexOf(StringHelper.OCB);
+        int indexOfEnd = temp.indexOf(StringHelper.CCB) + 1;
 
         final Collection<ConsoleFlag> flags = new LinkedList<>();
         while (indexOfStart > -1 && indexOfEnd > 0) {
@@ -168,8 +172,8 @@ public enum ConsoleFlag {
             }
 
             temp = temp.substring(indexOfEnd);
-            indexOfStart = temp.indexOf("{");
-            indexOfEnd = temp.indexOf("}") + 1;
+            indexOfStart = temp.indexOf(StringHelper.OCB);
+            indexOfEnd = temp.indexOf(StringHelper.CCB) + 1;
         }
 
         return flags.stream().toArray(ConsoleFlag[]::new);

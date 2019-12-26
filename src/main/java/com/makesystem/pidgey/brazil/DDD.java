@@ -84,7 +84,7 @@ public enum DDD {
     private final String regiao;
     private final Uf uf;
 
-    private DDD(String ddd, String regiao, Uf uf) {
+    private DDD(final String ddd, final String regiao, final Uf uf) {
         this.ddd = ddd;
         this.regiao = regiao;
         this.uf = uf;

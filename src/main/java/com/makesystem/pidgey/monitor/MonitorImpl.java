@@ -24,7 +24,10 @@ import java.util.stream.Collectors;
  */
 public class MonitorImpl implements Serializable {
 
-    private static final long serialVersionUID = 1434491745300800005L;
+    private static final long serialVersionUID = 1434491745300811005L;
+
+    private static final String COMPARATION_OF_SNIPPETS = "Comparation of Snippets: ";
+    private static final String SNIPPET = "Snippet #";
 
     public static final Comparator<MonitorResult> MONITOR_RESULT__COMPARATOR
             = Comparator.comparing(MonitorResult::getDuration);
@@ -82,7 +85,7 @@ public class MonitorImpl implements Serializable {
 
     public Collection<MonitorResult> compare(final String title, final Snippet... snippets) {
         final Collection<MonitorResult> results = exec(snippets);
-        writer.accept("Comparation of Snippets: " + title);
+        writer.accept(COMPARATION_OF_SNIPPETS + title);
         write(results);
         return results;
     }
@@ -101,7 +104,7 @@ public class MonitorImpl implements Serializable {
         final String toPrint = Arrays.stream(results).sorted(MONITOR_RESULT__COMPARATOR)
                 .map(result
                         -> new StringBuilder(ConsoleColor.RESET.getColor())
-                        .append("Snippet #")
+                        .append(SNIPPET)
                         .append(result.getNum())
                         .append(StringHelper.TB)
                         .append(TimeFormat.millis(result.getDuration()))

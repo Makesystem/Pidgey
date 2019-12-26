@@ -7,6 +7,7 @@ package com.makesystem.pidgey.monitor;
 
 import com.makesystem.pidgey.console.Console;
 import com.makesystem.pidgey.console.ConsoleColor;
+import com.makesystem.pidgey.console.ConsoleFlag;
 import com.makesystem.pidgey.lang.StringHelper;
 import com.makesystem.pidgey.lang.ThrowableHelper;
 import java.io.Serializable;
@@ -19,7 +20,11 @@ import java.util.UUID;
  */
 public class MonitorResult implements Serializable {
 
-    private static final long serialVersionUID = -196617577158971147L;
+    private static final long serialVersionUID = -196617577158931147L;
+
+    private static final String FORMAT = "{dt}  \t{dt}  \t{ms}\t{cc}{s}\t{s}";
+    private static final String TITLE_FORMAT = "{cc}{cc}{s}{s}\t\t\t";
+    private static final String[] TITLE = {"{ig}Start at", "{ig}End at", "{ig}Duration", "{ig}", "{ig}Status", ""};
 
     private final String id = UUID.randomUUID().toString();
     private int num = 0;
@@ -141,22 +146,24 @@ public class MonitorResult implements Serializable {
         return true;
     }
 
+    
+    
     @SuppressWarnings("CallToPrintStackTrace")
     public void print() {
 
         // Read first row only
-        final String error = ThrowableHelper.toString(throwable).split("\n")[0].replace("\r", "");
+        final String error = ThrowableHelper.toString(throwable)
+                .split(StringHelper.LF)[0].replace(StringHelper.CR, StringHelper.EMPTY);
 
-        final String format = "{dt}  \t{dt}  \t{ms}\t{cc}{s}\t{s}";
         final Object[][] values = {
-            {"{ig}Start at", "{ig}End at", "{ig}Duration", "{ig}", "{ig}Status", ""},
+            TITLE,
             {startAt, endAt, duration, status.getColor(), status, error} // <-- It has 70 chars more 3 \t
         };
 
-        Console.log("{cc}", ConsoleColor.RESET);
+        Console.log(ConsoleFlag.COLOR.getFlag(), ConsoleColor.RESET);
         if (!StringHelper.isBlank(this.title)) {
             final int charPerRow = 70;
-            Console.log("{cc}{cc}{s}{s}\t\t\t",
+            Console.log(TITLE_FORMAT,
                     ConsoleColor.CYAN_BACKGROUND,
                     ConsoleColor.BLACK,
                     StringHelper.SPACE,
@@ -165,7 +172,7 @@ public class MonitorResult implements Serializable {
                             StringHelper.SPACE,
                             charPerRow));
         }
-        Console.log(format, values);
+        Console.log(FORMAT, values);
     }
 
 }

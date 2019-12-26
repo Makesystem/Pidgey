@@ -28,6 +28,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
+import java.nio.file.OpenOption;
 import java.util.function.Function;
 
 /**
@@ -241,8 +242,8 @@ public class FilesHelper implements Serializable {
         }
     }
 
-    public final static void write(final String file, final String data) throws IOException {
-        final Path path = Paths.get(file);
+    public final static void write(final String filePath, final String data) throws IOException {
+        final Path path = Paths.get(filePath);
         mkfile(path);
         try (final BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING)) {
             writer.write(data);
@@ -253,6 +254,12 @@ public class FilesHelper implements Serializable {
         final Path path = Paths.get(filePath);
         mkfile(path);
         Files.write(path, data, StandardOpenOption.TRUNCATE_EXISTING);
+    }
+
+    public static void write(final String filePath, final Iterable<? extends CharSequence> lines) throws IOException {
+        final Path path = Paths.get(filePath);
+        mkfile(path);
+        Files.write(path, lines, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
     public final static String read(final String file) throws IOException {

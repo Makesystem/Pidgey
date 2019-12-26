@@ -19,10 +19,31 @@ import java.util.stream.IntStream;
  */
 public class StringHelper implements Serializable {
 
-    private static final long serialVersionUID = -5088130764712820036L;
+    private static final long serialVersionUID = -5088130764712821036L;
 
     private static final int NOT_FOUND = -1;
 
+    /**
+     * Match any char zero or one times.
+     * String {@code ".?"}
+     *
+     */
+    public static final String REGEX_ANY__ZERO_OR_ONE = ".?";
+    
+    /**
+     * Match any char zero or more times.
+     * String {@code ".*"}
+     *
+     */
+    public static final String REGEX_ANY = ".*";
+    
+    /**
+     * Match any char one or more times.
+     * String {@code ".+"}
+     *
+     */
+    public static final String REGEX_ANY__ONE_OR_MORE = ".+";
+    
     /**
      * A String for a space character.
      *
@@ -36,11 +57,35 @@ public class StringHelper implements Serializable {
     public static final String UL = "_";
 
     /**
-     * The unserline String {@code "_"}.
+     * The dot String {@code "."}.
      *
      */
     public static final String DOT = ".";
+    
+    /**
+     * The real dot into regex String {@code "\\."}.
+     *
+     */
+    public static final String REAL_DOT = "\\.";
+    
+    /**
+     * The double dots String {@code ":"}.
+     *
+     */
+    public static final String DOUBLE_DOTS = ":";
+    
+    /**
+     * The comma String {@code ","}.
+     *
+     */
+    public static final String COMMA = ",";
 
+    /**
+     * The single quotes String {@code "'"}.
+     *
+     */
+    public static final String SQ = "'";
+    
     /**
      * The double quotes String {@code """}.
      *
@@ -48,10 +93,108 @@ public class StringHelper implements Serializable {
     public static final String DQ = "\"";
 
     /**
+     * The forward slash String {@code "/"}.
+     */
+    public static final String FS = "/";
+    
+    /**
      * The back slash String {@code "\"}.
      *
      */
     public static final String BS = "\\\\";
+    
+    /**
+     * The assign String {@code "="}.
+     *
+     */
+    public static final String ASSIGN = "=";
+    
+    /**
+     * The minus String {@code "-"}.
+     *
+     */
+    public static final String MS = "-";
+    
+    /**
+     * The plus String {@code "+"}.
+     *
+     */
+    public static final String PS = "+";
+    
+    /**
+     * The question mark String {@code "?"}.
+     *
+     */
+    public static final String QM = "?";
+    
+    /**
+     * The hashatag String {@code "#"}.
+     */
+    public static final String HT = "#";
+    
+    /**
+     * The dollar sign String {@code "$"}.
+     */
+    public static final String DS = "$";
+    
+    /**
+     * The real dollar sign into regex String {@code "\\$"}.
+     */
+    public static final String REAL_DS = "\\$";
+    
+    /**
+     * The asterisk String {@code "*"}.
+     *
+     */
+    public static final String AR = "*";
+    
+    /**
+     * The open parentheses String {@code "("}.
+     *
+     */
+    public static final String OP = "(";
+    
+    /**
+     * The close parentheses String {@code ")"}.
+     *
+     */
+    public static final String CP = ")";
+    
+    /**
+     * The open square brackets String {@code "["}.
+     *
+     */
+    public static final String OSB = "[";
+    
+    /**
+     * The close square brackets String {@code "]"}.
+     *
+     */
+    public static final String CSB = "]";
+    
+    /**
+     * The open curly braces String {@code "{"}.
+     *
+     */
+    public static final String OCB = "{";
+    
+    /**
+     * The real open curly braces into regex String {@code "{"}.
+     *
+     */
+    public static final String REAL_OCB = "\\{";
+    
+    /**
+     * The close curly braces String {@code "}"}.
+     *
+     */
+    public static final String CCB = "}";
+    
+    /**
+     * The real close curly braces into regex String {@code "}"}.
+     *
+     */
+    public static final String REAL_CCB = "}";
 
     /**
      * The empty String {@code ""}.

@@ -13,6 +13,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class DefaultThreadFactory implements java.util.concurrent.ThreadFactory {
 
+    private static final String THREAD_STRING = "--thread--";
+    
     private final ThreadGroup group;
     private final AtomicInteger threadNumber = new AtomicInteger(1);
     private final String namePrefix;
@@ -21,7 +23,7 @@ public class DefaultThreadFactory implements java.util.concurrent.ThreadFactory 
         final SecurityManager s = System.getSecurityManager();
         this.group = (s != null) ? s.getThreadGroup()
                 : Thread.currentThread().getThreadGroup();
-        this.namePrefix = namePrefix + "--thread-";
+        this.namePrefix = namePrefix + THREAD_STRING;
     }
 
     @Override

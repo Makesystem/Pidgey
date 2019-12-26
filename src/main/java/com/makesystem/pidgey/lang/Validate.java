@@ -44,7 +44,7 @@ import java.util.Map;
 @SuppressWarnings({"UnnecessaryBoxing", "MismatchedReadAndWriteOfArray"})
 public class Validate implements Serializable {
 
-    private static final long serialVersionUID = 3028763097388657487L;
+    private static final long serialVersionUID = 3028763097388637487L;
 
     private static final String DEFAULT_NOT_NAN_EX_MESSAGE
             = "The validated value is not a number";
@@ -75,6 +75,8 @@ public class Validate implements Serializable {
     private static final String DEFAULT_IS_ASSIGNABLE_EX_MESSAGE = "Cannot assign a %s to a %s";
     private static final String DEFAULT_IS_INSTANCE_OF_EX_MESSAGE = "Expected type: %s, actual: %s";
 
+    private static final String VAR = "%s";
+    
     /**
      * Constructor. This class should not normally be instantiated.
      */
@@ -1022,9 +1024,9 @@ public class Validate implements Serializable {
         if (value.compareTo(start) < 0 || value.compareTo(end) > 0) {
             throw new IllegalArgumentException(
                     DEFAULT_INCLUSIVE_BETWEEN_EX_MESSAGE
-                            .replaceFirst("%s", String.valueOf(value))
-                            .replaceFirst("%s", String.valueOf(start))
-                            .replaceFirst("%s", String.valueOf(end)));//String.format(DEFAULT_INCLUSIVE_BETWEEN_EX_MESSAGE, value, start, end));
+                            .replaceFirst(VAR, String.valueOf(value))
+                            .replaceFirst(VAR, String.valueOf(start))
+                            .replaceFirst(VAR, String.valueOf(end)));//String.format(DEFAULT_INCLUSIVE_BETWEEN_EX_MESSAGE, value, start, end));
         }
     }
 
@@ -1076,9 +1078,9 @@ public class Validate implements Serializable {
         // TODO when breaking BC, consider returning value
         if (value < start || value > end) {
             throw new IllegalArgumentException(DEFAULT_INCLUSIVE_BETWEEN_EX_MESSAGE
-                    .replaceFirst("%s", String.valueOf(value))
-                    .replaceFirst("%s", String.valueOf(start))
-                    .replaceFirst("%s", String.valueOf(end)));//String.format(DEFAULT_INCLUSIVE_BETWEEN_EX_MESSAGE, value, start, end));
+                    .replaceFirst(VAR, String.valueOf(value))
+                    .replaceFirst(VAR, String.valueOf(start))
+                    .replaceFirst(VAR, String.valueOf(end)));//String.format(DEFAULT_INCLUSIVE_BETWEEN_EX_MESSAGE, value, start, end));
         }
     }
 
@@ -1125,9 +1127,9 @@ public class Validate implements Serializable {
         // TODO when breaking BC, consider returning value
         if (value < start || value > end) {
             throw new IllegalArgumentException(DEFAULT_INCLUSIVE_BETWEEN_EX_MESSAGE
-                    .replaceFirst("%s", String.valueOf(value))
-                    .replaceFirst("%s", String.valueOf(start))
-                    .replaceFirst("%s", String.valueOf(end)));//String.format(DEFAULT_INCLUSIVE_BETWEEN_EX_MESSAGE, value, start, end));
+                    .replaceFirst(VAR, String.valueOf(value))
+                    .replaceFirst(VAR, String.valueOf(start))
+                    .replaceFirst(VAR, String.valueOf(end)));//String.format(DEFAULT_INCLUSIVE_BETWEEN_EX_MESSAGE, value, start, end));
         }
     }
 
@@ -1178,9 +1180,9 @@ public class Validate implements Serializable {
         // TODO when breaking BC, consider returning value
         if (value.compareTo(start) <= 0 || value.compareTo(end) >= 0) {
             throw new IllegalArgumentException(DEFAULT_EXCLUSIVE_BETWEEN_EX_MESSAGE
-                    .replaceFirst("%s", String.valueOf(value))
-                    .replaceFirst("%s", String.valueOf(start))
-                    .replaceFirst("%s", String.valueOf(end)));//String.format(DEFAULT_EXCLUSIVE_BETWEEN_EX_MESSAGE, value, start, end));
+                    .replaceFirst(VAR, String.valueOf(value))
+                    .replaceFirst(VAR, String.valueOf(start))
+                    .replaceFirst(VAR, String.valueOf(end)));//String.format(DEFAULT_EXCLUSIVE_BETWEEN_EX_MESSAGE, value, start, end));
         }
     }
 
@@ -1231,9 +1233,9 @@ public class Validate implements Serializable {
         // TODO when breaking BC, consider returning value
         if (value <= start || value >= end) {
             throw new IllegalArgumentException(DEFAULT_EXCLUSIVE_BETWEEN_EX_MESSAGE
-                    .replaceFirst("%s", String.valueOf(value))
-                    .replaceFirst("%s", String.valueOf(start))
-                    .replaceFirst("%s", String.valueOf(end)));//String.format(DEFAULT_EXCLUSIVE_BETWEEN_EX_MESSAGE, value, start, end));
+                    .replaceFirst(VAR, String.valueOf(value))
+                    .replaceFirst(VAR, String.valueOf(start))
+                    .replaceFirst(VAR, String.valueOf(end)));//String.format(DEFAULT_EXCLUSIVE_BETWEEN_EX_MESSAGE, value, start, end));
         }
     }
 
@@ -1279,9 +1281,9 @@ public class Validate implements Serializable {
         // TODO when breaking BC, consider returning value
         if (value <= start || value >= end) {
             throw new IllegalArgumentException(DEFAULT_EXCLUSIVE_BETWEEN_EX_MESSAGE
-                    .replaceFirst("%s", String.valueOf(value))
-                    .replaceFirst("%s", String.valueOf(start))
-                    .replaceFirst("%s", String.valueOf(end)));//String.format(DEFAULT_EXCLUSIVE_BETWEEN_EX_MESSAGE, value, start, end));
+                    .replaceFirst(VAR, String.valueOf(value))
+                    .replaceFirst(VAR, String.valueOf(start))
+                    .replaceFirst(VAR, String.valueOf(end)));//String.format(DEFAULT_EXCLUSIVE_BETWEEN_EX_MESSAGE, value, start, end));
         }
     }
 

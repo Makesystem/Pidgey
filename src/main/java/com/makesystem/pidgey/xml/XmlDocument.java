@@ -6,6 +6,7 @@
 package com.makesystem.pidgey.xml;
 
 import com.makesystem.pidgey.io.file.Charset;
+import com.makesystem.pidgey.lang.StringHelper;
 import org.w3c.dom.Document;
 
 /**
@@ -14,21 +15,23 @@ import org.w3c.dom.Document;
  */
 public class XmlDocument extends XmlElement {
 
-    private static final long serialVersionUID = 7666724355988843144L;
+    private static final long serialVersionUID = 7666724355988842144L;
 
+    private static final String VERSION = "1.0";
+    
     private final String encoding;
     private final boolean standalone;
     private final String version;
 
     public XmlDocument(final Document document) {
-        super(document.getNodeName().startsWith("#") ? document.getFirstChild() : document);
+        super(document.getNodeName().startsWith(StringHelper.HT) ? document.getFirstChild() : document);
         this.encoding = encoding(document.getXmlEncoding());
         this.standalone = standalone(document.getXmlStandalone());
         this.version = version(document.getXmlVersion());
     }
 
     public XmlDocument(final String tag, final XmlAttribute... attributes) {
-        this(tag, Charset.UTF_8.getName(), false, "1.0", attributes);
+        this(tag, Charset.UTF_8.getName(), false, VERSION, attributes);
     }
 
     public XmlDocument(final String tag, final String encoding, final Boolean standalone, final String version, final XmlAttribute... attributes) {
@@ -47,7 +50,7 @@ public class XmlDocument extends XmlElement {
     }
 
     protected final String version(final String version) {
-        return version == null || version.isEmpty() ? "1.0" : version;
+        return version == null || version.isEmpty() ? VERSION : version;
     }
 
     public static final XmlDocument read(final String file) throws Throwable {
