@@ -91,6 +91,12 @@ public class StringHelper implements Serializable {
      *
      */
     public static final String DQ = "\"";
+    
+    /**
+     * The real double quotes into regex String {@code "\""}.
+     *
+     */
+    public static final String REAL_DQ = "\\\"";
 
     /**
      * The forward slash String {@code "/"}.
