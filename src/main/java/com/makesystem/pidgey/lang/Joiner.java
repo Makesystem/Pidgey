@@ -13,29 +13,30 @@ import java.util.stream.Collectors;
  *
  * @author riche
  */
-public class Concatenator implements Serializable {
+public class Joiner implements Serializable {
 
-    private static final long serialVersionUID = 5151302030828813099L;
+    private static final long serialVersionUID = 5151302030828813199L;
 
     private String startWith = StringHelper.EMPTY;
     private String endWith = StringHelper.EMPTY;
     private String separator = StringHelper.EMPTY;
+    private boolean ignoreNulls = true;
 
-    protected Concatenator() {
+    protected Joiner() {
     }
 
-    protected Concatenator(final String separator) {
+    protected Joiner(final String separator) {
         this.separator = separator;
     }
 
-    protected Concatenator(
+    protected Joiner(
             final String startWith,
             final String endWith) {
         this.startWith = startWith;
         this.endWith = endWith;
     }
 
-    protected Concatenator(
+    protected Joiner(
             final String startWith,
             final String endWith,
             final String separator) {
@@ -48,7 +49,7 @@ public class Concatenator implements Serializable {
         return ObjectHelper.orDefault(startWith, StringHelper.EMPTY);
     }
 
-    public Concatenator setStartWith(final String startWith) {
+    public Joiner setStartWith(final String startWith) {
         this.startWith = startWith;
         return this;
     }
@@ -57,7 +58,7 @@ public class Concatenator implements Serializable {
         return ObjectHelper.orDefault(endWith, StringHelper.EMPTY);
     }
 
-    public Concatenator setEndWith(final String endWith) {
+    public Joiner setEndWith(final String endWith) {
         this.endWith = endWith;
         return this;
     }
@@ -66,15 +67,35 @@ public class Concatenator implements Serializable {
         return ObjectHelper.orDefault(separator, StringHelper.EMPTY);
     }
 
-    public Concatenator setSeparator(final String separator) {
+    public Joiner setSeparator(final String separator) {
         this.separator = separator;
         return this;
     }
 
+    public boolean isIgnoreNulls() {
+        return ignoreNulls;
+    }
+
+    public Joiner setIgnoreNulls(final boolean ignoreNulls) {
+        this.ignoreNulls = ignoreNulls;
+        return this;
+    }
+
     public <V> String concat(final V... values) {
-        final String content = Arrays.stream(values)
-                .map(var -> var == null ? StringHelper.EMPTY : var.toString())
-                .collect(Collectors.joining(getSeparator()));
+
+        final String content;
+
+        if (ignoreNulls) {
+            content = Arrays.stream(values)
+                    .filter(var -> var != null)
+                    .map(var -> var == null ? StringHelper.EMPTY : var.toString())                    
+                    .collect(Collectors.joining(getSeparator()));
+        } else {
+            content = Arrays.stream(values)
+                    .map(var -> var == null ? StringHelper.EMPTY : var.toString())
+                    .collect(Collectors.joining(getSeparator()));
+        }
+
         return getStartWith() + content + getEndWith();
     }
 
@@ -82,8 +103,8 @@ public class Concatenator implements Serializable {
      *
      * @return
      */
-    public static final Concatenator get() {
-        return new Concatenator();
+    public static final Joiner get() {
+        return new Joiner();
     }
 
     /**
@@ -91,9 +112,9 @@ public class Concatenator implements Serializable {
      * @param separator
      * @return
      */
-    public static final Concatenator get(
+    public static final Joiner get(
             final String separator) {
-        return new Concatenator(separator);
+        return new Joiner(separator);
     }
 
     /**
@@ -102,10 +123,10 @@ public class Concatenator implements Serializable {
      * @param endWith
      * @return
      */
-    public static final Concatenator get(
+    public static final Joiner get(
             final String startWith,
             final String endWith) {
-        return new Concatenator(startWith, endWith);
+        return new Joiner(startWith, endWith);
     }
 
     /**
@@ -115,10 +136,10 @@ public class Concatenator implements Serializable {
      * @param separator
      * @return
      */
-    public static final Concatenator get(
+    public static final Joiner get(
             final String startWith,
             final String endWith,
             final String separator) {
-        return new Concatenator(startWith, endWith, separator);
+        return new Joiner(startWith, endWith, separator);
     }
 }
