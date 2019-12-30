@@ -149,6 +149,11 @@ public class StringHelper implements Serializable {
     public static final String REAL_DS = "\\$";
     
     /**
+     * The & String {@code "&"}.
+     */
+    public static final String AND = "&";
+    
+    /**
      * The asterisk String {@code "*"}.
      *
      */
@@ -173,10 +178,22 @@ public class StringHelper implements Serializable {
     public static final String OSB = "[";
     
     /**
+     * The real open square brackets String {@code "\\["}.
+     *
+     */
+    public static final String REAL_OSB = "\\[";
+    
+    /**
      * The close square brackets String {@code "]"}.
      *
      */
     public static final String CSB = "]";
+    
+    /**
+     * The real close square brackets String {@code "\\]"}.
+     *
+     */
+    public static final String REAL_CSB = "\\]";
     
     /**
      * The open curly braces String {@code "{"}.
@@ -185,7 +202,7 @@ public class StringHelper implements Serializable {
     public static final String OCB = "{";
     
     /**
-     * The real open curly braces into regex String {@code "{"}.
+     * The real open curly braces into regex String {@code "\\{"}.
      *
      */
     public static final String REAL_OCB = "\\{";
@@ -197,16 +214,22 @@ public class StringHelper implements Serializable {
     public static final String CCB = "}";
     
     /**
-     * The real close curly braces into regex String {@code "}"}.
+     * The real close curly braces into regex String {@code "\\}"}.
      *
      */
-    public static final String REAL_CCB = "}";
+    public static final String REAL_CCB = "\\}";
 
     /**
      * The empty String {@code ""}.
      *
      */
     public static final String EMPTY = "";
+    
+    /**
+     * The null String {@code "null"}.
+     *
+     */
+    public static final String NULL = "";
 
     /**
      * A String for linefeed LF ("\n").
