@@ -19,7 +19,7 @@ import java.util.stream.IntStream;
  */
 public class StringHelper implements Serializable {
 
-    private static final long serialVersionUID = -5088130764712821036L;
+    private static final long serialVersionUID = -5088130764712821936L;
 
     private static final int NOT_FOUND = -1;
 
