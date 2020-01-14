@@ -19,7 +19,7 @@ import java.util.stream.IntStream;
  */
 public class StringHelper implements Serializable {
 
-    private static final long serialVersionUID = -5088130764712821936L;
+    private static final long serialVersionUID = -5088130764722821936L;
 
     private static final int NOT_FOUND = -1;
 
@@ -79,6 +79,12 @@ public class StringHelper implements Serializable {
      *
      */
     public static final String COMMA = ",";
+    
+    /**
+     * The semicolon String {@code ";"}.
+     *
+     */
+    public static final String SEMICOLON = ";";
 
     /**
      * The single quotes String {@code "'"}.

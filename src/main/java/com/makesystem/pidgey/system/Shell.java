@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -20,7 +21,12 @@ import java.util.stream.Collectors;
  */
 public class Shell implements Serializable {
 
-    private static final long serialVersionUID = -4208239768975295244L;
+    private static final long serialVersionUID = -4208239768975395244L;
+
+    private static final String DEF__FORMAT = "%s";
+
+    public static final Collection<String> CMD_WINDOWS = Arrays.asList("cmd.exe", "/c");
+    public static final Collection<String> CMD_LINUX = Arrays.asList("/bin/sh", "-c");
 
     private final Runtime runtime = Runtime.getRuntime();
 
@@ -33,16 +39,16 @@ public class Shell implements Serializable {
         final Collection<String> allCommands = new LinkedList<>();
 
         if (SystemHelper.IS_OS_WINDOWS) {
-            allCommands.add("cmd.exe");
-            allCommands.add("/c");
+            allCommands.addAll(CMD_WINDOWS);
+        } else if (SystemHelper.IS_OS_LINUX) {
+            allCommands.addAll(CMD_LINUX);
         } else {
-            allCommands.add("/bin/sh");
-            allCommands.add("-c");
+            throw new RuntimeException("SO is not supported!");
         }
 
         allCommands.addAll(
                 Arrays.stream(commands)
-                        .map(command -> String.format("%s", command.trim()))
+                        .map(command -> String.format(DEF__FORMAT, command.trim()))
                         .filter(command -> !StringHelper.isBlank(command))
                         .collect(Collectors.toList()));
 
@@ -77,5 +83,18 @@ public class Shell implements Serializable {
             return error;
         }
 
+        public int getExitValue() {
+            return process.exitValue();
+        }
+
+        public int waitFor() throws InterruptedException {
+            return process.waitFor();
+        }
+
+        public boolean waitFor(
+                final long timeout,
+                final TimeUnit unit) throws InterruptedException {
+            return process.waitFor(timeout, unit);
+        }
     }
 }
