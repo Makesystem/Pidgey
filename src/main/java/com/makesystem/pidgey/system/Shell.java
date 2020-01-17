@@ -62,28 +62,24 @@ public class Shell implements Serializable {
     public class Result {
 
         private final Process process;
-        private final String result;
-        private final String error;
 
         public Result(final Process process) throws IOException {
             this.process = process;
-            this.result = FilesHelper.read(process.getInputStream());
-            this.error = FilesHelper.read(process.getErrorStream());
         }
 
         public Process getProcess() {
             return process;
         }
 
-        public String getResult() {
-            return result;
+        public String getValue() throws IOException {
+            return FilesHelper.read(process.getInputStream());
         }
 
-        public String getError() {
-            return error;
+        public String getError() throws IOException {
+            return FilesHelper.read(process.getErrorStream());
         }
 
-        public int getExitValue() {
+        public int getStatus() {
             return process.exitValue();
         }
 
