@@ -224,6 +224,18 @@ public class StringHelper implements Serializable {
      *
      */
     public static final String REAL_CCB = "\\}";
+    
+    /**
+     * The real open parentheses String {@code "("}.
+     *
+     */
+    public static final String REAL_OP = "\\(";
+    
+    /**
+     * The real close parentheses String {@code ")"}.
+     *
+     */
+    public static final String REAL_CP = "\\)";
 
     /**
      * The empty String {@code ""}.
