@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.makesystem</groupId>
     <artifactId>pidgey</artifactId>
-    <version>1.2.33-SNAPSHOT</version>
+    <version>1.2.34-SNAPSHOT</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -12,13 +12,6 @@
     </properties>
     
     <dependencies>
-        
-        <!-- https://mvnrepository.com/artifact/org.apache.maven/maven-model -->
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-model</artifactId>
-            <version>3.6.3</version>
-        </dependency>
         
         <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
         <dependency>
