@@ -19,6 +19,7 @@ import com.makesystem.pidgey.lang.ClassHelperJRE;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.Collection;
@@ -141,6 +142,10 @@ public class ObjectMapperJRE implements Serializable {
     public static final <T, R extends TypeReference<T>> T read(final URL json, final R jsonReference) throws IOException {
         return read(FACTORY.createParser(json), jsonReference);
     }
+    
+    public static final <T, R extends TypeReference<T>> T read(final Reader json, final R jsonReference) throws IOException {
+        return read(FACTORY.createParser(json), jsonReference);
+    }
 
     protected static final <T, R extends TypeReference<T>> T read(final JsonParser parser, final R jsonReference) throws IOException {
         return MAPPER.reader().readValue(parser, jsonReference);
@@ -168,6 +173,10 @@ public class ObjectMapperJRE implements Serializable {
     }
 
     public static final <T> T read(final URL json, final Class<T> type) throws IOException {
+        return read(FACTORY.createParser(json), type);
+    }
+    
+    public static final <T> T read(final Reader json, final Class<T> type) throws IOException {
         return read(FACTORY.createParser(json), type);
     }
 
@@ -199,7 +208,11 @@ public class ObjectMapperJRE implements Serializable {
     protected static final <T> T read(final URL json, final JavaType type) throws IOException {
         return read(FACTORY.createParser(json), type);
     }
-
+    
+    protected static final <T> T read(final Reader json, final JavaType type) throws IOException {
+        return read(FACTORY.createParser(json), type);
+    }
+    
     protected static final <T> T read(final JsonParser parser, final JavaType type) throws IOException {
         return MAPPER.reader().readValue(parser, type);
     }
@@ -228,6 +241,10 @@ public class ObjectMapperJRE implements Serializable {
     public static final <T> T[] readArray(final URL json, final Class<T> type) throws IOException {
         return read(json, TYPE_FACTORY.constructArrayType(type));
     }
+    
+    public static final <T> T[] readArray(final Reader json, final Class<T> type) throws IOException {
+        return read(json, TYPE_FACTORY.constructArrayType(type));
+    }
 
     // /////////////////////////////////////////////////////////////////////////
     //
@@ -254,6 +271,10 @@ public class ObjectMapperJRE implements Serializable {
         return read(json, TYPE_FACTORY.constructCollectionType(LinkedList.class, type));
     }
 
+    public static final <T> List<T> readList(final Reader json, final Class<T> type) throws IOException {
+        return read(json, TYPE_FACTORY.constructCollectionType(LinkedList.class, type));
+    }
+    
     // /////////////////////////////////////////////////////////////////////////
     //
     // Read Set by class
@@ -276,6 +297,10 @@ public class ObjectMapperJRE implements Serializable {
     }
 
     public static final <T> Set<T> readSet(final URL json, final Class<T> type) throws IOException {
+        return read(json, TYPE_FACTORY.constructCollectionType(LinkedHashSet.class, type));
+    }
+        
+    public static final <T> Set<T> readSet(final Reader json, final Class<T> type) throws IOException {
         return read(json, TYPE_FACTORY.constructCollectionType(LinkedHashSet.class, type));
     }
 
@@ -301,6 +326,10 @@ public class ObjectMapperJRE implements Serializable {
     }
 
     public static final <K, V> Map<K, V> readMap(final URL json, final Class<K> keyType, final Class<V> valueType) throws IOException {
+        return read(json, TYPE_FACTORY.constructMapType(LinkedHashMap.class, keyType, valueType));
+    }
+
+    public static final <K, V> Map<K, V> readMap(final Reader json, final Class<K> keyType, final Class<V> valueType) throws IOException {
         return read(json, TYPE_FACTORY.constructMapType(LinkedHashMap.class, keyType, valueType));
     }
 }
