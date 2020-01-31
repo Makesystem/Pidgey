@@ -6,6 +6,7 @@
 package com.makesystem.pidgey.json;
 
 import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -15,8 +16,11 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.makesystem.pidgey.lang.CollectionHelper;
 import com.makesystem.pidgey.lang.ClassHelperJRE;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.net.URL;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -113,90 +117,190 @@ public class ObjectMapperJRE implements Serializable {
         return MAPPER.writer().writeValueAsString(object);
     }
 
-    /**
-     *
-     * @param <T>
-     * @param <R>
-     * @param json
-     * @param jsonReference
-     * @return
-     * @throws java.io.IOException
-     */
+    // /////////////////////////////////////////////////////////////////////////
+    //
+    // Read by json reference
+    //
+    // /////////////////////////////////////////////////////////////////////////
     public static final <T, R extends TypeReference<T>> T read(final String json, final R jsonReference) throws IOException {
-        return MAPPER.reader().readValue(FACTORY.createParser(json), jsonReference);
+        return read(FACTORY.createParser(json), jsonReference);
     }
 
-    /**
-     *
-     * @param <T>
-     * @param json
-     * @param type
-     * @return
-     * @throws java.io.IOException
-     */
+    public static final <T, R extends TypeReference<T>> T read(final byte[] json, final R jsonReference) throws IOException {
+        return read(FACTORY.createParser(json), jsonReference);
+    }
+
+    public static final <T, R extends TypeReference<T>> T read(final InputStream json, final R jsonReference) throws IOException {
+        return read(FACTORY.createParser(json), jsonReference);
+    }
+
+    public static final <T, R extends TypeReference<T>> T read(final File json, final R jsonReference) throws IOException {
+        return read(FACTORY.createParser(json), jsonReference);
+    }
+
+    public static final <T, R extends TypeReference<T>> T read(final URL json, final R jsonReference) throws IOException {
+        return read(FACTORY.createParser(json), jsonReference);
+    }
+
+    protected static final <T, R extends TypeReference<T>> T read(final JsonParser parser, final R jsonReference) throws IOException {
+        return MAPPER.reader().readValue(parser, jsonReference);
+    }
+
+    // /////////////////////////////////////////////////////////////////////////
+    //
+    // Read by class
+    //
+    // /////////////////////////////////////////////////////////////////////////
     public static final <T> T read(final String json, final Class<T> type) throws IOException {
-        return MAPPER.reader().readValue(FACTORY.createParser(json), type);
+        return read(FACTORY.createParser(json), type);
     }
 
-    /**
-     *
-     * @param <T>
-     * @param json
-     * @param type
-     * @return
-     * @throws IOException
-     */
+    public static final <T> T read(final byte[] json, final Class<T> type) throws IOException {
+        return read(FACTORY.createParser(json), type);
+    }
+
+    public static final <T> T read(final InputStream json, final Class<T> type) throws IOException {
+        return read(FACTORY.createParser(json), type);
+    }
+
+    public static final <T> T read(final File json, final Class<T> type) throws IOException {
+        return read(FACTORY.createParser(json), type);
+    }
+
+    public static final <T> T read(final URL json, final Class<T> type) throws IOException {
+        return read(FACTORY.createParser(json), type);
+    }
+
+    protected static final <T> T read(final JsonParser parser, final Class<T> type) throws IOException {
+        return MAPPER.reader().readValue(parser, type);
+    }
+
+    // /////////////////////////////////////////////////////////////////////////
+    //
+    // Read by JavaType
+    //
+    // /////////////////////////////////////////////////////////////////////////
     protected static final <T> T read(final String json, final JavaType type) throws IOException {
-        return MAPPER.reader().readValue(FACTORY.createParser(json), type);
+        return read(FACTORY.createParser(json), type);
     }
 
-    /**
-     *
-     * @param <T>
-     * @param json
-     * @param type
-     * @return
-     * @throws java.io.IOException
-     */
+    protected static final <T> T read(final byte[] json, final JavaType type) throws IOException {
+        return read(FACTORY.createParser(json), type);
+    }
+
+    protected static final <T> T read(final InputStream json, final JavaType type) throws IOException {
+        return read(FACTORY.createParser(json), type);
+    }
+
+    protected static final <T> T read(final File json, final JavaType type) throws IOException {
+        return read(FACTORY.createParser(json), type);
+    }
+
+    protected static final <T> T read(final URL json, final JavaType type) throws IOException {
+        return read(FACTORY.createParser(json), type);
+    }
+
+    protected static final <T> T read(final JsonParser parser, final JavaType type) throws IOException {
+        return MAPPER.reader().readValue(parser, type);
+    }
+
+    // /////////////////////////////////////////////////////////////////////////
+    //
+    // Read Array by class
+    //
+    // /////////////////////////////////////////////////////////////////////////
     public static final <T> T[] readArray(final String json, final Class<T> type) throws IOException {
         return read(json, TYPE_FACTORY.constructArrayType(type));
     }
+    
+    public static final <T> T[] readArray(final byte[] json, final Class<T> type) throws IOException {
+        return read(json, TYPE_FACTORY.constructArrayType(type));
+    }
+    
+    public static final <T> T[] readArray(final InputStream json, final Class<T> type) throws IOException {
+        return read(json, TYPE_FACTORY.constructArrayType(type));
+    }
+    
+    public static final <T> T[] readArray(final File json, final Class<T> type) throws IOException {
+        return read(json, TYPE_FACTORY.constructArrayType(type));
+    }
+    
+    public static final <T> T[] readArray(final URL json, final Class<T> type) throws IOException {
+        return read(json, TYPE_FACTORY.constructArrayType(type));
+    }
 
-    /**
-     *
-     * @param <T>
-     * @param json
-     * @param type
-     * @return
-     * @throws java.io.IOException
-     */
+    // /////////////////////////////////////////////////////////////////////////
+    //
+    // Read List by class
+    //
+    // /////////////////////////////////////////////////////////////////////////
     public static final <T> List<T> readList(final String json, final Class<T> type) throws IOException {
         return read(json, TYPE_FACTORY.constructCollectionType(LinkedList.class, type));
     }
+    
+    public static final <T> List<T> readList(final byte[] json, final Class<T> type) throws IOException {
+        return read(json, TYPE_FACTORY.constructCollectionType(LinkedList.class, type));
+    }
+    
+    public static final <T> List<T> readList(final InputStream json, final Class<T> type) throws IOException {
+        return read(json, TYPE_FACTORY.constructCollectionType(LinkedList.class, type));
+    }
+    
+    public static final <T> List<T> readList(final File json, final Class<T> type) throws IOException {
+        return read(json, TYPE_FACTORY.constructCollectionType(LinkedList.class, type));
+    }
+    
+    public static final <T> List<T> readList(final URL json, final Class<T> type) throws IOException {
+        return read(json, TYPE_FACTORY.constructCollectionType(LinkedList.class, type));
+    }
 
-    /**
-     *
-     * @param <T>
-     * @param json
-     * @param type
-     * @return
-     * @throws java.io.IOException
-     */
+    // /////////////////////////////////////////////////////////////////////////
+    //
+    // Read Set by class
+    //
+    // /////////////////////////////////////////////////////////////////////////
     public static final <T> Set<T> readSet(final String json, final Class<T> type) throws IOException {
         return read(json, TYPE_FACTORY.constructCollectionType(LinkedHashSet.class, type));
     }
 
-    /**
-     *
-     * @param <K>
-     * @param <V>
-     * @param json
-     * @param keyType
-     * @param valueType
-     * @return
-     * @throws java.io.IOException
-     */
+    public static final <T> Set<T> readSet(final byte[] json, final Class<T> type) throws IOException {
+        return read(json, TYPE_FACTORY.constructCollectionType(LinkedHashSet.class, type));
+    }
+
+    public static final <T> Set<T> readSet(final InputStream json, final Class<T> type) throws IOException {
+        return read(json, TYPE_FACTORY.constructCollectionType(LinkedHashSet.class, type));
+    }
+
+    public static final <T> Set<T> readSet(final File json, final Class<T> type) throws IOException {
+        return read(json, TYPE_FACTORY.constructCollectionType(LinkedHashSet.class, type));
+    }
+
+    public static final <T> Set<T> readSet(final URL json, final Class<T> type) throws IOException {
+        return read(json, TYPE_FACTORY.constructCollectionType(LinkedHashSet.class, type));
+    }
+
+    // /////////////////////////////////////////////////////////////////////////
+    //
+    // Read Map by class
+    //
+    // /////////////////////////////////////////////////////////////////////////
     public static final <K, V> Map<K, V> readMap(final String json, final Class<K> keyType, final Class<V> valueType) throws IOException {
+        return read(json, TYPE_FACTORY.constructMapType(LinkedHashMap.class, keyType, valueType));
+    }
+
+    public static final <K, V> Map<K, V> readMap(final byte[] json, final Class<K> keyType, final Class<V> valueType) throws IOException {
+        return read(json, TYPE_FACTORY.constructMapType(LinkedHashMap.class, keyType, valueType));
+    }
+
+    public static final <K, V> Map<K, V> readMap(final InputStream json, final Class<K> keyType, final Class<V> valueType) throws IOException {
+        return read(json, TYPE_FACTORY.constructMapType(LinkedHashMap.class, keyType, valueType));
+    }
+
+    public static final <K, V> Map<K, V> readMap(final File json, final Class<K> keyType, final Class<V> valueType) throws IOException {
+        return read(json, TYPE_FACTORY.constructMapType(LinkedHashMap.class, keyType, valueType));
+    }
+
+    public static final <K, V> Map<K, V> readMap(final URL json, final Class<K> keyType, final Class<V> valueType) throws IOException {
         return read(json, TYPE_FACTORY.constructMapType(LinkedHashMap.class, keyType, valueType));
     }
 }
