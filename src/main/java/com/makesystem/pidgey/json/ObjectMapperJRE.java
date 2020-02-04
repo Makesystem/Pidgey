@@ -94,7 +94,7 @@ public class ObjectMapperJRE implements Serializable {
                 final Class<?> mapValueType = CollectionHelper.getMapValueType(map);
                 if (mapKeyType == null) {
                     type = null;
-                } else if (!ClassHelperJRE.isBasicJavaClass(mapKeyType)) {
+                } else if (!ClassHelperJRE.isBasicType(mapKeyType)) {
                     throw new IllegalArgumentException("Map Key can not be " + mapKeyType.getName() + ". It must be a primitive type, or a String or an enum.");
                 } else {
                     type = TYPE_FACTORY.constructMapType(LinkedHashMap.class, mapKeyType, mapValueType);

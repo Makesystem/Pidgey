@@ -6,15 +6,15 @@
 package com.makesystem.pidgey.lang;
 
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -23,6 +23,43 @@ import java.util.Map;
 public class ClassHelperJRE implements Serializable {
 
     private static final long serialVersionUID = 4835262989608455075L;
+
+    public static final Class[] BASIC_CLASSES = {
+        String.class,
+        Character.class,
+        Boolean.class,
+        Short.class,
+        Integer.class,
+        Long.class,
+        Float.class,
+        Double.class,
+        Number.class};
+
+    public static final Class[] JAVA_CLASSES = {
+        String.class,
+        Character.class,
+        Boolean.class,
+        Short.class,
+        Integer.class,
+        Long.class,
+        Float.class,
+        Double.class,
+        Number.class,
+        java.math.BigInteger.class,
+        java.math.BigDecimal.class,
+        java.time.LocalDate.class,
+        java.time.LocalTime.class,
+        java.time.LocalDateTime.class,
+        java.util.Calendar.class,
+        java.util.Date.class,
+        java.sql.Date.class,
+        java.sql.Time.class,
+        java.sql.Timestamp.class,
+        java.sql.Array.class,
+        java.sql.Blob.class,
+        java.sql.Clob.class,
+        java.sql.SQLXML.class,
+        java.util.UUID.class,};
 
     public final static <O> boolean isDifferent(final O object_1, final O object_2) {
         return !isEquals(object_1, object_2);
@@ -63,74 +100,47 @@ public class ClassHelperJRE implements Serializable {
         }
     }
 
-    public final static boolean isCollection(final Class objectClass) {
-        return Collection.class.isAssignableFrom(objectClass);
+    public final static boolean isCollection(final Class type) {
+        return Collection.class.isAssignableFrom(type);
     }
 
-    public final static boolean isMap(final Class objectClass) {
-        return Map.class.isAssignableFrom(objectClass);
+    public final static boolean isMap(final Class type) {
+        return Map.class.isAssignableFrom(type);
     }
 
-    public final static boolean isJavaClass(final Class fieldClass) {
-        if (Character.class.isAssignableFrom(fieldClass)) {
-            return true;
-        } else if (Number.class.isAssignableFrom(fieldClass)) {
-            return true;
-        } else if (Short.class.isAssignableFrom(fieldClass)) {
-            return true;
-        } else if (Integer.class.isAssignableFrom(fieldClass)) {
-            return true;
-        } else if (Long.class.isAssignableFrom(fieldClass)) {
-            return true;
-        } else if (Double.class.isAssignableFrom(fieldClass)) {
-            return true;
-        } else if (Float.class.isAssignableFrom(fieldClass)) {
-            return true;
-        } else if (String.class.isAssignableFrom(fieldClass)) {
-            return true;
-        } else if (Boolean.class.isAssignableFrom(fieldClass)) {
-            return true;
-        } else if (Date.class.isAssignableFrom(fieldClass) || GregorianCalendar.class.isAssignableFrom(fieldClass)) {
-            return true;
-        } else if (Calendar.class.isAssignableFrom(fieldClass)) {
-            return true;
-        } else if (LocalDate.class.isAssignableFrom(fieldClass)) {
-            return true;
-        } else if (LocalTime.class.isAssignableFrom(fieldClass)) {
-            return true;
-        } else if (LocalDateTime.class.isAssignableFrom(fieldClass)) {
-            return true;
-        } else if (fieldClass.isEnum()) {
-            return true;
-        } else {
-            return false;
+    public final static boolean isJavaType(final Class type) {
+        return type.isPrimitive() || type.isEnum() || isAssignableFrom(type, JAVA_CLASSES);
+    }
+
+    public final static boolean isBasicType(final Class type) {
+        return type.isPrimitive() || type.isEnum() || isAssignableFrom(type, BASIC_CLASSES);
+    }
+
+    public final static boolean isAssignableFrom(final Class type, final Class... classes) {
+        for (Class _class : classes) {
+            if (_class.isAssignableFrom(type)) {
+                return true;
+            }
         }
+        return false;
     }
 
-    public final static boolean isBasicJavaClass(final Class type) {
-        if (Character.class.isAssignableFrom(type)) {
-            return true;
-        } else if (Number.class.isAssignableFrom(type)) {
-            return true;
-        } else if (Short.class.isAssignableFrom(type)) {
-            return true;
-        } else if (Integer.class.isAssignableFrom(type)) {
-            return true;
-        } else if (Long.class.isAssignableFrom(type)) {
-            return true;
-        } else if (Double.class.isAssignableFrom(type)) {
-            return true;
-        } else if (Float.class.isAssignableFrom(type)) {
-            return true;
-        } else if (String.class.isAssignableFrom(type)) {
-            return true;
-        } else if (Boolean.class.isAssignableFrom(type)) {
-            return true;
-        } else if (type.isEnum()) {
-            return true;
-        } else {
-            return false;
+    public static final Class getType(final Field field) throws ClassNotFoundException {
+
+        final Class type = field.getType();
+        final Type genericType = field.getGenericType();
+
+        if (Collection.class.isAssignableFrom(type) && genericType instanceof ParameterizedType) {
+            final ParameterizedType parameterizedType = (ParameterizedType) genericType;
+            final Type[] types = parameterizedType.getActualTypeArguments();
+            for (Type typeArgument : types) {
+                return Class.forName(typeArgument.getTypeName());
+            }
+        } else if (type.isArray()) {
+            return type.getComponentType();
         }
+
+        return type;
     }
 
     /**
@@ -172,4 +182,44 @@ public class ClassHelperJRE implements Serializable {
         }
     }
 
+    public static Collection<Field> listFields(final Class classToRead) {
+
+        final Collection<Field> fields = new LinkedList<>();
+
+        if (classToRead == null) {
+            return fields;
+        }
+
+        final Class parent = classToRead.getSuperclass();
+
+        if (parent != null && parent != Object.class) {
+            fields.addAll(listFields(parent));
+        }
+
+        fields.addAll(Arrays.asList(classToRead.getDeclaredFields()));
+
+        return fields;
+    }
+
+    public static Collection<Field> listFields(final Class classToRead, final Predicate<Field> filter) {
+
+        final Collection<Field> fields = new LinkedList<>();
+
+        if (classToRead == null) {
+            return fields;
+        }
+
+        final Class parent = classToRead.getSuperclass();
+
+        if (parent != null && parent != Object.class) {
+            fields.addAll(listFields(parent, filter));
+        }
+
+        fields.addAll(Arrays
+                .stream(classToRead.getDeclaredFields())
+                .filter(filter)
+                .collect(Collectors.toList()));
+
+        return fields;
+    }
 }
