@@ -5,6 +5,7 @@
  */
 package com.makesystem.pidgey.lang;
 
+import com.google.gwt.core.shared.GwtIncompatible;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -20,10 +21,11 @@ import java.util.stream.Collectors;
  *
  * @author riche
  */
-public class ClassHelperJRE implements Serializable {
+@GwtIncompatible
+public class ClassHelper implements Serializable {
 
-    private static final long serialVersionUID = 4835262989608455075L;
-
+    private static final long serialVersionUID = -755476825849083433L;
+    
     public static final Class[] BASIC_CLASSES = {
         String.class,
         Character.class,
@@ -69,11 +71,11 @@ public class ClassHelperJRE implements Serializable {
     public final static <O> boolean isEquals(final O object_1, final O object_2) {
 
         if (object_1 == null && object_2 == null) {
-            return true;
+            return Boolean.TRUE;
         }
 
         if ((object_1 != null && object_2 == null) || (object_1 == null && object_2 != null)) {
-            return false;
+            return Boolean.FALSE;
         }
 
         final Class<?> class1 = object_1.getClass();
@@ -119,10 +121,10 @@ public class ClassHelperJRE implements Serializable {
     public final static boolean isAssignableFrom(final Class type, final Class... classes) {
         for (Class _class : classes) {
             if (_class.isAssignableFrom(type)) {
-                return true;
+                return Boolean.TRUE;
             }
         }
-        return false;
+        return Boolean.FALSE;
     }
 
     public static final Class getType(final Field field) throws ClassNotFoundException {

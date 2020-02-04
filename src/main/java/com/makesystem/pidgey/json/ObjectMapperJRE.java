@@ -14,8 +14,9 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.google.gwt.core.shared.GwtIncompatible;
 import com.makesystem.pidgey.lang.CollectionHelper;
-import com.makesystem.pidgey.lang.ClassHelperJRE;
+import com.makesystem.pidgey.lang.ClassHelper;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,9 +35,10 @@ import java.util.Set;
  *
  * @author Richeli.vargas
  */
+@GwtIncompatible
 public class ObjectMapperJRE implements Serializable {
 
-    private static final long serialVersionUID = 7027139277328281082L;
+    private static final long serialVersionUID = -8736018675673245679L;
 
     private final static ObjectMapper MAPPER;
     private final static JsonFactory FACTORY;
@@ -94,7 +96,7 @@ public class ObjectMapperJRE implements Serializable {
                 final Class<?> mapValueType = CollectionHelper.getMapValueType(map);
                 if (mapKeyType == null) {
                     type = null;
-                } else if (!ClassHelperJRE.isBasicType(mapKeyType)) {
+                } else if (!ClassHelper.isBasicType(mapKeyType)) {
                     throw new IllegalArgumentException("Map Key can not be " + mapKeyType.getName() + ". It must be a primitive type, or a String or an enum.");
                 } else {
                     type = TYPE_FACTORY.constructMapType(LinkedHashMap.class, mapKeyType, mapValueType);

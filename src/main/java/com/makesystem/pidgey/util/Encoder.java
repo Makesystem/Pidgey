@@ -16,6 +16,8 @@ public final class Encoder implements Serializable{
 
     private static final long serialVersionUID = -3824488349302569648L;
 
+    private static final char ASSIGN = '=';
+    
     private final byte[] newline;
     private final int linemax;
     private final boolean isURL;
@@ -202,15 +204,15 @@ public final class Encoder implements Serializable{
             if (sp == end) {
                 dst[dp++] = (byte) base64[(b0 << 4) & 0x3f];
                 if (doPadding) {
-                    dst[dp++] = '=';
-                    dst[dp++] = '=';
+                    dst[dp++] = ASSIGN;
+                    dst[dp++] = ASSIGN;
                 }
             } else {
                 int b1 = src[sp++] & 0xff;
                 dst[dp++] = (byte) base64[(b0 << 4) & 0x3f | (b1 >> 4)];
                 dst[dp++] = (byte) base64[(b1 << 2) & 0x3f];
                 if (doPadding) {
-                    dst[dp++] = '=';
+                    dst[dp++] = ASSIGN;
                 }
             }
         }

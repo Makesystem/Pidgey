@@ -17,6 +17,10 @@ public final class Decoder implements Serializable {
 
     private static final long serialVersionUID = 5808903184504100930L;
 
+    private static final String DATA = "data:";
+    private static final String BASE64 = "base64,";
+    private static final char ASSIGN = '=';
+    
     private final boolean isURL;
     private final boolean isMIME;
 
@@ -39,7 +43,7 @@ public final class Decoder implements Serializable {
         for (int i = 0; i < Encoder.TO_BASE_64.length; i++) {
             FROM_BASE_64[Encoder.TO_BASE_64[i]] = i;
         }
-        FROM_BASE_64['='] = -2;
+        FROM_BASE_64[ASSIGN] = -2;
     }
 
     /**
@@ -53,7 +57,7 @@ public final class Decoder implements Serializable {
         for (int i = 0; i < Encoder.TO_BASE_64_URL.length; i++) {
             FROM_BASE_64_URL[Encoder.TO_BASE_64_URL[i]] = i;
         }
-        FROM_BASE_64_URL['='] = -2;
+        FROM_BASE_64_URL[ASSIGN] = -2;
     }
 
     static final Decoder RFC4648 = new Decoder(false, false);
@@ -157,7 +161,7 @@ public final class Decoder implements Serializable {
             int n = 0;
             while (sp < sl) {
                 int b = src[sp++] & 0xff;
-                if (b == '=') {
+                if (b == ASSIGN) {
                     len -= (sl - sp + 1);
                     break;
                 }
@@ -167,9 +171,9 @@ public final class Decoder implements Serializable {
             }
             len -= n;
         } else {
-            if (src[sl - 1] == '=') {
+            if (src[sl - 1] == ASSIGN) {
                 paddings++;
-                if (src[sl - 2] == '=') {
+                if (src[sl - 2] == ASSIGN) {
                     paddings++;
                 }
             }
@@ -188,13 +192,13 @@ public final class Decoder implements Serializable {
         while (sp < sl) {
             int b = src[sp++] & 0xff;
             if ((b = base64[b]) < 0) {
-                if (b == -2) {         // padding byte '='
+                if (b == -2) {         // padding byte ASSIGN
                     // =     shiftto==18 unnecessary padding
                     // x=    shiftto==12 a dangling single x
                     // x     to be handled together with non-padding case
                     // xx=   shiftto==6&&sp==sl missing last =
                     // xx=y  shiftto==6 last is not =
-                    if (shiftto == 6 && (sp == sl || src[sp++] != '=')
+                    if (shiftto == 6 && (sp == sl || src[sp++] != ASSIGN)
                             || shiftto == 18) {
                         throw new IllegalArgumentException(
                                 "Input byte array has wrong 4-byte ending unit");
@@ -220,7 +224,7 @@ public final class Decoder implements Serializable {
                 bits = 0;
             }
         }
-        // reached end of byte array or hit padding '=' characters.
+        // reached end of byte array or hit padding ASSIGN characters.
         switch (shiftto) {
             case 6:
                 dst[dp++] = (byte) (bits >> 16);
@@ -253,8 +257,8 @@ public final class Decoder implements Serializable {
      * @return string to decode without 'data:image/???;base64,'
      */
     private String mime(final String src) {
-        if (src.startsWith("data:")) {
-            final String[] split = src.split("base64,");
+        if (src.startsWith(DATA)) {
+            final String[] split = src.split(BASE64);
             return split[split.length - 1];
         }
         return src;

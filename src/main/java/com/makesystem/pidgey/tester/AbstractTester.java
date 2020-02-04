@@ -6,7 +6,7 @@
 package com.makesystem.pidgey.tester;
 
 import com.makesystem.pidgey.console.ConsoleColor;
-import com.makesystem.pidgey.lang.ClassHelperJRE;
+import com.makesystem.pidgey.lang.ClassHelper;
 import com.makesystem.pidgey.monitor.Monitor;
 import com.makesystem.pidgey.monitor.MonitorResult;
 import com.makesystem.pidgey.monitor.MonitorStatus;
@@ -51,7 +51,7 @@ public abstract class AbstractTester implements Serializable {
         switch (result.getStatus()) {
             case SUCCESS:
 
-                if (!ClassHelperJRE.isEquals(valueObtained, expectedValue)) {
+                if (!ClassHelper.isEquals(valueObtained, expectedValue)) {
                     final StringBuilder error = new StringBuilder();
                     error.append("Value obtained is different of expected value.\n");
                     error.append("Obtained [")

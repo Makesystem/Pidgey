@@ -19,8 +19,13 @@ import java.util.stream.IntStream;
  */
 public class StringHelper implements Serializable {
 
-    private static final long serialVersionUID = -5088130764722821936L;
+    private static final long serialVersionUID = -263841530361247248L;
 
+    /**
+     * Java Options char: '-D'
+     */
+    public static final String JAVA_OPT = "-D";
+    
     private static final int NOT_FOUND = -1;
 
     /**
@@ -247,7 +252,7 @@ public class StringHelper implements Serializable {
      * The null String {@code "null"}.
      *
      */
-    public static final String NULL = "";
+    public static final String NULL = "null";
 
     /**
      * A String for linefeed LF ("\n").
@@ -271,6 +276,11 @@ public class StringHelper implements Serializable {
      *
      */
     public static final String TB = "\t";
+    
+    /**
+     * String {@code "[^%s]+"}
+     */
+    public static final String FORMAT_STRIP_DIFF = "[^%s]+";
 
     /**
      * a-zA-ZÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜàáâãäçèéêëìíîïñòóôõöùúûü
@@ -356,7 +366,7 @@ public class StringHelper implements Serializable {
     public static String stripAccents(final String value) {
 
         if (value == null) {
-            return "";
+            return EMPTY;
         }
 
         final StringBuilder sb = new StringBuilder(value);
@@ -373,7 +383,7 @@ public class StringHelper implements Serializable {
     }
 
     public static final String stripSpecialChars(final String value) {
-        return stripSpecialChars(value, "");
+        return stripSpecialChars(value, EMPTY);
     }
 
     public static final String stripSpecialChars(final String value, final String preserve) {
@@ -413,13 +423,8 @@ public class StringHelper implements Serializable {
         if (value == null || value.trim().isEmpty()) {
             return value;
         }
-
-        final StringBuilder paterner = new StringBuilder();
-        paterner.append("[^");
-        paterner.append(join((Object[]) preserve));
-        paterner.append("]+");
-
-        return value.replaceAll(paterner.toString(), "");
+        
+        return value.replaceAll(String.format(FORMAT_STRIP_DIFF, join((Object[]) preserve)), EMPTY);
     }
 
     /**
@@ -476,9 +481,13 @@ public class StringHelper implements Serializable {
     /**
      * Remove these sequences:
      * <code>
-     * <br/> '123'
-     * <br/> 'abc' <br/> 'ABC'
-     * <br/> 'aaa' <br/> 'AAA'
+     * <pre>
+     * '123'
+     * 'abc'
+     * 'ABC'
+     * 'aaa'
+     * 'AAA'
+     * </pre>
      * </code>
      *
      * @param value
@@ -497,9 +506,15 @@ public class StringHelper implements Serializable {
     /**
      * Remove these sequences:
      * <code>
-     * <br/> '123'
-     * <br/> 'abc' <br/> 'ABC' <br/> 'AbCd'
-     * <br/> 'aaa' <br/> 'AAA' <br/> 'AaAa'
+     * <pre>
+     * '123'
+     * 'abc'
+     * 'ABC'
+     * 'AbCd'
+     * 'aaa'
+     * 'AAA'
+     * 'AaAa'
+     * </pre>
      * </code>
      *
      * @param value
@@ -548,46 +563,15 @@ public class StringHelper implements Serializable {
             return properties;
         }
 
-        final String[] options = javaOpt.replaceAll("-D", "").split(" ");
+        final String[] options = javaOpt.replaceAll(JAVA_OPT, EMPTY).split(SPACE);
         for (String option : options) {
-            final String[] map = option.split("=");
+            final String[] map = option.split(ASSIGN);
             final String key = map[0];
             final String value = map[1];
             properties.put(key, value);
         }
 
         return properties;
-    }
-
-    public static String toString(final Throwable throwable) {
-
-        if (throwable == null) {
-            return "";
-        }
-
-        final String NEW_LINE = System.getProperty("line.separator", LF);
-        final String TAB_LINE = System.getProperty("line.tab", TB);
-
-        // add the class name and any message passed to constructor
-        final StringBuilder result = new StringBuilder();
-        result.append(throwable.toString());
-        result.append(NEW_LINE);
-
-        // add each element of the stack trace
-        for (StackTraceElement element : throwable.getStackTrace()) {
-            result.append(TAB_LINE);
-            result.append(" at ");
-            result.append(element);
-            result.append(NEW_LINE);
-        }
-
-        // add cause
-        if (throwable.getCause() != null) {
-            result.append("Caused by: ");
-            result.append(toString(throwable.getCause()));
-        }
-
-        return result.toString();
     }
 
     // Empty checks
@@ -641,14 +625,14 @@ public class StringHelper implements Serializable {
     public static boolean isBlank(final CharSequence cs) {
         int strLen;
         if (cs == null || (strLen = cs.length()) == 0) {
-            return true;
+            return Boolean.TRUE;
         }
         for (int i = 0; i < strLen; i++) {
             if (!Character.isWhitespace(cs.charAt(i))) {
-                return false;
+                return Boolean.FALSE;
             }
         }
-        return true;
+        return Boolean.TRUE;
     }
 
     /**
@@ -704,15 +688,15 @@ public class StringHelper implements Serializable {
      */
     public static boolean isNumeric(final CharSequence cs) {
         if (isEmpty(cs)) {
-            return false;
+            return Boolean.FALSE;
         }
         final int sz = cs.length();
         for (int i = 0; i < sz; i++) {
             if (!Character.isDigit(cs.charAt(i))) {
-                return false;
+                return Boolean.FALSE;
             }
         }
-        return true;
+        return Boolean.TRUE;
     }
 
     /**
@@ -743,7 +727,7 @@ public class StringHelper implements Serializable {
      */
     public static boolean contains(final CharSequence seq, final CharSequence searchSeq) {
         if (seq == null || searchSeq == null) {
-            return false;
+            return Boolean.FALSE;
         }
         return indexOf(seq, searchSeq, 0) >= 0;
     }
@@ -774,7 +758,7 @@ public class StringHelper implements Serializable {
      */
     public static boolean contains(final CharSequence seq, final int searchChar) {
         if (isEmpty(seq)) {
-            return false;
+            return Boolean.FALSE;
         }
         return indexOf(seq, searchChar, 0) >= 0;
     }
@@ -835,7 +819,7 @@ public class StringHelper implements Serializable {
             return ((String) cs).indexOf(searchChar, start);
         }
 
-        @SuppressWarnings("null")
+        @SuppressWarnings(NULL)
         final int sz = cs.length();
         if (start < 0) {
             start = 0;

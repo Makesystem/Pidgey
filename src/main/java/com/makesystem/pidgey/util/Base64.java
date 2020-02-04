@@ -76,7 +76,7 @@ public class Base64 implements Serializable {
         if (lineLength <= 0) {
             return Encoder.RFC4648;
         }
-        return new Encoder(false, lineSeparator, lineLength >> 2 << 2, true);
+        return new Encoder(Boolean.FALSE, lineSeparator, lineLength >> 2 << 2, Boolean.TRUE);
     }
 
     /**

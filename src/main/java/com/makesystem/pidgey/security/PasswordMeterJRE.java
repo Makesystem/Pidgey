@@ -5,16 +5,19 @@
  */
 package com.makesystem.pidgey.security;
 
+import com.google.gwt.core.shared.GwtIncompatible;
+
 /**
  *
  * @author Richeli Vargas
  */
+@GwtIncompatible
 public class PasswordMeterJRE extends AbstractPasswordMeter {
 
-    private static final long serialVersionUID = -4463118814109329719L;
+    private static final long serialVersionUID = -654056078881971687L;
 
     @Override
-    public boolean match(final String value, final String partner) {
+    protected boolean match(final String value, final String partner) {
         return java.util.regex.Pattern.compile(partner).matcher(value).find();
     }
 }
