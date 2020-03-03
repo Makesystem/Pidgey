@@ -7,6 +7,7 @@ package com.makesystem.pidgey.lang;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.stream.Collectors;
 
 /**
@@ -81,6 +82,24 @@ public class Joiner implements Serializable {
         return this;
     }
 
+    public <V> String concat(final Collection<V> collection) {
+
+        final String content;
+
+        if (ignoreNulls) {
+            content = collection.stream()
+                    .filter(var -> var != null)
+                    .map(var -> var == null ? StringHelper.EMPTY : var.toString())
+                    .collect(Collectors.joining(getSeparator()));
+        } else {
+            content = collection.stream()
+                    .map(var -> String.valueOf(var))
+                    .collect(Collectors.joining(getSeparator()));
+        }
+
+        return getStartWith() + content + getEndWith();
+    }
+
     public <V> String concat(final V... values) {
 
         final String content;
@@ -88,11 +107,11 @@ public class Joiner implements Serializable {
         if (ignoreNulls) {
             content = Arrays.stream(values)
                     .filter(var -> var != null)
-                    .map(var -> var == null ? StringHelper.EMPTY : var.toString())                    
+                    .map(var -> var == null ? StringHelper.EMPTY : var.toString())
                     .collect(Collectors.joining(getSeparator()));
         } else {
             content = Arrays.stream(values)
-                    .map(var -> var == null ? StringHelper.EMPTY : var.toString())
+                    .map(var -> String.valueOf(var))
                     .collect(Collectors.joining(getSeparator()));
         }
 
