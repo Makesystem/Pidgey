@@ -201,6 +201,31 @@ public class NumberHelper implements Serializable {
         }
     }
 
+	public final static long fromMillis(final long value, final TimeUnit unit) {
+		switch (unit) {
+		case DAYS:
+			return value / 24L / 60L / 60L / 1000L;
+		case HOURS:
+			return value / 60L / 60L / 1000L;
+		case MINUTES:
+			return value / 60L / 1000L;
+		case SECONDS:
+			return value / 1000L;
+		case MILLISECONDS:
+			return value;
+		case MICROSECONDS:
+			return value * 1000L;
+		case NANOSECONDS:
+			return value * 1000L * 1000L;
+		default:
+			return value;
+		}
+	}
+
+	public final static long fromTo(final long from, final TimeUnit fromUnit, final TimeUnit toUnit) {
+		return fromMillis(toMillis(from, fromUnit), toUnit);
+	}
+
     //-----------------------------------------------------------------------
     /**
      * <p>
