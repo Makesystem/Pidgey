@@ -270,11 +270,8 @@ public class Threads {
      */
     public void finish(final ExecutorService pool, final boolean isRunInParallel) {
         if (isRunInParallel) {
-            getCachedThreadExecutor().execute(new Runnable() {
-                @Override
-                public void run() {
-                    finish(pool);
-                }
+            getCachedThreadExecutor().execute(() -> {
+                finish(pool);
             });
         } else {
             finish(pool);
@@ -293,11 +290,8 @@ public class Threads {
             final int timeToWaitShutdown, final TimeUnit timeUnit) {
 
         if (isRunInParallel) {
-            getCachedThreadExecutor().execute(new Runnable() {
-                @Override
-                public void run() {
-                    finish(pool, timeToWaitShutdown, timeUnit);
-                }
+            getCachedThreadExecutor().execute(() -> {
+                finish(pool, timeToWaitShutdown, timeUnit);
             });
         } else {
             finish(pool, timeToWaitShutdown, timeUnit);
