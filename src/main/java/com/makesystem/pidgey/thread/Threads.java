@@ -1,5 +1,7 @@
 package com.makesystem.pidgey.thread;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.Executors;
@@ -249,6 +251,26 @@ public class Threads {
     public ScheduledFuture getScheduleExecutor(final Runnable runnable, final long inicialDelay, final long period, final TimeUnit timeUnit) {
         configureScheduleExecutor();
         return scheduledExecutorService.scheduleAtFixedRate(runnable, inicialDelay, period, timeUnit);
+    }
+
+    /**
+     *
+     * @param runnable
+     * @param date
+     * @param periodInMilli
+     * @return
+     */
+    public ScheduledFuture getScheduleExecutor(final Runnable runnable, final LocalDateTime date, long periodInMilli) {
+
+        LocalDateTime startTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0);
+        LocalDateTime now = LocalDateTime.now();
+
+        long futureLdtInMilli = startTime.until(date, ChronoUnit.MILLIS);
+        long currentLdtInMilli = startTime.until(now, ChronoUnit.MILLIS);
+
+        long initialDelay = futureLdtInMilli - currentLdtInMilli;
+
+        return getScheduleExecutor(runnable, initialDelay, periodInMilli, TimeUnit.MILLISECONDS);
     }
 
     /**
