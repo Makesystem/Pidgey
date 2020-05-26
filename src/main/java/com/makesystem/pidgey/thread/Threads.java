@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 public class Threads {
 
     // Determine the time to wait for thread is finished
-    private final int TIMEOUT_SHUTDOWN_THREAD = 15;
+    private int timeoutShudownThread = 15;
     // Determine the number of cores on the device
     private final int NUMBER_OF_CORES = Runtime.getRuntime().availableProcessors();
     // Keep a only one intânce from ExecutorService
@@ -31,6 +31,14 @@ public class Threads {
 
     public static Threads newInstance() {
         return new Threads();
+    }
+
+    public int getTimeoutShudownThread() {
+        return timeoutShudownThread;
+    }
+
+    public void setTimeoutShudownThread(int timeoutShudownThread) {
+        this.timeoutShudownThread = timeoutShudownThread;
     }
 
     /**
@@ -116,9 +124,8 @@ public class Threads {
     }
 
     /**
-     * Se o pooll ja estiver configurado, então, ele terminará o pooll esperando
-     * por 30 segundos e, caso ele for parado com sucesso, ele reconfigura o
-     * pool.
+     * Se o pooll ja estiver configurado, entao, ele terminara o pooll e, caso
+     * ele for parado com sucesso, ele reconfigura o pool.
      *
      * @param qtdeShortPoollThreads
      * @return true se foi configurado com sucesso e false, caso contrário
@@ -137,12 +144,11 @@ public class Threads {
     }
 
     /**
-     * Se o pooll ja estiver configurado, então, ele terminará o pooll esperando
-     * por 30 segundos e, caso ele for parado com sucesso, ele reconfigura o
-     * pool.
+     * Se o pooll ja estiver configurado, então, ele terminara o pooll e, caso
+     * ele for parado com sucesso, ele reconfigura o pool.
      *
      * @param qtdeLongPoolThreads
-     * @return true se foi configurado com sucesso e false, caso contrário
+     * @return true se foi configurado com sucesso e false, caso contrario
      */
     public boolean setQtdeLongPoolThreads(final int qtdeLongPoolThreads) {
         this.qtdeLongPoolThreads = qtdeLongPoolThreads;
@@ -158,9 +164,9 @@ public class Threads {
     }
 
     /**
-     * Se o pooll ja estiver configurado, então, ele terminará o pooll esperando
-     * por 30 segundos e, caso ele for parado com sucesso, ele reconfigura o
-     * pool. Será preciso reagendar todos os schedule previamente agendados.
+     * Se o pooll ja estiver configurado, entao, ele terminara o pooll e, caso
+     * ele for parado com sucesso, ele reconfigura o pool. Sera preciso
+     * reagendar todos os schedule previamente agendados.
      *
      * @param qtdeSchedulePoolThreads
      * @return true se foi configurado com sucesso e false, caso contrário
@@ -179,7 +185,7 @@ public class Threads {
     }
 
     /**
-     * Verifica se o pooll está configurado
+     * Verifica se o pooll esta configurado
      *
      * @return
      */
@@ -188,7 +194,7 @@ public class Threads {
     }
 
     /**
-     * Verifica se o pooll está configurado
+     * Verifica se o pooll esta configurado
      *
      * @return
      */
@@ -197,7 +203,7 @@ public class Threads {
     }
 
     /**
-     * Verifica se o pooll está configurado
+     * Verifica se o pooll esta configurado
      *
      * @return
      */
@@ -206,9 +212,7 @@ public class Threads {
     }
 
     /**
-     * Obs: Não finalizar o pool diretamente(Irá parar todas as threads do
-     * poll). Use os métodos desta classe apropriadamente. Este poll só será
-     * configurado uma vez e se este método for chamado pelo menos uma vez.
+     * Este pool so sera configurado caso for chamado
      *
      * @return the executor to run threads
      */
@@ -221,9 +225,7 @@ public class Threads {
     }
 
     /**
-     * Obs: Não finalizar o pool diretamente(Irá parar todas as threads do
-     * poll). Use os métodos desta classe apropriadamente. Este poll só será
-     * configurado uma vez e se este método for chamado pelo menos uma vez.
+     * Este pool so sera configurado caso for chamado
      *
      * @return the executor to run threads
      */
@@ -236,9 +238,7 @@ public class Threads {
     }
 
     /**
-     * Obs: Não finalizar o pool diretamente(Irá parar todas as threads do
-     * poll). Use os métodos desta classe apropriadamente. Este poll só será
-     * configurado uma vez e se este método for chamado pelo menos uma vez.
+     * Este pool so sera configurado caso for chamado
      *
      * @param runnable
      * @param inicialDelay
@@ -246,40 +246,40 @@ public class Threads {
      * @param timeUnit
      * @return
      */
-    public ScheduledFuture getScheduleExecutor(final Runnable runnable, final int inicialDelay, final long period, final TimeUnit timeUnit) {
+    public ScheduledFuture getScheduleExecutor(final Runnable runnable, final long inicialDelay, final long period, final TimeUnit timeUnit) {
         configureScheduleExecutor();
         return scheduledExecutorService.scheduleAtFixedRate(runnable, inicialDelay, period, timeUnit);
     }
 
     /**
-     * Obs: Não finalizar o pool diretamente(Irá parar todas as threads do
-     * poll). Use os métodos desta classe apropriadamente. Este poll só será
-     * configurado uma vez e se este método for chamado pelo menos uma vez.
+     * Este processo reaproveita threads que ainda estao ativas mas nao estao
+     * rodando. Caso nao encontra nenhuma thread ativa, e que nao esteja
+     * rodando, ele cria uma thread nova
      *
-     * @return the executor to run threads
+     * @return
      */
     public ExecutorService getCachedThreadExecutor() {
         return Executors.newCachedThreadPool();
     }
 
     /**
-     * Termina o pool em execução.
+     * Termina o pool em execucao
      *
      * @param pool
      * @param isRunInParallel
      */
     public void finish(final ExecutorService pool, final boolean isRunInParallel) {
         if (isRunInParallel) {
-            getCachedThreadExecutor().execute(() -> {
+            new Thread(() -> {
                 finish(pool);
-            });
+            }).start();
         } else {
             finish(pool);
         }
     }
 
     /**
-     * Termina o pool em execução.
+     * Termina o pool em execucao.
      *
      * @param pool
      * @param isRunInParallel
@@ -290,16 +290,16 @@ public class Threads {
             final int timeToWaitShutdown, final TimeUnit timeUnit) {
 
         if (isRunInParallel) {
-            getCachedThreadExecutor().execute(() -> {
+            new Thread(() -> {
                 finish(pool, timeToWaitShutdown, timeUnit);
-            });
+            }).start();
         } else {
             finish(pool, timeToWaitShutdown, timeUnit);
         }
     }
 
     /**
-     * Termina o pool em execução.
+     * Termina o pool em execucao.
      *
      * @param future
      * @param mayInterruptIfRunning
@@ -311,16 +311,16 @@ public class Threads {
     }
 
     /**
-     * Termina o pool em execução.
+     * Termina o pool em execucao.
      *
      * @param pool
      */
     private boolean finish(final ExecutorService pool) {
-        return finish(pool, TIMEOUT_SHUTDOWN_THREAD, TimeUnit.SECONDS);
+        return finish(pool, timeoutShudownThread, TimeUnit.SECONDS);
     }
 
     /**
-     * Termina o pool em execução.
+     * Termina o pool em execucao.
      *
      * @param pool
      * @param timeToWaitShutdown
@@ -358,6 +358,23 @@ public class Threads {
         try {
             Thread.sleep(timeInMillis);
         } catch (final InterruptedException ex) {
+        }
+    }
+
+    /**
+     * Espera o tempo solicitado
+     *
+     * @param timeInMillis
+     * @param thowErroWhenInterruped
+     * @throws InterruptedException
+     */
+    public void sleep(long timeInMillis, boolean thowErroWhenInterruped) throws InterruptedException {
+        try {
+            Thread.sleep(timeInMillis);
+        } catch (final InterruptedException ex) {
+            if (thowErroWhenInterruped) {
+                throw ex;
+            }
         }
     }
 
