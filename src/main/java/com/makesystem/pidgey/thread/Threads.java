@@ -146,7 +146,7 @@ public class Threads {
     }
 
     /**
-     * Se o pooll ja estiver configurado, então, ele terminara o pooll e, caso
+     * Se o pooll ja estiver configurado, entao, ele terminara o pooll e, caso
      * ele for parado com sucesso, ele reconfigura o pool.
      *
      * @param qtdeLongPoolThreads
