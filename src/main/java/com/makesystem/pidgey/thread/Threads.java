@@ -72,23 +72,44 @@ public class Threads {
      * Termina todos os poolls
      */
     private void finishAllPoollsServices() {
-        finishShortPoollService();
-        finishLongPoollService();
-        finishSchedulePoollService();
+        try {
+            finishShortPoollService(false);
+        } catch (Throwable ex) {
+            // nada a fazer
+        }
+        try {
+            finishLongPoollService(false);
+        } catch (Throwable ex) {
+            // nada a fazer
+        }
+        try {
+            finishSchedulePoollService(false);
+        } catch (Throwable ex) {
+            // nada a fazer
+        }
     }
 
     /**
      * Encerra o pooll
      *
+     * @param isRunInParallel
      * @return
      */
-    public boolean finishShortPoollService() {
+    public boolean finishShortPoollService(final boolean isRunInParallel) {
         if (shortExecutorService != null) {
-            if (finish(shortExecutorService)) {
-                shortExecutorService = null;
-                return true;
+            if (isRunInParallel) {
+                new Thread(() -> {
+                    if (finish(shortExecutorService)) {
+                        shortExecutorService = null;
+                    }
+                }).start();
+            } else {
+                if (finish(shortExecutorService)) {
+                    shortExecutorService = null;
+                    return true;
+                }
+                return false;
             }
-            return false;
         }
         return true;
     }
@@ -96,15 +117,24 @@ public class Threads {
     /**
      * Encerra o pooll
      *
+     * @param isRunInParallel
      * @return
      */
-    public boolean finishLongPoollService() {
+    public boolean finishLongPoollService(final boolean isRunInParallel) {
         if (longExecutorService != null) {
-            if (finish(longExecutorService)) {
-                longExecutorService = null;
-                return true;
+            if (isRunInParallel) {
+                new Thread(() -> {
+                    if (finish(longExecutorService)) {
+                        longExecutorService = null;
+                    }
+                }).start();
+            } else {
+                if (finish(longExecutorService)) {
+                    longExecutorService = null;
+                    return true;
+                }
+                return false;
             }
-            return false;
         }
         return true;
     }
@@ -112,15 +142,24 @@ public class Threads {
     /**
      * Encerra o pooll
      *
+     * @param isRunInParallel
      * @return
      */
-    public boolean finishSchedulePoollService() {
+    public boolean finishSchedulePoollService(final boolean isRunInParallel) {
         if (scheduledExecutorService != null) {
-            if (finish(scheduledExecutorService)) {
-                scheduledExecutorService = null;
-                return true;
+            if (isRunInParallel) {
+                new Thread(() -> {
+                    if (finish(scheduledExecutorService)) {
+                        scheduledExecutorService = null;
+                    }
+                }).start();
+            } else {
+                if (finish(scheduledExecutorService)) {
+                    scheduledExecutorService = null;
+                    return true;
+                }
+                return false;
             }
-            return false;
         }
         return true;
     }
