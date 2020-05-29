@@ -28,6 +28,13 @@ public class Threads {
     // Number of threads that the pooll will be configured
     private int qtdeSchedulePoolThreads;
 
+    /**
+     * Sync alguma partes para evitar que dois pools sejam criados
+     */
+    private final Object LOCK_GET_SHORT_POOL = new Object();
+    private final Object LOCK_GET_LONG_POOL = new Object();
+    private final Object LOCK_CONFIG_SCHEDULE_POOL = new Object();
+
     private Threads() {
     }
 
@@ -47,9 +54,14 @@ public class Threads {
      * Configura o pool de scheduleExecutor se ele estiver nulo.
      */
     private void configureScheduleExecutor() {
-        if (scheduledExecutorService == null) {
-            final int qtde = qtdeSchedulePoolThreads == 0 ? NUMBER_OF_CORES * 2 : qtdeSchedulePoolThreads;
-            scheduledExecutorService = Executors.newScheduledThreadPool(qtde);
+        if (scheduledExecutorService != null) {
+            return;
+        }
+        synchronized (LOCK_CONFIG_SCHEDULE_POOL) {
+            if (scheduledExecutorService == null) {
+                final int qtde = qtdeSchedulePoolThreads == 0 ? NUMBER_OF_CORES * 2 : qtdeSchedulePoolThreads;
+                scheduledExecutorService = Executors.newScheduledThreadPool(qtde);
+            }
         }
     }
 
@@ -172,16 +184,18 @@ public class Threads {
      * @return true se foi configurado com sucesso e false, caso contrário
      */
     public boolean setQtdeShortPoollThreads(final int qtdeShortPoollThreads) {
-        this.qtdeShortPoollThreads = qtdeShortPoollThreads;
-        if (shortExecutorService != null) {
-            if (finish(shortExecutorService)) {
-                shortExecutorService = null;
-                getLongServicesExecutor();
-                return true;
+        synchronized (LOCK_GET_SHORT_POOL) {
+            this.qtdeShortPoollThreads = qtdeShortPoollThreads;
+            if (shortExecutorService != null) {
+                if (finish(shortExecutorService)) {
+                    shortExecutorService = null;
+                    getLongServicesExecutor();
+                    return true;
+                }
+                return false;
             }
-            return false;
+            return true;
         }
-        return true;
     }
 
     /**
@@ -192,16 +206,18 @@ public class Threads {
      * @return true se foi configurado com sucesso e false, caso contrario
      */
     public boolean setQtdeLongPoolThreads(final int qtdeLongPoolThreads) {
-        this.qtdeLongPoolThreads = qtdeLongPoolThreads;
-        if (longExecutorService != null) {
-            if (finish(longExecutorService)) {
-                longExecutorService = null;
-                getLongServicesExecutor();
-                return true;
+        synchronized (LOCK_GET_LONG_POOL) {
+            this.qtdeLongPoolThreads = qtdeLongPoolThreads;
+            if (longExecutorService != null) {
+                if (finish(longExecutorService)) {
+                    longExecutorService = null;
+                    getLongServicesExecutor();
+                    return true;
+                }
+                return false;
             }
-            return false;
+            return true;
         }
-        return true;
     }
 
     /**
@@ -213,16 +229,18 @@ public class Threads {
      * @return true se foi configurado com sucesso e false, caso contrário
      */
     public boolean setQtdeSchedulePoolThreads(final int qtdeSchedulePoolThreads) {
-        this.qtdeSchedulePoolThreads = qtdeSchedulePoolThreads;
-        if (scheduledExecutorService != null) {
-            if (finish(scheduledExecutorService)) {
-                scheduledExecutorService = null;
-                configureScheduleExecutor();
-                return true;
+        synchronized (LOCK_CONFIG_SCHEDULE_POOL) {
+            this.qtdeSchedulePoolThreads = qtdeSchedulePoolThreads;
+            if (scheduledExecutorService != null) {
+                if (finish(scheduledExecutorService)) {
+                    scheduledExecutorService = null;
+                    configureScheduleExecutor();
+                    return true;
+                }
+                return false;
             }
-            return false;
+            return true;
         }
-        return true;
     }
 
     /**
@@ -258,11 +276,16 @@ public class Threads {
      * @return the executor to run threads
      */
     public ExecutorService getShortServicesExecutor() {
-        if (shortExecutorService == null) {
-            final int qtde = qtdeShortPoollThreads == 0 ? NUMBER_OF_CORES * 2 : qtdeShortPoollThreads;
-            shortExecutorService = Executors.newFixedThreadPool(qtde);
+        if (shortExecutorService != null) {
+            return shortExecutorService;
         }
-        return shortExecutorService;
+        synchronized (LOCK_GET_SHORT_POOL) {
+            if (shortExecutorService == null) {
+                final int qtde = qtdeShortPoollThreads == 0 ? NUMBER_OF_CORES * 2 : qtdeShortPoollThreads;
+                shortExecutorService = Executors.newFixedThreadPool(qtde);
+            }
+            return shortExecutorService;
+        }
     }
 
     /**
@@ -271,11 +294,16 @@ public class Threads {
      * @return the executor to run threads
      */
     public ExecutorService getLongServicesExecutor() {
-        if (longExecutorService == null) {
-            final int qtde = qtdeLongPoolThreads == 0 ? NUMBER_OF_CORES * 2 : qtdeLongPoolThreads;
-            longExecutorService = Executors.newFixedThreadPool(qtde);
+        if (longExecutorService != null) {
+            return longExecutorService;
         }
-        return longExecutorService;
+        synchronized (LOCK_GET_LONG_POOL) {
+            if (longExecutorService == null) {
+                final int qtde = qtdeLongPoolThreads == 0 ? NUMBER_OF_CORES * 2 : qtdeLongPoolThreads;
+                longExecutorService = Executors.newFixedThreadPool(qtde);
+            }
+            return longExecutorService;
+        }
     }
 
     /**
@@ -367,7 +395,13 @@ public class Threads {
      */
     public void finish(final Future future, final boolean mayInterruptIfRunning) {
         if (future != null) {
-            future.cancel(mayInterruptIfRunning);
+            /**
+             * Se duas threads diferentes chamarem o finish do mesmo Future,
+             * entao somente uma por vez, ira fazer o processo.
+             */
+            synchronized (future) {
+                future.cancel(mayInterruptIfRunning);
+            }
         }
     }
 
@@ -390,21 +424,27 @@ public class Threads {
      */
     private boolean finish(final ExecutorService pool, final int timeToWaitShutdown, final TimeUnit timeUnit) {
         if (pool != null) {
-            pool.shutdown(); // Disable new tasks from being submitted
-            try {
-                // Wait a while for existing tasks to terminate
-                if (!pool.awaitTermination(timeToWaitShutdown, timeUnit)) {
-                    // if don´t stopeed within time, then call the method below
-                    pool.shutdownNow(); // Cancel currently executing tasks
-                    return pool.awaitTermination(timeToWaitShutdown, timeUnit);
+            /**
+             * Se duas threads diferentes chamarem o finish do mesmo pool, entao
+             * somente uma por vez, ira fazer o processo.
+             */
+            synchronized (pool) {
+                pool.shutdown(); // Disable new tasks from being submitted
+                try {
+                    // Wait a while for existing tasks to terminate
+                    if (!pool.awaitTermination(timeToWaitShutdown, timeUnit)) {
+                        // if dont stopeed within time, then call the method below
+                        pool.shutdownNow(); // Cancel currently executing tasks
+                        return pool.awaitTermination(timeToWaitShutdown, timeUnit);
+                    }
+                    return true;
+                } catch (final InterruptedException ie) {
+                    // (Re-)Cancel if current thread also interrupted
+                    pool.shutdownNow();
+                    // Preserve interrupt status
+                    Thread.currentThread().interrupt();
+                    return false;
                 }
-                return true;
-            } catch (final InterruptedException ie) {
-                // (Re-)Cancel if current thread also interrupted
-                pool.shutdownNow();
-                // Preserve interrupt status
-                Thread.currentThread().interrupt();
-                return false;
             }
         }
         return false;
