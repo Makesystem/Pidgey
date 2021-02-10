@@ -50,12 +50,17 @@ public class ConcurrentMap<K, V> extends ConcurrentHashMap<K, V> {
     }
 
     @Override
-    public V putIfAbsent(final K key, final V value) {
+    public V put(K key, V value) {
+        super.put(key, value);
+        return value;
+    }
 
+    @Override
+    public V putIfAbsent(final K key, final V value) {
         final V presValue = get(key);
 
         if (presValue == null) {
-            final V old = put(key, value);
+            final V old = super.put(key, value);
             return old == null ? value : old;
         } else {
             return presValue;
@@ -67,7 +72,7 @@ public class ConcurrentMap<K, V> extends ConcurrentHashMap<K, V> {
 
         if (presValue == null) {
             final V value = defaultGenerator == null ? null : defaultGenerator.get();
-            final V old = put(key, value);
+            final V old = super.put(key, value);
             return old == null ? value : old;
         } else {
             return presValue;
