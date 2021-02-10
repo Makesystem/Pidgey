@@ -55,8 +55,8 @@ public class ConcurrentMap<K, V> extends ConcurrentHashMap<K, V> {
         final V presValue = get(key);
 
         if (presValue == null) {
-            put(key, value);
-            return value;
+            final V old = put(key, value);
+            return old == null ? value : old;
         } else {
             return presValue;
         }
@@ -67,8 +67,8 @@ public class ConcurrentMap<K, V> extends ConcurrentHashMap<K, V> {
 
         if (presValue == null) {
             final V value = defaultGenerator == null ? null : defaultGenerator.get();
-            put(key, value);
-            return value;
+            final V old = put(key, value);
+            return old == null ? value : old;
         } else {
             return presValue;
         }
