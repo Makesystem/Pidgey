@@ -1,5 +1,6 @@
 package com.makesystem.pidgey.thread;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.ExecutorService;
@@ -9,7 +10,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class Threads {
+public class Threads implements Serializable {
 
     // Determine the time to wait for thread is finished
     private int timeoutShudownThread = 15;
@@ -31,9 +32,9 @@ public class Threads {
     /**
      * Sync alguma partes para evitar que dois pools sejam criados
      */
-    private final Object LOCK_GET_SHORT_POOL = new Object();
-    private final Object LOCK_GET_LONG_POOL = new Object();
-    private final Object LOCK_CONFIG_SCHEDULE_POOL = new Object();
+    private final PidGeyThreadObject LOCK_GET_SHORT_POOL = new PidGeyThreadObject();
+    private final PidGeyThreadObject LOCK_GET_LONG_POOL = new PidGeyThreadObject();
+    private final PidGeyThreadObject LOCK_CONFIG_SCHEDULE_POOL = new PidGeyThreadObject();
 
     private Threads() {
     }
