@@ -65,7 +65,7 @@ public class StringUtil extends StringUtilImpl {
             final String[] originalWords = originalAddress.split(" ");
             final List<String> wordsFound = new LinkedList<>();
 
-            address.qtdWords = searchedWords.length;
+            address.qtdeWords = searchedWords.length;
 
             final Set<String> aux = new HashSet<>();
 
@@ -90,12 +90,12 @@ public class StringUtil extends StringUtilImpl {
                             position = searchedAddress.indexOf(originalWord);
                         }
 
-                        address.qtdEqualsWordsFound++;
+                        address.qtdequals++;
                         wordsFound.add(searchedWord);
-                        address.qtdWordsFound++;
+                        address.qtdeWordsFound++;
 
-                        if (address.initialPositionWordsFound == -1 || position < address.initialPositionWordsFound) {
-                            address.initialPositionWordsFound = position;
+                        if (address.inicialPositionWordFound == -1 || position < address.inicialPositionWordFound) {
+                            address.inicialPositionWordFound = position;
                         }
 
                     } else {
@@ -110,10 +110,10 @@ public class StringUtil extends StringUtilImpl {
                             if (((searchedWordLength * 100) / originalWordLength) > 50) {
 
                                 wordsFound.add(searchedWord);
-                                address.qtdWordsFound++;
+                                address.qtdeWordsFound++;
 
-                                if (address.initialPositionWordsFound == -1 || position < address.initialPositionWordsFound) {
-                                    address.initialPositionWordsFound = position;
+                                if (address.inicialPositionWordFound == -1 || position < address.inicialPositionWordFound) {
+                                    address.inicialPositionWordFound = position;
                                 }
                             }
 
@@ -129,10 +129,10 @@ public class StringUtil extends StringUtilImpl {
                                 if (((originalWordLength * 100) / searchedWordLength) > 50) {
 
                                     wordsFound.add(originalWord);
-                                    address.qtdWordsFound++;
+                                    address.qtdeWordsFound++;
 
-                                    if (address.initialPositionWordsFound == -1 || position < address.initialPositionWordsFound) {
-                                        address.initialPositionWordsFound = position;
+                                    if (address.inicialPositionWordFound == -1 || position < address.inicialPositionWordFound) {
+                                        address.inicialPositionWordFound = position;
                                     }
                                 }
                             }
@@ -148,8 +148,8 @@ public class StringUtil extends StringUtilImpl {
             return address;
 
         } finally {
-            address.entireFiltersApplied++;
-            if (address.qtdWordsFound != 0) {
+            address.totFilters++;
+            if (address.qtdeWordsFound != 0) {
                 address.qtdeAssertiveFilters++;
             }
         }
@@ -160,7 +160,7 @@ public class StringUtil extends StringUtilImpl {
      *
      * @param <T>
      */
-    public class FilteredAddress<T> {
+    public static class FilteredAddress<T> {
 
         public String[] separatorsOriginalLogradouro;
         public String[] separatorsSearchedLogradouro;
@@ -175,29 +175,29 @@ public class StringUtil extends StringUtilImpl {
          * Total de filtros que foram aplicados, ex: Foi utilizado o logradouro
          * e cep para filtrar, neste caso, terá o valor 2.
          */
-        public int entireFiltersApplied;
+        public int totFilters;
 
         /**
          * Qunatidade de palavras com a mesma escrita
          */
-        public int qtdEqualsWordsFound;
+        public int qtdequals;
         /**
          * A posição inicial que foi encontrada a palavra, caso ela tenha sido
          * encontrada. Ex: Foi utilizado a palavra 'sergio gomes' para filtrar
          * em cima da palvra 'rua sergio gomes'. Neste caso, terá o valor 4.
          */
-        public int initialPositionWordsFound = -1;
+        public int inicialPositionWordFound = -1;
         /**
          * Qtde de palavras encontradas, ex: Foi utilizado a palavra 'sergio
          * gomes' para filtrar, mas foi encontrado só 'gomes'. Neste caso, terá
          * o valor 1.
          */
-        public int qtdWordsFound;
+        public int qtdeWordsFound;
         /**
          * Qtde palavras do logradouro utilizado para filtrar, ex: Foi utilizado
          * a palavra 'sergio gomes' para filtrar. Neste caso, terá o valor 2.
          */
-        public int qtdWords;
+        public int qtdeWords;
         /**
          * Logradouro escrito da mesma forma como esta no site.
          */
@@ -234,6 +234,11 @@ public class StringUtil extends StringUtilImpl {
          * Bloco encontrado.
          */
         public String block;
+
+        /**
+         * Apartamento encontrado.
+         */
+        public String apto;
     }
 
     private static List<FilteredAddress> filterAddresses(final List<FilteredAddress> addresses) {
@@ -241,7 +246,7 @@ public class StringUtil extends StringUtilImpl {
         final List<FilteredAddress> list = new ArrayList<>();
 
         addresses.forEach((address) -> {
-            final FilteredAddress filteredAddress = StringUtil.filterAddresses(address);
+            final FilteredAddress filteredAddress = filterAddresses(address);
             if (filteredAddress.wordsFound != null) {
                 list.add(address);
             }
@@ -263,7 +268,7 @@ public class StringUtil extends StringUtilImpl {
                     list.add(address);
                 }
             }
-            address.entireFiltersApplied++;
+            address.totFilters++;
         });
 
         if (list.isEmpty()) {
@@ -279,14 +284,14 @@ public class StringUtil extends StringUtilImpl {
 
         addresses.forEach((address) -> {
             if (square != null && !square.trim().isEmpty()) {
-                final String blockFound = StringUtil.getSquareOrDefault(address.originalValueSite, "");
+                final String blockFound = getSquareOrDefault(address.originalValueSite, "");
                 if (!blockFound.isEmpty() && blockFound.equalsIgnoreCase(square)) {
                     address.qtdeAssertiveFilters++;
                     address.square = square;
                     list.add(address);
                 }
             }
-            address.entireFiltersApplied++;
+            address.totFilters++;
         });
 
         if (list.isEmpty()) {
@@ -302,14 +307,14 @@ public class StringUtil extends StringUtilImpl {
 
         addresses.forEach((address) -> {
             if (lot != null && !lot.trim().isEmpty()) {
-                final String lotFound = StringUtil.getLotOrDefault(address.originalValueSite, "");
+                final String lotFound = getLotOrDefault(address.originalValueSite, "");
                 if (!lotFound.isEmpty() && lotFound.equalsIgnoreCase(lot)) {
                     address.qtdeAssertiveFilters++;
                     address.lot = lot;
                     list.add(address);
                 }
             }
-            address.entireFiltersApplied++;
+            address.totFilters++;
         });
 
         if (list.isEmpty()) {
@@ -325,14 +330,37 @@ public class StringUtil extends StringUtilImpl {
 
         addresses.forEach((address) -> {
             if (block != null && !block.trim().isEmpty()) {
-                final String blockFound = StringUtil.getBlockOrDefault(address.originalValueSite, "");
+                final String blockFound = getBlockOrDefault(address.originalValueSite, "");
                 if (!blockFound.isEmpty() && blockFound.equalsIgnoreCase(block)) {
                     address.qtdeAssertiveFilters++;
                     address.block = block;
                     list.add(address);
                 }
             }
-            address.entireFiltersApplied++;
+            address.totFilters++;
+        });
+
+        if (list.isEmpty()) {
+            return addresses;
+        }
+
+        return list;
+    }
+
+    private static List<FilteredAddress> filterApto(final List<FilteredAddress> addresses, final String apto) {
+
+        final List<FilteredAddress> list = new ArrayList<>();
+
+        addresses.forEach((address) -> {
+            if (apto != null && !apto.trim().isEmpty()) {
+                final String aptoFound = getAptoOrDefault(address.originalValueSite, "");
+                if (!aptoFound.isEmpty() && aptoFound.equalsIgnoreCase(apto)) {
+                    address.qtdeAssertiveFilters++;
+                    address.apto = apto;
+                    list.add(address);
+                }
+            }
+            address.totFilters++;
         });
 
         if (list.isEmpty()) {
@@ -346,6 +374,7 @@ public class StringUtil extends StringUtilImpl {
 
         List<FilteredAddress> listEndPorAcertividade;
 
+        //listEndPorAcertividade = filterAddressEqualsWords(listEndPorAcertividade);
         listEndPorAcertividade = filterAddressesLength(addresses);
 
         if (listEndPorAcertividade.size() <= 1) {
@@ -374,19 +403,11 @@ public class StringUtil extends StringUtilImpl {
 
         listEndPorAcertividade = filterAddressInicialPosition(listEndPorAcertividade);
 
-        // fazer uma ordenação, primeiro pela assertividade, depois pelo tamanho, sendo que o menor vem primeiro.
+        // fazer uma ordenação pelo tamanho, o menor vem primeiro
         if (listEndPorAcertividade.size() > 1) {
-
             listEndPorAcertividade = listEndPorAcertividade.stream().sorted((a, b) -> {
 
-                int aSum = a.qtdeAssertiveFilters + a.qtdWordsFound + a.qtdEqualsWordsFound;
-                int bSum = b.qtdeAssertiveFilters + b.qtdWordsFound + b.qtdEqualsWordsFound;
-
-                if (aSum > bSum) {
-                    return -1;
-                } else if (aSum < bSum) {
-                    return 1;
-                } else if (a.originalValueSite.length() < b.originalValueSite.length()) {
+                if (a.originalValueSite.length() < b.originalValueSite.length()) {
                     return -1;
                 } else if (a.originalValueSite.length() == b.originalValueSite.length()) {
                     return 0;
@@ -412,7 +433,7 @@ public class StringUtil extends StringUtilImpl {
         final StringUtil stringUtils = new StringUtil();
 
         list.forEach((originalAddress) -> {
-            FilteredAddress filteredAddress = stringUtils.new FilteredAddress<>();
+            FilteredAddress filteredAddress = new FilteredAddress<>();
             filteredAddress.originalValueSite = originalAddress;
             filteredAddress.separatorsOriginalLogradouro = separatorOriginalLogradouro;
             filteredAddress.separatorsSearchedLogradouro = separatorSearchedLogradouro;
@@ -436,12 +457,18 @@ public class StringUtil extends StringUtilImpl {
             return filterAssertiveness(filteredAddress);
         }
 
+        /**
+         * ANALISA O NUMERO
+         */
         filteredAddress = filterNumber(filteredAddress, number);
 
         if (filteredAddress.isEmpty() || filteredAddress.size() == 1) {
             return filterAssertiveness(filteredAddress);
         }
 
+        /**
+         * ANALISA A QUADRA
+         */
         final String squareTemp = getSquareOrDefault(filteredAddress.get(0).searchedValue, "");
 
         String square;
@@ -457,6 +484,9 @@ public class StringUtil extends StringUtilImpl {
             return filterAssertiveness(filteredAddress);
         }
 
+        /**
+         * ANALISA O LOTE
+         */
         final String lotTemp = getLotOrDefault(filteredAddress.get(0).searchedValue, "");
 
         String lot;
@@ -472,6 +502,9 @@ public class StringUtil extends StringUtilImpl {
             return filterAssertiveness(filteredAddress);
         }
 
+        /**
+         * ANALISA O BLOCO
+         */
         final String blockTemp = getBlockOrDefault(filteredAddress.get(0).searchedValue, "");
 
         String block;
@@ -487,6 +520,24 @@ public class StringUtil extends StringUtilImpl {
             return filterAssertiveness(filteredAddress);
         }
 
+        /**
+         * ANALISA O APARATAMENTO
+         */
+        final String aptoTemp = getAptoOrDefault(filteredAddress.get(0).searchedValue, "");
+
+        String apto;
+        if (aptoTemp.isEmpty()) {
+            apto = getAptoOrDefault(complement, "");
+        } else {
+            apto = aptoTemp;
+        }
+
+        filteredAddress = filterApto(filteredAddress, apto);
+
+        if (filteredAddress.isEmpty() || filteredAddress.size() == 1) {
+            return filterAssertiveness(filteredAddress);
+        }
+
         return filterAssertiveness(filteredAddress);
     }
 
@@ -497,17 +548,17 @@ public class StringUtil extends StringUtilImpl {
 
         for (final FilteredAddress entity : addresses) {
 
-            if (entity.qtdEqualsWordsFound <= 0) {
+            if (entity.qtdequals <= 0) {
                 continue;
             }
 
-            if (entity.qtdEqualsWordsFound > lastEqualsWord) {
+            if (entity.qtdequals > lastEqualsWord) {
 
                 listTemp.clear();
                 listTemp.add(entity);
-                lastEqualsWord = entity.qtdEqualsWordsFound;
+                lastEqualsWord = entity.qtdequals;
 
-            } else if (entity.qtdEqualsWordsFound == lastEqualsWord) {
+            } else if (entity.qtdequals == lastEqualsWord) {
 
                 listTemp.add(entity);
             }
@@ -523,17 +574,17 @@ public class StringUtil extends StringUtilImpl {
 
         for (final FilteredAddress entity : addresses) {
 
-            if (entity.initialPositionWordsFound == -1) {
+            if (entity.inicialPositionWordFound == -1) {
                 continue;
             }
 
-            if (entity.initialPositionWordsFound < inicialPositionLasWordFound) {
+            if (entity.inicialPositionWordFound < inicialPositionLasWordFound) {
 
                 listTemp.clear();
                 listTemp.add(entity);
-                inicialPositionLasWordFound = entity.initialPositionWordsFound;
+                inicialPositionLasWordFound = entity.inicialPositionWordFound;
 
-            } else if (entity.initialPositionWordsFound == inicialPositionLasWordFound) {
+            } else if (entity.inicialPositionWordFound == inicialPositionLasWordFound) {
 
                 listTemp.add(entity);
             }
@@ -686,6 +737,19 @@ public class StringUtil extends StringUtilImpl {
         return returnValue;
     }
 
+    public static String getCepOrDefault(final String string, String defaultValue) {
+
+        if (string == null || string.trim().isEmpty()) {
+            return defaultValue;
+        }
+        final String returnValue = getCep(string);
+
+        if (returnValue == null || returnValue.trim().isEmpty()) {
+            return defaultValue;
+        }
+        return returnValue;
+    }
+
     public static String getAptoOrDefault(final String string, String defaultValue) {
 
         if (string == null || string.trim().isEmpty()) {
@@ -765,7 +829,9 @@ public class StringUtil extends StringUtilImpl {
         list.add("APARTAM");
         list.add("APTOO");
         list.add("APTO");
+        list.add("APTO.");
         list.add("APT");
+        list.add("APT.");
 
         return getValueFrom(list, string);
     }
@@ -849,14 +915,14 @@ public class StringUtil extends StringUtilImpl {
         }
         final List<String> list = new LinkedList<>();
 
+        list.add("COMPL");
         list.add("COMPLEMENTO");
+        list.add("COMPLEM");
+        list.add("COMP");
         list.add("COMPLEMENT");
         list.add("COMPLEMEN");
         list.add("COMPLEME");
-        list.add("COMPLEM");
         list.add("COMPLE");
-        list.add("COMPL");
-        list.add("COMP");
 
         return getValueFrom(list, string);
     }
@@ -868,11 +934,11 @@ public class StringUtil extends StringUtilImpl {
         }
         final List<String> list = new LinkedList<>();
 
-        list.add("CODIGO DE ENDERECAMENTO POSTAL");
+        list.add("CEP");
         list.add("CEPP");
         list.add("CEEP");
         list.add("CCEP");
-        list.add("CEP");
+        list.add("CODIGO DE ENDERECAMENTO POSTAL");
 
         return getValueFrom(list, string);
     }
@@ -885,6 +951,7 @@ public class StringUtil extends StringUtilImpl {
         final List<String> list = new ArrayList<>();
 
         list.add("Nº");
+        list.add("NUM");
         list.add("NUMERO");
         list.add("NUME");
         list.add("NUMER");
@@ -900,10 +967,10 @@ public class StringUtil extends StringUtilImpl {
         }
         final List<String> list = new ArrayList<>();
 
-        list.add("QUADRAS");
+        list.add("QD");
         list.add("QUADRA");
         list.add("QDR");
-        list.add("QD");
+        list.add("QUADRAS");
 
         return getValueFrom(list, string);
     }
@@ -915,10 +982,10 @@ public class StringUtil extends StringUtilImpl {
         }
         final List<String> list = new ArrayList<>();
 
-        list.add("LOTES");
+        list.add("LT");
         list.add("LOTE");
         list.add("LOT");
-        list.add("LT");
+        list.add("LOTES");
 
         return getValueFrom(list, string);
     }
@@ -930,11 +997,71 @@ public class StringUtil extends StringUtilImpl {
         }
         final List<String> list = new ArrayList<>();
 
-        list.add("BLOCOS");
+        list.add("BL");
         list.add("BLOCO");
         list.add("BLC");
-        list.add("BL");
+        list.add("BLOCOS");
 
         return getValueFrom(list, string);
     }
+
+    public static class EndDataUtils {
+
+        public String number;
+        public String square;
+        public String lot;
+        public String block;
+        public String apto;
+    }
+
+    public static EndDataUtils getEndDataUtils(final String string) {
+
+        if (string == null || string.isEmpty()) {
+            return null;
+        }
+
+        final EndDataUtils entity = new EndDataUtils();
+
+        entity.number = getNumber(string);
+        entity.square = getSquare(string);
+        entity.lot = getLot(string);
+        entity.block = getBlock(string);
+        entity.apto = getApto(string);
+
+        return entity;
+    }
+
+    public static void main(String[] args) {
+
+        List<String> list = new ArrayList<>();
+
+        list.add("APARECIDA DE GOIANIA");
+        list.add("GOIANIA");
+
+        List<FilteredAddress> address = filter(list, "GOIANIA", null, null, null, null, null);
+
+        if (address.isEmpty()) {
+            System.out.println("nenhum resultado encontrado.");
+        } else {
+            for (FilteredAddress addres : address) {
+                System.out.println("---------------------------------------------------");
+                System.out.println("searchedAddress: " + addres.searchedValue);
+                System.out.println("originalAddressSite: " + addres.originalValueSite);
+                System.out.println("words found:");
+                for (Object value : addres.wordsFound) {
+                    System.out.println(value);
+                }
+                System.out.println("number: " + addres.number);
+                System.out.println("square: " + addres.square);
+                System.out.println("lot: " + addres.lot);
+                System.out.println("block: " + addres.block);
+                System.out.println("inicialPositionWordFound: " + addres.inicialPositionWordFound);
+                System.out.println("qtdeAssertiveFilters: " + addres.qtdeAssertiveFilters);
+                System.out.println("qtdeWords: " + addres.qtdeWords);
+                System.out.println("qtdeWordsFound: " + addres.qtdeWordsFound);
+                System.out.println("totFilters: " + addres.totFilters);
+            }
+        }
+    }
+
 }
